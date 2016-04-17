@@ -9,27 +9,41 @@
         this.start = (new Date()).getTime();
         this.time = (new Date()).getTime();
       }, /** @lends _.com.persesgames */ {
-        Test: Kotlin.createClass(null, function (context3d) {
-          this.context3d = context3d;
+        Test: Kotlin.createClass(null, function (webgl) {
+          this.webgl = webgl;
           this.red = 1.0;
           this.green = 1.0;
           this.blue = 0.0;
+          this.rotX = 0.0;
+          this.rotY = 0.0;
+          this.rotZ = 0.0;
           this.pMatrix = new _.com.persesgames.math.Matrix4();
           var vainfo = [new _.com.persesgames.shader.VertextAttributeInfo('a_position', 2), new _.com.persesgames.shader.VertextAttributeInfo('a_color', 3)];
-          this.program = new _.com.persesgames.shader.ShaderProgram(this.context3d, WebGLRenderingContext.TRIANGLES, _.com.persesgames.vertexShaderSource, _.com.persesgames.fragmentShaderSource, vainfo);
-          this.triangle = new Float32Array([0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0]);
+          this.program = new _.com.persesgames.shader.ShaderProgram(this.webgl, WebGLRenderingContext.TRIANGLES, _.com.persesgames.vertexShaderSource, _.com.persesgames.fragmentShaderSource, vainfo);
+          this.triangle = new Float32Array([0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]);
         }, /** @lends _.com.persesgames.Test.prototype */ {
           update_14dthe$: function (time) {
             this.red = Math.abs(Math.sin(time * 0.5));
             this.green = Math.abs(Math.cos(time * 0.3));
+            this.blue = Math.abs(Math.cos(time * 0.7));
+            this.rotX = time / 5.0;
           },
           render: function () {
-            this.context3d.clearColor(this.red, this.green, this.blue, 1.0);
-            this.context3d.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
+            this.resize();
+            this.webgl.clearColor(this.red, this.green, this.blue, 1.0);
+            this.webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
             this.program.begin();
-            this.program.setUniformMatrix4fv_pphpxd$('u_projectionView', this.pMatrix.get());
+            this.program.setUniformMatrix4fv_pphpxd$('u_projectionView', this.pMatrix.getFloat32Array());
             this.program.queueVertices_b5uka5$(this.triangle);
             this.program.end();
+          },
+          resize: function () {
+            var canvas = this.webgl.canvas;
+            if (canvas.width !== (window.innerWidth | 0) || canvas.height !== (window.innerHeight | 0)) {
+              canvas.width = window.innerWidth | 0;
+              canvas.height = window.innerHeight | 0;
+              this.webgl.viewport(0, 0, canvas.width, canvas.height);
+            }
           }
         }),
         loop$f: function (it) {
@@ -44,13 +58,22 @@
           }
           window.requestAnimationFrame(_.com.persesgames.loop$f);
         },
+        main_kand9s$f: function (canvas, webgl) {
+          return function (it) {
+            canvas.v.width = window.innerWidth | 0;
+            canvas.v.height = window.innerHeight | 0;
+            webgl.v.viewport(0, 0, canvas.v.width, canvas.v.height);
+          };
+        },
         main_kand9s$: function (args) {
           var tmp$0, tmp$1;
           Kotlin.println('Hello!');
-          var webGlElement = (tmp$0 = document.getElementById('canvas')) != null ? tmp$0 : Kotlin.throwNPE();
-          var context3d = (tmp$1 = webGlElement.getContext('webgl')) != null ? tmp$1 : Kotlin.throwNPE();
-          _.com.persesgames.texture.Textures.load_h0kzx1$(context3d, 'SHIP', 'images/ship2.png');
-          _.com.persesgames.game = new _.com.persesgames.Test(context3d);
+          var canvas = {v: document.createElement('canvas')};
+          ((tmp$0 = document.body) != null ? tmp$0 : Kotlin.throwNPE()).appendChild(canvas.v);
+          var webgl = {v: (tmp$1 = canvas.v.getContext('webgl')) != null ? tmp$1 : Kotlin.throwNPE()};
+          Kotlin.modules['stdlib'].kotlin.dom.on_9k7t35$(canvas.v, 'resize', true, _.com.persesgames.main_kand9s$f(canvas, webgl));
+          _.com.persesgames.texture.Textures.load_h0kzx1$(webgl.v, 'SHIP', 'images/ship2.png');
+          _.com.persesgames.game = new _.com.persesgames.Test(webgl.v);
           _.com.persesgames.loop();
         },
         texture: Kotlin.definePackage(function () {
@@ -228,132 +251,135 @@
         }),
         math: Kotlin.definePackage(null, /** @lends _.com.persesgames.math */ {
           Matrix4: Kotlin.createClass(null, function () {
-            this.matrix = new Float32Array(Kotlin.modules['stdlib'].kotlin.collections.toTypedArray_rjqrz0$([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]));
-            this.temp = new Float32Array(16);
-            this.translateMatrix_l4igr0$ = new Float32Array(Kotlin.modules['stdlib'].kotlin.collections.toTypedArray_rjqrz0$([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]));
-            this.scaleMatrix_vu4fg8$ = new Float32Array(Kotlin.modules['stdlib'].kotlin.collections.toTypedArray_rjqrz0$([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]));
-            this.rotateXMatrix_vipfol$ = new Float32Array(Kotlin.modules['stdlib'].kotlin.collections.toTypedArray_rjqrz0$([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]));
-            this.rotateYMatrix_gub5gk$ = new Float32Array(Kotlin.modules['stdlib'].kotlin.collections.toTypedArray_rjqrz0$([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]));
-            this.rotateZMatrix_25wv8j$ = new Float32Array(Kotlin.modules['stdlib'].kotlin.collections.toTypedArray_rjqrz0$([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]));
+            this.matrix = [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0];
+            this.temp = Kotlin.numberArrayOfSize(16);
+            this.translateMatrix_l4igr0$ = [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0];
+            this.scaleMatrix_vu4fg8$ = [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0];
+            this.rotateXMatrix_vipfol$ = [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0];
+            this.rotateYMatrix_gub5gk$ = [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0];
+            this.rotateZMatrix_25wv8j$ = [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0];
           }, /** @lends _.com.persesgames.math.Matrix4.prototype */ {
             get: function () {
               return this.matrix;
             },
-            set_b5uka5$: function (values) {
+            getFloat32Array: function () {
+              return new Float32Array(Kotlin.modules['stdlib'].kotlin.collections.toTypedArray_rjqrz0$(this.get()));
+            },
+            set_q3cr5i$: function (values) {
               if (values.length !== 16) {
-                throw new Kotlin.IllegalArgumentException('FloatArray must hava 16 entries!');
+                throw new Kotlin.IllegalArgumentException('Matrix size should be 16!');
               }
               this.matrix = values;
             },
             setPerspectiveProjection_7b5o5w$: function (angle, imageAspectRatio, near, far) {
               var r = angle / 180.0 * Math.PI;
               var f = 1.0 / Math.tan(r / 2.0);
-              this.matrix.set(0, f / imageAspectRatio);
-              this.matrix.set(1, 0.0);
-              this.matrix.set(2, 0.0);
-              this.matrix.set(3, 0.0);
-              this.matrix.set(4, 0.0);
-              this.matrix.set(5, f);
-              this.matrix.set(6, 0.0);
-              this.matrix.set(7, 0.0);
-              this.matrix.set(8, 0.0);
-              this.matrix.set(9, 0.0);
-              this.matrix.set(10, -(far + near) / (far - near));
-              this.matrix.set(11, -1.0);
-              this.matrix.set(12, 0.0);
-              this.matrix.set(13, 0.0);
-              this.matrix.set(14, -(2.0 * far * near) / (far - near));
-              this.matrix.set(15, 0.0);
+              this.matrix[0] = f / imageAspectRatio;
+              this.matrix[1] = 0.0;
+              this.matrix[2] = 0.0;
+              this.matrix[3] = 0.0;
+              this.matrix[4] = 0.0;
+              this.matrix[5] = f;
+              this.matrix[6] = 0.0;
+              this.matrix[7] = 0.0;
+              this.matrix[8] = 0.0;
+              this.matrix[9] = 0.0;
+              this.matrix[10] = -(far + near) / (far - near);
+              this.matrix[11] = -1.0;
+              this.matrix[12] = 0.0;
+              this.matrix[13] = 0.0;
+              this.matrix[14] = -(2.0 * far * near) / (far - near);
+              this.matrix[15] = 0.0;
             },
             setToIdentity: function () {
-              this.matrix.set(0, 1.0);
-              this.matrix.set(1, 0.0);
-              this.matrix.set(2, 0.0);
-              this.matrix.set(3, 0.0);
-              this.matrix.set(4, 0.0);
-              this.matrix.set(5, 1.0);
-              this.matrix.set(6, 0.0);
-              this.matrix.set(7, 0.0);
-              this.matrix.set(8, 0.0);
-              this.matrix.set(9, 0.0);
-              this.matrix.set(10, 1.0);
-              this.matrix.set(11, 0.0);
-              this.matrix.set(12, 0.0);
-              this.matrix.set(13, 0.0);
-              this.matrix.set(14, 0.0);
-              this.matrix.set(15, 1.0);
+              this.matrix[0] = 1.0;
+              this.matrix[1] = 0.0;
+              this.matrix[2] = 0.0;
+              this.matrix[3] = 0.0;
+              this.matrix[4] = 0.0;
+              this.matrix[5] = 1.0;
+              this.matrix[6] = 0.0;
+              this.matrix[7] = 0.0;
+              this.matrix[8] = 0.0;
+              this.matrix[9] = 0.0;
+              this.matrix[10] = 1.0;
+              this.matrix[11] = 0.0;
+              this.matrix[12] = 0.0;
+              this.matrix[13] = 0.0;
+              this.matrix[14] = 0.0;
+              this.matrix[15] = 1.0;
             },
             mul_jx4e45$: function (other) {
               this.mul(other.get());
             },
             mul: function (other) {
               if (other.length !== 16) {
-                throw new Kotlin.IllegalArgumentException('FloatArray must hava 16 entries!');
+                throw new Kotlin.IllegalArgumentException('Matrix size should be 16!');
               }
-              this.temp.set(0, this.matrix.get(0) * other.get(0) + this.matrix.get(1) * other.get(4) + this.matrix.get(2) * other.get(8) + this.matrix.get(3) * other.get(12));
-              this.temp.set(1, this.matrix.get(0) * other.get(1) + this.matrix.get(1) * other.get(5) + this.matrix.get(2) * other.get(9) + this.matrix.get(3) * other.get(13));
-              this.temp.set(2, this.matrix.get(0) * other.get(2) + this.matrix.get(1) * other.get(6) + this.matrix.get(2) * other.get(10) + this.matrix.get(3) * other.get(14));
-              this.temp.set(3, this.matrix.get(0) * other.get(3) + this.matrix.get(1) * other.get(7) + this.matrix.get(2) * other.get(11) + this.matrix.get(3) * other.get(15));
-              this.temp.set(4, this.matrix.get(4) * other.get(0) + this.matrix.get(5) * other.get(4) + this.matrix.get(6) * other.get(8) + this.matrix.get(7) * other.get(12));
-              this.temp.set(5, this.matrix.get(4) * other.get(1) + this.matrix.get(5) * other.get(5) + this.matrix.get(6) * other.get(9) + this.matrix.get(7) * other.get(13));
-              this.temp.set(6, this.matrix.get(4) * other.get(2) + this.matrix.get(5) * other.get(6) + this.matrix.get(6) * other.get(10) + this.matrix.get(7) * other.get(14));
-              this.temp.set(7, this.matrix.get(4) * other.get(3) + this.matrix.get(5) * other.get(7) + this.matrix.get(6) * other.get(11) + this.matrix.get(7) * other.get(15));
-              this.temp.set(8, this.matrix.get(8) * other.get(0) + this.matrix.get(9) * other.get(4) + this.matrix.get(10) * other.get(8) + this.matrix.get(11) * other.get(12));
-              this.temp.set(9, this.matrix.get(8) * other.get(1) + this.matrix.get(9) * other.get(5) + this.matrix.get(10) * other.get(9) + this.matrix.get(11) * other.get(13));
-              this.temp.set(10, this.matrix.get(8) * other.get(2) + this.matrix.get(9) * other.get(6) + this.matrix.get(10) * other.get(10) + this.matrix.get(11) * other.get(14));
-              this.temp.set(11, this.matrix.get(8) * other.get(3) + this.matrix.get(9) * other.get(7) + this.matrix.get(10) * other.get(11) + this.matrix.get(11) * other.get(15));
-              this.temp.set(12, this.matrix.get(12) * other.get(0) + this.matrix.get(13) * other.get(4) + this.matrix.get(14) * other.get(8) + this.matrix.get(15) * other.get(12));
-              this.temp.set(13, this.matrix.get(12) * other.get(1) + this.matrix.get(13) * other.get(5) + this.matrix.get(14) * other.get(9) + this.matrix.get(15) * other.get(13));
-              this.temp.set(14, this.matrix.get(12) * other.get(2) + this.matrix.get(13) * other.get(6) + this.matrix.get(14) * other.get(10) + this.matrix.get(15) * other.get(14));
-              this.temp.set(15, this.matrix.get(12) * other.get(3) + this.matrix.get(13) * other.get(7) + this.matrix.get(14) * other.get(11) + this.matrix.get(15) * other.get(15));
-              this.matrix.set(0, this.temp.get(0));
-              this.matrix.set(1, this.temp.get(1));
-              this.matrix.set(2, this.temp.get(2));
-              this.matrix.set(3, this.temp.get(3));
-              this.matrix.set(4, this.temp.get(4));
-              this.matrix.set(5, this.temp.get(5));
-              this.matrix.set(6, this.temp.get(6));
-              this.matrix.set(7, this.temp.get(7));
-              this.matrix.set(8, this.temp.get(8));
-              this.matrix.set(9, this.temp.get(9));
-              this.matrix.set(10, this.temp.get(10));
-              this.matrix.set(11, this.temp.get(11));
-              this.matrix.set(12, this.temp.get(12));
-              this.matrix.set(13, this.temp.get(13));
-              this.matrix.set(14, this.temp.get(14));
-              this.matrix.set(15, this.temp.get(15));
+              this.temp[0] = this.matrix[0] * other[0] + this.matrix[1] * other[4] + this.matrix[2] * other[8] + this.matrix[3] * other[12];
+              this.temp[1] = this.matrix[0] * other[1] + this.matrix[1] * other[5] + this.matrix[2] * other[9] + this.matrix[3] * other[13];
+              this.temp[2] = this.matrix[0] * other[2] + this.matrix[1] * other[6] + this.matrix[2] * other[10] + this.matrix[3] * other[14];
+              this.temp[3] = this.matrix[0] * other[3] + this.matrix[1] * other[7] + this.matrix[2] * other[11] + this.matrix[3] * other[15];
+              this.temp[4] = this.matrix[4] * other[0] + this.matrix[5] * other[4] + this.matrix[6] * other[8] + this.matrix[7] * other[12];
+              this.temp[5] = this.matrix[4] * other[1] + this.matrix[5] * other[5] + this.matrix[6] * other[9] + this.matrix[7] * other[13];
+              this.temp[6] = this.matrix[4] * other[2] + this.matrix[5] * other[6] + this.matrix[6] * other[10] + this.matrix[7] * other[14];
+              this.temp[7] = this.matrix[4] * other[3] + this.matrix[5] * other[7] + this.matrix[6] * other[11] + this.matrix[7] * other[15];
+              this.temp[8] = this.matrix[8] * other[0] + this.matrix[9] * other[4] + this.matrix[10] * other[8] + this.matrix[11] * other[12];
+              this.temp[9] = this.matrix[8] * other[1] + this.matrix[9] * other[5] + this.matrix[10] * other[9] + this.matrix[11] * other[13];
+              this.temp[10] = this.matrix[8] * other[2] + this.matrix[9] * other[6] + this.matrix[10] * other[10] + this.matrix[11] * other[14];
+              this.temp[11] = this.matrix[8] * other[3] + this.matrix[9] * other[7] + this.matrix[10] * other[11] + this.matrix[11] * other[15];
+              this.temp[12] = this.matrix[12] * other[0] + this.matrix[13] * other[4] + this.matrix[14] * other[8] + this.matrix[15] * other[12];
+              this.temp[13] = this.matrix[12] * other[1] + this.matrix[13] * other[5] + this.matrix[14] * other[9] + this.matrix[15] * other[13];
+              this.temp[14] = this.matrix[12] * other[2] + this.matrix[13] * other[6] + this.matrix[14] * other[10] + this.matrix[15] * other[14];
+              this.temp[15] = this.matrix[12] * other[3] + this.matrix[13] * other[7] + this.matrix[14] * other[11] + this.matrix[15] * other[15];
+              this.matrix[0] = this.temp[0];
+              this.matrix[1] = this.temp[1];
+              this.matrix[2] = this.temp[2];
+              this.matrix[3] = this.temp[3];
+              this.matrix[4] = this.temp[4];
+              this.matrix[5] = this.temp[5];
+              this.matrix[6] = this.temp[6];
+              this.matrix[7] = this.temp[7];
+              this.matrix[8] = this.temp[8];
+              this.matrix[9] = this.temp[9];
+              this.matrix[10] = this.temp[10];
+              this.matrix[11] = this.temp[11];
+              this.matrix[12] = this.temp[12];
+              this.matrix[13] = this.temp[13];
+              this.matrix[14] = this.temp[14];
+              this.matrix[15] = this.temp[15];
             },
             translate_y2kzbl$: function (x, y, z) {
-              this.translateMatrix_l4igr0$.set(12, x);
-              this.translateMatrix_l4igr0$.set(13, y);
-              this.translateMatrix_l4igr0$.set(14, z);
+              this.translateMatrix_l4igr0$[12] = x;
+              this.translateMatrix_l4igr0$[13] = y;
+              this.translateMatrix_l4igr0$[14] = z;
               this.mul(this.translateMatrix_l4igr0$);
             },
             scale_y2kzbl$: function (x, y, z) {
-              this.scaleMatrix_vu4fg8$.set(0, x);
-              this.scaleMatrix_vu4fg8$.set(5, y);
-              this.scaleMatrix_vu4fg8$.set(10, z);
+              this.scaleMatrix_vu4fg8$[0] = x;
+              this.scaleMatrix_vu4fg8$[5] = y;
+              this.scaleMatrix_vu4fg8$[10] = z;
               this.mul(this.scaleMatrix_vu4fg8$);
             },
             rotateX_mx4ult$: function (angle) {
-              this.rotateXMatrix_vipfol$.set(5, Math.cos(angle));
-              this.rotateXMatrix_vipfol$.set(6, -Math.sin(angle));
-              this.rotateXMatrix_vipfol$.set(9, Math.sin(angle));
-              this.rotateXMatrix_vipfol$.set(10, Math.cos(angle));
+              this.rotateXMatrix_vipfol$[5] = Math.cos(angle);
+              this.rotateXMatrix_vipfol$[6] = -Math.sin(angle);
+              this.rotateXMatrix_vipfol$[9] = Math.sin(angle);
+              this.rotateXMatrix_vipfol$[10] = Math.cos(angle);
               this.mul(this.rotateXMatrix_vipfol$);
             },
             rotateY_mx4ult$: function (angle) {
-              this.rotateYMatrix_gub5gk$.set(0, Math.cos(angle));
-              this.rotateYMatrix_gub5gk$.set(2, Math.sin(angle));
-              this.rotateYMatrix_gub5gk$.set(8, -Math.sin(angle));
-              this.rotateYMatrix_gub5gk$.set(10, Math.cos(angle));
+              this.rotateYMatrix_gub5gk$[0] = Math.cos(angle);
+              this.rotateYMatrix_gub5gk$[2] = Math.sin(angle);
+              this.rotateYMatrix_gub5gk$[8] = -Math.sin(angle);
+              this.rotateYMatrix_gub5gk$[10] = Math.cos(angle);
               this.mul(this.rotateYMatrix_gub5gk$);
             },
             rotateZ_mx4ult$: function (angle) {
-              this.rotateZMatrix_25wv8j$.set(0, Math.cos(angle));
-              this.rotateZMatrix_25wv8j$.set(1, Math.sin(angle));
-              this.rotateZMatrix_25wv8j$.set(4, -Math.sin(angle));
-              this.rotateZMatrix_25wv8j$.set(5, Math.cos(angle));
+              this.rotateZMatrix_25wv8j$[0] = Math.cos(angle);
+              this.rotateZMatrix_25wv8j$[1] = Math.sin(angle);
+              this.rotateZMatrix_25wv8j$[4] = -Math.sin(angle);
+              this.rotateZMatrix_25wv8j$[5] = Math.cos(angle);
               this.mul(this.rotateZMatrix_25wv8j$);
             }
           })

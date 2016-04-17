@@ -9,6 +9,8 @@ import org.khronos.webgl.WebGLRenderingContext
 import org.w3c.dom.HTMLCanvasElement
 import kotlin.browser.document
 import kotlin.browser.window
+import kotlin.dom.build.createElement
+import kotlin.dom.on
 
 /**
  * User: rnentjes
@@ -40,10 +42,13 @@ val fragmentShaderSource = """
     }
 """
 
-class Test(val context3d: WebGLRenderingContext) {
+class Test(val webgl: WebGLRenderingContext) {
     var red: Float = 1f
     var green: Float = 1f;
     var blue: Float = 0f;
+    var rotX: Float = 0f;
+    var rotY: Float = 0f;
+    var rotZ: Float = 0f;
 
     var pMatrix = Matrix4()
     var program: ShaderProgram
@@ -55,27 +60,58 @@ class Test(val context3d: WebGLRenderingContext) {
             VertextAttributeInfo("a_color", 3)
           )
 
-        program = ShaderProgram(context3d, WebGLRenderingContext.TRIANGLES, vertexShaderSource, fragmentShaderSource, vainfo)
+        program = ShaderProgram(webgl, WebGLRenderingContext.TRIANGLES, vertexShaderSource, fragmentShaderSource, vainfo)
         triangle = Float32Array(arrayOf(
           0f, 0f, 1f, 0f, 0f,
           1f, 0f, 0f, 1f, 0f,
-          1f, 1f, 0f, 0f, 1f
+          1f, 1f, 0f, 0f, 1f,
+
+          1f, 1f, 0f, 0f, 1f,
+          0f, 1f, 1f, 1f, 0f,
+          0f, 0f, 1f, 0f, 0f
           ))
     }
 
     fun update(time: Double) {
         red = Math.abs(Math.sin(time*0.5)).toFloat()
         green = Math.abs(Math.cos(time*0.3)).toFloat()
+        blue = Math.abs(Math.cos(time*0.7)).toFloat()
+
+        rotX = time.toFloat() / 5f
+        //rotZ = time.toFloat()
     }
 
     fun render() {
-        context3d.clearColor(red, green, blue, 1f)
-        context3d.clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+        resize()
+
+        webgl.clearColor(red, green, blue, 1f)
+        webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+
+        //triangle.set(8, red)
+        //triangle.set(8, green)
+        //triangle.set(14, blue)
+        //pMatrix.setPerspectiveProjection(45f, 800f/600f, 0.1f, 10f)
+        //pMatrix.rotateX(rotX)
+        //pMatrix.rotateZ(rotZ)
 
         program.begin()
-        program.setUniformMatrix4fv("u_projectionView", pMatrix.get())
+        program.setUniformMatrix4fv("u_projectionView", pMatrix.getFloat32Array())
         program.queueVertices(triangle)
         program.end()
+    }
+
+    fun resize() {
+        var canvas = webgl.canvas
+        // Check if the canvas is not the same size.
+        if (canvas.width != window.innerWidth.toInt() ||
+          canvas.height != window.innerHeight.toInt()) {
+
+            // Make the canvas the same size
+            canvas.width = window.innerWidth.toInt()
+            canvas.height = window.innerHeight.toInt()
+
+            webgl.viewport(0, 0, canvas.width, canvas.height)
+        }
     }
 
 }
@@ -99,12 +135,20 @@ fun loop() {
 fun main(args: Array<String>) {
     println("Hello!")
 
-    var webGlElement = document.getElementById("canvas")!! as HTMLCanvasElement
-    var context3d = webGlElement.getContext("webgl") as WebGLRenderingContext
+    var canvas = document.createElement("canvas") as HTMLCanvasElement
+    document.body!!.appendChild(canvas)
+    var webgl = canvas.getContext("webgl") as WebGLRenderingContext
 
-    Textures.load(context3d, "SHIP", "images/ship2.png")
+    canvas.on("resize", true, {
+        canvas.width = window.innerWidth.toInt();
+        canvas.height = window.innerHeight.toInt();
 
-    game = Test(context3d)
+        webgl.viewport(0, 0, canvas.width, canvas.height)
+    })
+
+    Textures.load(webgl, "SHIP", "images/ship2.png")
+
+    game = Test(webgl)
 
     loop()
 }
