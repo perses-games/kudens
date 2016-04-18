@@ -1,0 +1,45 @@
+group 'com.persesgames'
+version '1.0.0-SNAPSHOT'
+
+apply plugin: 'kotlin2js'
+apply plugin: 'kotlin'
+apply plugin: 'idea'
+
+sourceSets {
+    main.kotlin.srcDirs += 'src'
+    main.java.srcDirs += 'src/main/kotlin'
+}
+
+repositories {
+    maven {
+        url "http://nexus.astraeus.nl/nexus/content/groups/public"
+    }
+    mavenCentral()
+}
+
+buildscript {
+    ext.kotlin_version = '1.0.0'
+    repositories {
+        maven {
+            url "http://nexus.astraeus.nl/nexus/content/groups/public"
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-js-library:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+
+compileKotlin2Js {
+    kotlinOptions.metaInfo = true
+
+    compileKotlin2Js.kotlinOptions.sourceMap = true
+    compileKotlin2Js.kotlinOptions.outputFile = "${projectDir}/web/js/generated/KotlinTest.js"
+    compileKotlin2Js.kotlinOptions.suppressWarnings = true
+    compileKotlin2Js.kotlinOptions.verbose = true
+}

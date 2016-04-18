@@ -3,8 +3,8 @@
   var _ = Kotlin.defineRootPackage(null, /** @lends _ */ {
     com: Kotlin.definePackage(null, /** @lends _.com */ {
       persesgames: Kotlin.definePackage(function () {
-        this.vertexShaderSource = '\n    attribute vec2 a_position;\n    attribute vec3 a_color;\n\n    uniform mat4 u_projectionView;\n\n    varying vec3 v_color;\n\n    void main(void) {\n        v_color = a_color;\n        gl_Position = u_projectionView * vec4(a_position, -1, 1.0);\n    }\n';
-        this.fragmentShaderSource = '\n    precision mediump float;\n\n    varying vec3 v_color;\n\n    void main(void) {\n        gl_FragColor = vec4(v_color, 1.0);\n    }\n';
+        this.vertexShaderSource = '\n    attribute vec2 a_position;\n    attribute vec3 a_color;\n\n    uniform mat4 u_projectionView;\n\n    varying vec3 v_color;\n    varying vec2 v_textCoord;\n\n    void main(void) {\n        v_color = a_color;\n        v_textCoord = a_position.xy;\n\n        gl_Position = u_projectionView * vec4(a_position, -1, 1.0);\n    }\n';
+        this.fragmentShaderSource = '\n    precision mediump float;\n\n    uniform sampler2D u_sampler;\n\n    varying vec3 v_color;\n    varying vec2 v_textCoord;\n\n    void main(void) {\n        gl_FragColor = texture2D(u_sampler, v_textCoord) * vec4(v_color, 1.0);\n    }\n';
         this.game = null;
         this.start = (new Date()).getTime();
         this.time = (new Date()).getTime();
@@ -29,8 +29,12 @@
           var vainfo = [new _.com.persesgames.shader.VertextAttributeInfo('a_position', 2), new _.com.persesgames.shader.VertextAttributeInfo('a_color', 3)];
           this.program = new _.com.persesgames.shader.ShaderProgram(this.webgl, WebGLRenderingContext.TRIANGLES, _.com.persesgames.vertexShaderSource, _.com.persesgames.fragmentShaderSource, vainfo);
           this.triangle = new Float32Array([0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]);
+          _.com.persesgames.texture.Textures.load_h0kzx1$(this.webgl, 'SHIP', 'images/ship2.png');
         }, /** @lends _.com.persesgames.Test.prototype */ {
           update_14dthe$: function (time) {
+            if (!_.com.persesgames.texture.Textures.ready()) {
+              return;
+            }
             this.red = Math.abs(Math.sin(time * 0.5));
             this.green = Math.abs(Math.cos(time * 0.3));
             this.blue = Math.abs(Math.cos(time * 0.7));
@@ -40,6 +44,9 @@
           },
           render: function () {
             this.resize();
+            if (!_.com.persesgames.texture.Textures.ready()) {
+              return;
+            }
             this.webgl.clearColor(this.red, this.green, this.blue, 1.0);
             this.webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
             this.mMatrix.setToIdentity();
@@ -53,6 +60,9 @@
             this.mMatrix.mul_jx4e45$(this.vMatrix);
             this.mMatrix.mul_jx4e45$(this.pMatrix);
             this.program.begin();
+            this.webgl.activeTexture(WebGLRenderingContext.TEXTURE0);
+            this.webgl.bindTexture(WebGLRenderingContext.TEXTURE_2D, _.com.persesgames.texture.Textures.get_61zpoe$('SHIP'));
+            this.program.setUniform1i_bm4lxs$('u_sampler', 0);
             this.program.setUniformMatrix4fv_pphpxd$('u_projectionView', this.mMatrix.getFloat32Array());
             this.program.queueVertices_b5uka5$(this.triangle);
             this.program.end();
@@ -96,56 +106,6 @@
           _.com.persesgames.game = new _.com.persesgames.Test(webgl.v);
           _.com.persesgames.loop();
         },
-        texture: Kotlin.definePackage(function () {
-          this.vertexShaderSource = '\n    attribute vec2 a_position;\n\n    attribute float a_imagesX;\n    attribute float a_imagesY;\n    attribute float a_currentImage;\n\n    uniform mat4 u_projectionView;\n\n    varying float v_imagesX;\n    varying float v_imagesY;\n    varying float v_currentImage;\n\n    void main(void) {\n        gl_Position = u_projectionView * vec4(a_position, -1, 1.0);\n        gl_PointSize = 50.0 / gl_Position.w;\n\n        v_imagesX = a_imagesX;\n        v_imagesY = a_imagesY;\n        v_currentImage = a_currentImage;\n    }\n';
-          this.fragmentShaderSource = '\n    precision mediump float;\n\n    uniform sampler2D uSampler;\n\n    varying float v_imagesX;\n    varying float v_imagesY;\n    varying float v_currentImage;\n\n    void main(void) {\n        // calculate current texture coords depending on current image number\n        float blockX = 1.0 / v_imagesX;\n        float blockY = 1.0 / v_imagesY;\n\n        float x = blockX * (mod(v_currentImage, v_imagesX));\n        float y = blockY * floor(v_currentImage / v_imagesY);\n\n        vec2 textCoord = vec2(x + blockX * gl_PointCoord.s, y + blockY - blockY * gl_PointCoord.t);\n        //vec2 textCoord = vec2((x + blockX) * 0.0001 + gl_PointCoord.s, (y + blockY) * 0.0001 + gl_PointCoord.t);\n\n        gl_FragColor = texture2D(uSampler, textCoord);\n    }\n';
-          this.Textures = Kotlin.createObject(null, function () {
-            this.textures = new Kotlin.DefaultPrimitiveHashMap();
-            this.startedLoading = 0;
-            this.loaded = 0;
-          }, {
-            load_h0kzx1$: function (gl, name, filename) {
-              this.startedLoading++;
-              var webGlTexture = {v: gl.createTexture()};
-              if (webGlTexture.v != null) {
-                var image = {v: document.createElement('img')};
-                image.v.onload = _.com.persesgames.texture.load_h0kzx1$f(gl, webGlTexture, image, this, name);
-                image.v.src = filename;
-              }
-               else {
-                Kotlin.println("Couldn't create webgl texture!");
-              }
-            },
-            textureLoaded_ok0n47$: function (gl, texture, image) {
-              gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture);
-              gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
-              gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, image);
-              gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST);
-              gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST);
-              gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
-            },
-            ready: function () {
-              return this.loaded === this.startedLoading;
-            },
-            get_61zpoe$: function (name) {
-              var tmp$0;
-              tmp$0 = this.textures.get_za3rmp$(name);
-              if (tmp$0 == null)
-                throw new Kotlin.IllegalArgumentException('Texture with name ' + name + ' is not loaded!');
-              return tmp$0;
-            },
-            clear: function () {
-            }
-          });
-        }, /** @lends _.com.persesgames.texture */ {
-          load_h0kzx1$f: function (gl, webGlTexture, image, this$Textures, name) {
-            return function (it) {
-              this$Textures.textureLoaded_ok0n47$(gl, webGlTexture.v, image.v);
-              this$Textures.textures.put_wn2jw4$(name, webGlTexture.v);
-              return this$Textures.loaded++;
-            };
-          }
-        }),
         shader: Kotlin.definePackage(null, /** @lends _.com.persesgames.shader */ {
           VertextAttributeInfo: Kotlin.createClass(null, function (locationName, numElements) {
             this.locationName = locationName;
@@ -399,6 +359,56 @@
               this.mul(this.rotateZMatrix_25wv8j$);
             }
           })
+        }),
+        texture: Kotlin.definePackage(function () {
+          this.Textures = Kotlin.createObject(null, function () {
+            this.textures = new Kotlin.DefaultPrimitiveHashMap();
+            this.startedLoading = 0;
+            this.loaded = 0;
+          }, {
+            load_h0kzx1$: function (gl, name, filename) {
+              this.startedLoading++;
+              var webGlTexture = {v: gl.createTexture()};
+              if (webGlTexture.v != null) {
+                var image = {v: document.createElement('img')};
+                image.v.onload = _.com.persesgames.texture.load_h0kzx1$f(gl, webGlTexture, image, this, name);
+                image.v.src = filename;
+              }
+               else {
+                Kotlin.println("Couldn't create webgl texture!");
+              }
+            },
+            textureLoaded_ok0n47$: function (gl, texture, image) {
+              gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture);
+              gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
+              gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, image);
+              gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST);
+              gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST);
+              gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
+            },
+            ready: function () {
+              return this.loaded === this.startedLoading;
+            },
+            get_61zpoe$: function (name) {
+              var tmp$0;
+              tmp$0 = this.textures.get_za3rmp$(name);
+              if (tmp$0 == null)
+                throw new Kotlin.IllegalArgumentException('Texture with name ' + name + ' is not loaded!');
+              return tmp$0;
+            },
+            clear: function () {
+            }
+          });
+          this.vertexShaderSource = '\n    attribute vec2 a_position;\n\n    attribute float a_imagesX;\n    attribute float a_imagesY;\n    attribute float a_currentImage;\n\n    uniform mat4 u_projectionView;\n\n    varying float v_imagesX;\n    varying float v_imagesY;\n    varying float v_currentImage;\n\n    void main(void) {\n        gl_Position = u_projectionView * vec4(a_position, -1, 1.0);\n        gl_PointSize = 50.0 / gl_Position.w;\n\n        v_imagesX = a_imagesX;\n        v_imagesY = a_imagesY;\n        v_currentImage = a_currentImage;\n    }\n';
+          this.fragmentShaderSource = '\n    precision mediump float;\n\n    uniform sampler2D uSampler;\n\n    varying float v_imagesX;\n    varying float v_imagesY;\n    varying float v_currentImage;\n\n    void main(void) {\n        // calculate current texture coords depending on current image number\n        float blockX = 1.0 / v_imagesX;\n        float blockY = 1.0 / v_imagesY;\n\n        float x = blockX * (mod(v_currentImage, v_imagesX));\n        float y = blockY * floor(v_currentImage / v_imagesY);\n\n        vec2 textCoord = vec2(x + blockX * gl_PointCoord.s, y + blockY - blockY * gl_PointCoord.t);\n        //vec2 textCoord = vec2((x + blockX) * 0.0001 + gl_PointCoord.s, (y + blockY) * 0.0001 + gl_PointCoord.t);\n\n        gl_FragColor = texture2D(uSampler, textCoord);\n    }\n';
+        }, /** @lends _.com.persesgames.texture */ {
+          load_h0kzx1$f: function (gl, webGlTexture, image, this$Textures, name) {
+            return function (it) {
+              this$Textures.textureLoaded_ok0n47$(gl, webGlTexture.v, image.v);
+              this$Textures.textures.put_wn2jw4$(name, webGlTexture.v);
+              return this$Textures.loaded++;
+            };
+          }
         })
       })
     })

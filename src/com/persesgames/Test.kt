@@ -24,9 +24,12 @@ val vertexShaderSource = """
     uniform mat4 u_projectionView;
 
     varying vec3 v_color;
+    varying vec2 v_textCoord;
 
     void main(void) {
         v_color = a_color;
+        v_textCoord = a_position.xy;
+
         gl_Position = u_projectionView * vec4(a_position, -1, 1.0);
     }
 """
@@ -34,10 +37,13 @@ val vertexShaderSource = """
 val fragmentShaderSource = """
     precision mediump float;
 
+    uniform sampler2D u_sampler;
+
     varying vec3 v_color;
+    varying vec2 v_textCoord;
 
     void main(void) {
-        gl_FragColor = vec4(v_color, 1.0);
+        gl_FragColor = texture2D(u_sampler, v_textCoord) * vec4(v_color, 1.0);
     }
 """
 
@@ -57,7 +63,6 @@ class Test(val webgl: WebGLRenderingContext) {
     var rotY: Float = 0f;
     var rotZ: Float = 0f;
     var z = -1f;
-
 
     var mMatrix = Matrix4()
     var vMatrix = Matrix4()
@@ -81,9 +86,15 @@ class Test(val webgl: WebGLRenderingContext) {
           0f, 1f, 1f, 1f, 0f,
           0f, 0f, 1f, 0f, 0f
           ))
+
+        Textures.load(webgl, "SHIP", "images/ship2.png")
     }
 
     fun update(time: Double) {
+        if (!Textures.ready()) {
+            return
+        }
+
         red = Math.abs(Math.sin(time*0.5)).toFloat()
         green = Math.abs(Math.cos(time*0.3)).toFloat()
         blue = Math.abs(Math.cos(time*0.7)).toFloat()
@@ -96,6 +107,10 @@ class Test(val webgl: WebGLRenderingContext) {
 
     fun render() {
         resize()
+
+        if (!Textures.ready()) {
+            return
+        }
 
         webgl.clearColor(red, green, blue, 1f)
         webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
@@ -118,6 +133,11 @@ class Test(val webgl: WebGLRenderingContext) {
         mMatrix.mul(pMatrix);
 
         program.begin()
+
+        webgl.activeTexture(WebGLRenderingContext.TEXTURE0)
+        webgl.bindTexture(WebGLRenderingContext.TEXTURE_2D, Textures.get("SHIP"));
+
+        program.setUniform1i("u_sampler", 0)
         program.setUniformMatrix4fv("u_projectionView", mMatrix.getFloat32Array())
         program.queueVertices(triangle)
         program.end()
