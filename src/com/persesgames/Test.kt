@@ -49,7 +49,11 @@ class Test(val webgl: WebGLRenderingContext) {
     var rotX: Float = 0f;
     var rotY: Float = 0f;
     var rotZ: Float = 0f;
+    var z = -1f;
 
+
+    var mMatrix = Matrix4()
+    var vMatrix = Matrix4()
     var pMatrix = Matrix4()
     var program: ShaderProgram
     var triangle: Float32Array
@@ -58,7 +62,7 @@ class Test(val webgl: WebGLRenderingContext) {
         var vainfo = arrayOf(
             VertextAttributeInfo("a_position", 2),
             VertextAttributeInfo("a_color", 3)
-          )
+        )
 
         program = ShaderProgram(webgl, WebGLRenderingContext.TRIANGLES, vertexShaderSource, fragmentShaderSource, vainfo)
         triangle = Float32Array(arrayOf(
@@ -78,6 +82,8 @@ class Test(val webgl: WebGLRenderingContext) {
         blue = Math.abs(Math.cos(time*0.7)).toFloat()
 
         rotX = time.toFloat() / 5f
+        rotY = time.toFloat() / 3f
+        z = -20f + Math.sin(time).toFloat() * 19f
         //rotZ = time.toFloat()
     }
 
@@ -87,15 +93,26 @@ class Test(val webgl: WebGLRenderingContext) {
         webgl.clearColor(red, green, blue, 1f)
         webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
 
+        mMatrix.setToIdentity()
+        mMatrix.translate(-0.5f, -0.5f,0f);
+        mMatrix.scale(2f, 2f, 1f)
+        mMatrix.rotateX(rotX);
+        mMatrix.rotateY(rotY);
+        mMatrix.rotateZ(rotX + rotY);
+        mMatrix.translate(0f, 0f, z);
         //triangle.set(8, red)
         //triangle.set(8, green)
         //triangle.set(14, blue)
-        //pMatrix.setPerspectiveProjection(45f, 800f/600f, 0.1f, 10f)
-        //pMatrix.rotateX(rotX)
-        //pMatrix.rotateZ(rotZ)
+
+        pMatrix.setPerspectiveProjection(60f, (window.innerWidth/window.innerHeight).toFloat(), 0.1f, 100f)
+//        pMatrix.mul(vMatrix)
+//        pMatrix.mul(mMatrix)
+        mMatrix.mul(vMatrix);
+        mMatrix.mul(pMatrix);
+
 
         program.begin()
-        program.setUniformMatrix4fv("u_projectionView", pMatrix.getFloat32Array())
+        program.setUniformMatrix4fv("u_projectionView", mMatrix.getFloat32Array())
         program.queueVertices(triangle)
         program.end()
     }

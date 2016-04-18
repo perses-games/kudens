@@ -17,6 +17,9 @@
           this.rotX = 0.0;
           this.rotY = 0.0;
           this.rotZ = 0.0;
+          this.z = -1.0;
+          this.mMatrix = new _.com.persesgames.math.Matrix4();
+          this.vMatrix = new _.com.persesgames.math.Matrix4();
           this.pMatrix = new _.com.persesgames.math.Matrix4();
           var vainfo = [new _.com.persesgames.shader.VertextAttributeInfo('a_position', 2), new _.com.persesgames.shader.VertextAttributeInfo('a_color', 3)];
           this.program = new _.com.persesgames.shader.ShaderProgram(this.webgl, WebGLRenderingContext.TRIANGLES, _.com.persesgames.vertexShaderSource, _.com.persesgames.fragmentShaderSource, vainfo);
@@ -27,13 +30,25 @@
             this.green = Math.abs(Math.cos(time * 0.3));
             this.blue = Math.abs(Math.cos(time * 0.7));
             this.rotX = time / 5.0;
+            this.rotY = time / 3.0;
+            this.z = -20.0 + Math.sin(time) * 19.0;
           },
           render: function () {
             this.resize();
             this.webgl.clearColor(this.red, this.green, this.blue, 1.0);
             this.webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
+            this.mMatrix.setToIdentity();
+            this.mMatrix.translate_y2kzbl$(-0.5, -0.5, 0.0);
+            this.mMatrix.scale_y2kzbl$(2.0, 2.0, 1.0);
+            this.mMatrix.rotateX_mx4ult$(this.rotX);
+            this.mMatrix.rotateY_mx4ult$(this.rotY);
+            this.mMatrix.rotateZ_mx4ult$(this.rotX + this.rotY);
+            this.mMatrix.translate_y2kzbl$(0.0, 0.0, this.z);
+            this.pMatrix.setPerspectiveProjection_7b5o5w$(60.0, window.innerWidth / window.innerHeight, 0.10000000149011612, 100.0);
+            this.mMatrix.mul_jx4e45$(this.vMatrix);
+            this.mMatrix.mul_jx4e45$(this.pMatrix);
             this.program.begin();
-            this.program.setUniformMatrix4fv_pphpxd$('u_projectionView', this.pMatrix.getFloat32Array());
+            this.program.setUniformMatrix4fv_pphpxd$('u_projectionView', this.mMatrix.getFloat32Array());
             this.program.queueVertices_b5uka5$(this.triangle);
             this.program.end();
           },
