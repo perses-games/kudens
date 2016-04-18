@@ -9,6 +9,11 @@
         this.start = (new Date()).getTime();
         this.time = (new Date()).getTime();
       }, /** @lends _.com.persesgames */ {
+        throwError_61zpoe$: function (msg) {
+          Kotlin.println('ERROR: ' + msg);
+          window.alert(msg);
+          throw new Kotlin.IllegalStateException(msg);
+        },
         Test: Kotlin.createClass(null, function (webgl) {
           this.webgl = webgl;
           this.red = 1.0;
@@ -149,7 +154,7 @@
             this.offset = 0;
           }),
           ShaderProgram: Kotlin.createClass(null, function (webgl, mode, vertexShaderSource, fragmentShaderSource, vainfo) {
-            var tmp$0, tmp$1, tmp$2, tmp$3, tmp$4;
+            var tmp$0, tmp$1, tmp$2;
             this.webgl = webgl;
             this.mode = mode;
             this.vainfo = vainfo;
@@ -157,42 +162,24 @@
             this.currentIndex = 0;
             this.verticesLength = 0;
             this.vertices = new Float32Array(0);
-            tmp$0 = this.webgl.createShader(WebGLRenderingContext.VERTEX_SHADER);
+            this.vertex = this.compileShader(vertexShaderSource, WebGLRenderingContext.VERTEX_SHADER);
+            this.fragment = this.compileShader(fragmentShaderSource, WebGLRenderingContext.FRAGMENT_SHADER);
+            tmp$0 = this.webgl.createProgram();
             if (tmp$0 == null)
-              throw new Kotlin.IllegalStateException('Unable to request vertex shader from webgl context!');
-            this.vertex = tmp$0;
-            this.webgl.shaderSource(this.vertex, vertexShaderSource);
-            this.webgl.compileShader(this.vertex);
-            tmp$1 = this.webgl.createShader(WebGLRenderingContext.FRAGMENT_SHADER);
-            if (tmp$1 == null)
-              throw new Kotlin.IllegalStateException('Unable to request fragment shader from webgl context!');
-            this.fragment = tmp$1;
-            this.webgl.shaderSource(this.fragment, fragmentShaderSource);
-            this.webgl.compileShader(this.fragment);
-            tmp$2 = this.webgl.createProgram();
-            if (tmp$2 == null)
               throw new Kotlin.IllegalStateException('Unable to request shader program from webgl context!');
-            this.shaderProgram = tmp$2;
+            this.shaderProgram = tmp$0;
             this.webgl.attachShader(this.shaderProgram, this.vertex);
             this.webgl.attachShader(this.shaderProgram, this.fragment);
             this.webgl.linkProgram(this.shaderProgram);
-            if (Kotlin.equals(this.webgl.getShaderParameter(this.vertex, WebGLRenderingContext.COMPILE_STATUS), false)) {
-              Kotlin.println(this.webgl.getShaderInfoLog(this.vertex));
-              throw new Kotlin.IllegalStateException('Unable to compile vertex shader!');
-            }
-            if (Kotlin.equals(this.webgl.getShaderParameter(this.fragment, WebGLRenderingContext.COMPILE_STATUS), false)) {
-              Kotlin.println(this.webgl.getShaderInfoLog(this.fragment));
-              throw new Kotlin.IllegalStateException('Unable to compile fragment shader!');
-            }
             if (Kotlin.equals(this.webgl.getProgramParameter(this.shaderProgram, WebGLRenderingContext.LINK_STATUS), false)) {
               Kotlin.println(this.webgl.getProgramInfoLog(this.shaderProgram));
               throw new Kotlin.IllegalStateException('Unable to compile program!');
             }
             this.webgl.useProgram(this.shaderProgram);
             this.verticesBlockSize = 0;
-            tmp$3 = Kotlin.modules['stdlib'].kotlin.collections.iterator_123wqf$(Kotlin.arrayIterator(this.vainfo));
-            while (tmp$3.hasNext()) {
-              var info = tmp$3.next();
+            tmp$1 = Kotlin.modules['stdlib'].kotlin.collections.iterator_123wqf$(Kotlin.arrayIterator(this.vainfo));
+            while (tmp$1.hasNext()) {
+              var info = tmp$1.next();
               info.location = this.webgl.getAttribLocation(this.shaderProgram, info.locationName);
               info.offset = this.verticesBlockSize;
               this.verticesBlockSize += info.numElements;
@@ -203,13 +190,27 @@
             this.verticesLength = 4096 - 4096 % this.verticesBlockSize;
             this.vertices = new Float32Array(this.verticesLength);
             Kotlin.println('vertices.length ' + this.vertices.length);
-            tmp$4 = this.webgl.createBuffer();
-            if (tmp$4 == null)
+            tmp$2 = this.webgl.createBuffer();
+            if (tmp$2 == null)
               throw new Kotlin.IllegalStateException('Unable to create webgl buffer!');
-            this.attribBuffer = tmp$4;
+            this.attribBuffer = tmp$2;
             this.webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, this.attribBuffer);
             Kotlin.println('ShaderProgram constructor done');
           }, /** @lends _.com.persesgames.shader.ShaderProgram.prototype */ {
+            compileShader: function (source, type) {
+              var tmp$0;
+              var result;
+              tmp$0 = this.webgl.createShader(type);
+              if (tmp$0 == null)
+                throw new Kotlin.IllegalStateException('Unable to request shader from webgl context!');
+              result = tmp$0;
+              this.webgl.shaderSource(result, source);
+              this.webgl.compileShader(result);
+              if (Kotlin.equals(this.webgl.getShaderParameter(result, WebGLRenderingContext.COMPILE_STATUS), false)) {
+                throw new Kotlin.IllegalStateException('Unable to compile shader!' + '\n' + source + '\n' + '\n' + Kotlin.toString(this.webgl.getShaderInfoLog(result)));
+              }
+              return result;
+            },
             queueVertices_b5uka5$: function (verts) {
               if (this.currentIndex + verts.length >= this.verticesLength) {
                 this.flush();

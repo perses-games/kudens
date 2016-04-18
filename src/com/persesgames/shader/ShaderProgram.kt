@@ -27,28 +27,13 @@ class ShaderProgram(val webgl: WebGLRenderingContext, val mode: Int, vertexShade
     var attribBuffer: WebGLBuffer
 
     init {
-        vertex = webgl.createShader(WebGLRenderingContext.VERTEX_SHADER) ?: throw IllegalStateException("Unable to request vertex shader from webgl context!")
-        webgl.shaderSource(vertex, vertexShaderSource)
-        webgl.compileShader(vertex)
-
-        fragment = webgl.createShader(WebGLRenderingContext.FRAGMENT_SHADER) ?: throw IllegalStateException("Unable to request fragment shader from webgl context!")
-        webgl.shaderSource(fragment, fragmentShaderSource)
-        webgl.compileShader(fragment)
+        vertex = compileShader(vertexShaderSource, WebGLRenderingContext.VERTEX_SHADER)
+        fragment = compileShader(fragmentShaderSource, WebGLRenderingContext.FRAGMENT_SHADER)
 
         shaderProgram = webgl.createProgram() ?: throw IllegalStateException("Unable to request shader program from webgl context!")
         webgl.attachShader(shaderProgram, vertex)
         webgl.attachShader(shaderProgram, fragment)
         webgl.linkProgram(shaderProgram)
-
-        if (webgl.getShaderParameter(vertex, WebGLRenderingContext.COMPILE_STATUS) == false) {
-            println(webgl.getShaderInfoLog(vertex))
-            throw IllegalStateException("Unable to compile vertex shader!")
-        }
-
-        if (webgl.getShaderParameter(fragment, WebGLRenderingContext.COMPILE_STATUS) == false) {
-            println(webgl.getShaderInfoLog(fragment))
-            throw IllegalStateException("Unable to compile fragment shader!")
-        }
 
         if (webgl.getProgramParameter(shaderProgram, WebGLRenderingContext.LINK_STATUS) == false) {
             println(webgl.getProgramInfoLog(shaderProgram))
@@ -82,6 +67,20 @@ class ShaderProgram(val webgl: WebGLRenderingContext, val mode: Int, vertexShade
         webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
 
         println("ShaderProgram constructor done");
+    }
+
+    private fun compileShader(source: String, type: Int): WebGLShader {
+        var result: WebGLShader
+
+        result = webgl.createShader(type) ?: throw IllegalStateException("Unable to request shader from webgl context!")
+        webgl.shaderSource(result, source)
+        webgl.compileShader(result)
+
+        if (webgl.getShaderParameter(result, WebGLRenderingContext.COMPILE_STATUS) == false) {
+            throw IllegalStateException("Unable to compile shader!\n${source}\n\n${webgl.getShaderInfoLog(result)}")
+        }
+
+        return result;
     }
 
     fun queueVertices(verts: Float32Array) {

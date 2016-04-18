@@ -9,7 +9,6 @@ import org.khronos.webgl.WebGLRenderingContext
 import org.w3c.dom.HTMLCanvasElement
 import kotlin.browser.document
 import kotlin.browser.window
-import kotlin.dom.build.createElement
 import kotlin.dom.on
 
 /**
@@ -41,6 +40,14 @@ val fragmentShaderSource = """
         gl_FragColor = vec4(v_color, 1.0);
     }
 """
+
+fun throwError(msg: String) {
+    println("ERROR: $msg")
+
+    window.alert(msg);
+
+    throw IllegalStateException(msg)
+}
 
 class Test(val webgl: WebGLRenderingContext) {
     var red: Float = 1f
@@ -109,7 +116,6 @@ class Test(val webgl: WebGLRenderingContext) {
 //        pMatrix.mul(mMatrix)
         mMatrix.mul(vMatrix);
         mMatrix.mul(pMatrix);
-
 
         program.begin()
         program.setUniformMatrix4fv("u_projectionView", mMatrix.getFloat32Array())
