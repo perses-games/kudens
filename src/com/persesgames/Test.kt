@@ -115,6 +115,9 @@ class Test(val webgl: WebGLRenderingContext) {
         webgl.clearColor(red, green, blue, 1f)
         webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
 
+        webgl.enable(WebGLRenderingContext.BLEND);
+        webgl.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA); //ONE_MINUS_DST_ALPHA);
+
         mMatrix.setToIdentity()
         mMatrix.translate(-0.5f, -0.5f,0f);
         mMatrix.scale(2f, 2f, 1f)

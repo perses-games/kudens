@@ -49,6 +49,8 @@
             }
             this.webgl.clearColor(this.red, this.green, this.blue, 1.0);
             this.webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
+            this.webgl.enable(WebGLRenderingContext.BLEND);
+            this.webgl.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA);
             this.mMatrix.setToIdentity();
             this.mMatrix.translate_y2kzbl$(-0.5, -0.5, 0.0);
             this.mMatrix.scale_y2kzbl$(2.0, 2.0, 1.0);
