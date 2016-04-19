@@ -6,7 +6,6 @@ apply plugin: 'idea'
 
 sourceSets {
     main.kotlin.srcDirs += 'lib/kotludens'
-    main.kotlin.srcDirs += 'src'
 }
 
 repositories {
@@ -45,6 +44,10 @@ artifacts {
 def outDir = "${buildDir}/kotlin2js/main/"
 
 compileKotlin2Js {
+    sourceSets {
+        main.kotlin.srcDirs += 'src'
+    }
+
     kotlinOptions.metaInfo = true
 
     compileKotlin2Js.kotlinOptions.sourceMap = true

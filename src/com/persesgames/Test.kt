@@ -47,14 +47,6 @@ val fragmentShaderSource = """
     }
 """
 
-fun throwError(msg: String) {
-    println("ERROR: $msg")
-
-    window.alert(msg);
-
-    throw IllegalStateException(msg)
-}
-
 class Test(val webgl: WebGLRenderingContext) {
     var red: Float = 1f
     var green: Float = 1f;
