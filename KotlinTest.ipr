@@ -47,7 +47,7 @@
     <option name="sourceMap" value="true" />
   </component>
   <component name="KotlinCompilerSettings">
-    <option name="outputDirectoryForJsLibraryFiles" value="web/js/generated/kotlin" />
+    <option name="outputDirectoryForJsLibraryFiles" value="web/js/kotlin" />
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">

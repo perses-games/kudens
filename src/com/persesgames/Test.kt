@@ -112,7 +112,7 @@ class Test(val webgl: WebGLRenderingContext) {
             return
         }
 
-        webgl.clearColor(red, green, blue, 1f)
+        webgl.clearColor(red, green, blue, 0.9f)
         webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
 
         webgl.enable(WebGLRenderingContext.BLEND);
