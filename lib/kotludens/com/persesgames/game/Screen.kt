@@ -17,6 +17,6 @@ abstract class Screen {
 
     abstract fun update(time: Float)
 
-    abstract fun render(webgl: WebGLRenderingContext)
+    abstract fun render()
 
 }

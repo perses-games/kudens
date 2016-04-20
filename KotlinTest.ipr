@@ -30,13 +30,13 @@
   <component name="GradleLocalSettings">
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$/../../DestinationSol" value="5718836739744" />
-        <entry key="$PROJECT_DIR$/../../simple/Simple-persistence" value="2890201693583" />
-        <entry key="$PROJECT_DIR$/../../simple/Simple-web" value="2890212261770" />
-        <entry key="$PROJECT_DIR$/../../simple/SimpleDatabase" value="2890191706466" />
-        <entry key="$PROJECT_DIR$/../../simple/Very-simple-templates" value="2890190703434" />
-        <entry key="$PROJECT_DIR$/../../simple/stats/simple-stats-server" value="2909544379158" />
-        <entry key="$PROJECT_DIR$/../../work/Kos/KosConvertBranchcode" value="2904315467504" />
+        <entry key="$USER_HOME$/DestinationSol" value="5718836739744" />
+        <entry key="$USER_HOME$/simple/Simple-persistence" value="2890201693583" />
+        <entry key="$USER_HOME$/simple/Simple-web" value="2890212261770" />
+        <entry key="$USER_HOME$/simple/SimpleDatabase" value="2890191706466" />
+        <entry key="$USER_HOME$/simple/Very-simple-templates" value="2890190703434" />
+        <entry key="$USER_HOME$/simple/stats/simple-stats-server" value="2909544379158" />
+        <entry key="$USER_HOME$/work/Kos/KosConvertBranchcode" value="2904315467504" />
       </map>
     </option>
     <option name="externalProjectsViewState">
@@ -73,6 +73,17 @@
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="GenerateJS" type="K2JSConfigurationType" factoryName="Kotlin (JavaScript - experimental)">
+      <K2JSConfigurationSettings>
+        <option name="browserFamily" value="Chrome" />
+        <option name="generatedFilePath" value="$PROJECT_DIR$/web/js/generated" />
+        <option name="pageToOpenFilePath" value="" />
+        <option name="shouldOpenInBrowserAfterTranslation" value="false" />
+      </K2JSConfigurationSettings>
+      <method />
+    </configuration>
   </component>
   <component name="PropertiesComponent">
     <property name="GoToClass.includeLibraries" value="false" />

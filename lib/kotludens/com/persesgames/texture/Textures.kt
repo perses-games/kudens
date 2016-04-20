@@ -1,5 +1,6 @@
 package com.persesgames.texture
 
+import com.persesgames.game.Game
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLTexture
 import org.w3c.dom.HTMLImageElement
@@ -12,30 +13,42 @@ import kotlin.browser.document
  * Time: 14:52
  */
 
+class Texture(val glTexture: WebGLTexture) {
+
+}
+
 object Textures {
     var textures = HashMap<String, WebGLTexture>();
     var startedLoading = 0
     var loaded = 0
 
-    fun load(gl: WebGLRenderingContext, name: String, filename: String) {
+    fun loadSpriteSheet(name: String, filename: String) {
+
+    }
+
+    fun load(name: String, filename: String) {
+        var gl = Game.webgl
+
         startedLoading++
 
         var webGlTexture = gl.createTexture()
         if (webGlTexture != null) {
             var image = document.createElement("img") as HTMLImageElement
             image.onload = {
-                textureLoaded(gl, webGlTexture, image)
+                textureLoaded(webGlTexture, image)
                 textures.put(name, webGlTexture)
                 loaded++
+                println("loaded texture $loaded/$startedLoading ${ready()}")
             }
             image.src = filename
         } else {
-            println("Couldn't create webgl texture!")
+            throw IllegalStateException("Couldn't create webgl texture!")
         }
-
     }
 
-    fun textureLoaded(gl: WebGLRenderingContext, texture: WebGLTexture, image: HTMLImageElement) {
+    fun textureLoaded(texture: WebGLTexture, image: HTMLImageElement) {
+        var gl = Game.webgl
+
         gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture);
         gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1); // second argument must be an int
         gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, image);

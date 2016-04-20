@@ -79,7 +79,7 @@ class Test(val webgl: WebGLRenderingContext) {
           0f, 0f, 1f, 0f, 0f
           ))
 
-        Textures.load(webgl, "SHIP", "images/ship2.png")
+        Textures.load("SHIP", "images/ship2.png")
     }
 
     fun update(time: Double) {
@@ -93,7 +93,7 @@ class Test(val webgl: WebGLRenderingContext) {
 
         rotX = time.toFloat() / 5f
         rotY = time.toFloat() / 3f
-        z = -20f + Math.sin(time).toFloat() * 19f
+        z = -2f + Math.sin(time).toFloat() * 1f
         //rotZ = time.toFloat()
     }
 
@@ -154,6 +154,7 @@ class Test(val webgl: WebGLRenderingContext) {
 
 }
 
+/*
 var game: Test? = null
 var start: Int = Date().getTime()
 var time: Int = Date().getTime()
@@ -190,3 +191,4 @@ fun main(args: Array<String>) {
 
     loop()
 }
+*/

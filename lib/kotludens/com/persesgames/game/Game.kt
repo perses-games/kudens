@@ -1,8 +1,6 @@
 package com.persesgames.game
 
-import com.persesgames.game
 import com.persesgames.texture.Textures
-import com.persesgames.time
 import org.khronos.webgl.WebGLRenderingContext
 import org.w3c.dom.HTMLCanvasElement
 import kotlin.browser.document
@@ -16,26 +14,24 @@ class DefaultScreen: Screen() {
     override fun update(time: Float) {
     }
 
-    override fun render(webgl: WebGLRenderingContext) {
+    override fun render() {
         // show loading  message?
+        Game.webgl.clearColor(1f, 1f, 0f, 1f)
+        Game.webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
     }
 }
 
-open class Game(var currentScreen: Screen) {
-    val webgl: WebGLRenderingContext
+object Game {
+    var started = false
+    val webgl: WebGLRenderingContext by lazy {
+        var canvas = document.createElement("canvas") as HTMLCanvasElement
+        document.body!!.appendChild(canvas)
+        canvas.getContext("webgl") as WebGLRenderingContext
+    }
+    var currentScreen: Screen = DefaultScreen()
     var start = Date().getTime()
     var currentTime = start
     var currentDelta = 0f
-
-    init {
-        var canvas = document.createElement("canvas") as HTMLCanvasElement
-        document.body!!.appendChild(canvas)
-        webgl = canvas.getContext("webgl") as WebGLRenderingContext
-
-        resize()
-
-        currentScreen.loadResources()
-    }
 
     fun resize() {
         var canvas = webgl.canvas
@@ -51,12 +47,19 @@ open class Game(var currentScreen: Screen) {
         }
     }
 
-    fun start() {
+    fun start(startScreen: Screen) {
+        if (started) {
+            throw IllegalStateException("You can only start a game once!")
+        }
+
+        setScreen(startScreen)
+
         // start game loop
+        started = true
         gameLoop()
     }
 
-    open fun setScreen(screen: Screen) {
+    fun setScreen(screen: Screen) {
         currentScreen.closeResources()
 
         currentScreen = screen
@@ -66,21 +69,17 @@ open class Game(var currentScreen: Screen) {
 
     fun gameLoop() {
         if (!Textures.ready()) {
-            return;
-        }
+            Game.webgl.clearColor(1f, 0f, 0f, 1f)
+            Game.webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+        } else {
+            resize();
 
-        var time = Date().getTime()
-        currentDelta = (currentTime - time) / 1000f
-        currentTime = time
+            var time = Date().getTime()
+            currentDelta = (currentTime - time) / 1000f
+            currentTime = time
 
-        currentScreen.update(currentDelta);
-        currentScreen.render(webgl);
-
-        var testInstance = game
-        if (testInstance != null) {
-            time = Date().getTime()
-            testInstance.update((time - com.persesgames.start) / 1000.0)
-            testInstance.render()
+            currentScreen.update(currentDelta);
+            currentScreen.render();
         }
 
         window.requestAnimationFrame {
