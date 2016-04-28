@@ -1,5 +1,6 @@
 package com.persesgames.game
 
+import com.persesgames.math.Matrix4
 import com.persesgames.texture.Textures
 import org.khronos.webgl.WebGLRenderingContext
 import org.w3c.dom.HTMLCanvasElement
@@ -21,6 +22,24 @@ class DefaultScreen: Screen() {
     }
 }
 
+class View(
+  var width: Float = 1024f,
+  var height: Float = 1024f,
+  var angle: Float = 60f,
+  var minAspectRatio: Float = 1f,
+  var maxAspectRatio: Float = 1f) {
+    var vMatrix = Matrix4()
+    var aspectRatio = 1f
+
+    init {
+        updateView()
+    }
+
+    fun updateView() {
+        vMatrix.setPerspectiveProjection(angle, aspectRatio, 1f, 1f);
+    }
+}
+
 object Game {
     var started = false
     val webgl: WebGLRenderingContext by lazy {
@@ -28,6 +47,7 @@ object Game {
         document.body!!.appendChild(canvas)
         canvas.getContext("webgl") as WebGLRenderingContext
     }
+
     var currentScreen: Screen = DefaultScreen()
     var start = Date().getTime()
     var currentTime = start
