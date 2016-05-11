@@ -30,7 +30,9 @@ class WelcomeScreen: Screen() {
         Game.webgl.clearColor(0f, 1f, 1f, 1f)
         Game.webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
 
+        sprites.begin()
         sprites.draw(sprite, x, y);
+        sprites.end();
     }
 
 }
@@ -46,5 +48,6 @@ class GameScreen: Screen() {
 }
 
 fun main(args: Array<String>) {
+    Game.view.setToWidth(2000f);
     Game.start(WelcomeScreen())
 }

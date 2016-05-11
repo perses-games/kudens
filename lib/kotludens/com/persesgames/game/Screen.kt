@@ -1,7 +1,5 @@
 package com.persesgames.game
 
-import org.khronos.webgl.WebGLRenderingContext
-
 /**
  * Created by rnentjes on 19-4-16.
  */

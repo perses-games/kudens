@@ -22,12 +22,20 @@ class DefaultScreen: Screen() {
     }
 }
 
+enum class ViewType {
+    PROJECTION,
+    WIDTH,
+    HEIGHT,
+    ABSOLUTE
+}
+
 class View(
   var width: Float = 1024f,
   var height: Float = 1024f,
   var angle: Float = 60f,
   var minAspectRatio: Float = 1f,
-  var maxAspectRatio: Float = 1f) {
+  var maxAspectRatio: Float = 1f,
+  var viewType: ViewType = ViewType.WIDTH) {
     var vMatrix = Matrix4()
     var aspectRatio = 1f
 
@@ -36,12 +44,33 @@ class View(
     }
 
     fun updateView() {
-        vMatrix.setPerspectiveProjection(angle, aspectRatio, 1f, 1f);
+        when(viewType) {
+            ViewType.ABSOLUTE -> {
+                vMatrix.setOrthographicProjection(0f, 0f, width, height, 0.1f, 10f)
+            }
+            ViewType.WIDTH -> {
+
+            }
+            ViewType.HEIGHT -> {
+
+            }
+            ViewType.PROJECTION -> {
+                vMatrix.setPerspectiveProjection(angle, aspectRatio, 1f, 1f);
+            }
+            else -> {
+                throw IllegalStateException("ViewType $viewType not implemented!")
+            }
+        }
+    }
+
+    fun setToWidth(fl: Float) {
+        //throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
 
 object Game {
     var started = false
+    val view: View = View()
     val webgl: WebGLRenderingContext by lazy {
         var canvas = document.createElement("canvas") as HTMLCanvasElement
         document.body!!.appendChild(canvas)

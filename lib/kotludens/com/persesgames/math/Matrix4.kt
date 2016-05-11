@@ -62,6 +62,28 @@ class Matrix4 {
         matrix[15] = 0.0f
     }
 
+    fun setOrthographicProjection(left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) {
+        matrix[0] = 2f / (right - left)
+        matrix[1] = 0f
+        matrix[2] = 0f
+        matrix[3] = 0f
+
+        matrix[4] = 0f
+        matrix[5] = 2f / (top - bottom)
+        matrix[6] = 0f
+        matrix[7] = 0f
+
+        matrix[8] = 0f
+        matrix[9] = 0f
+        matrix[10] = -2f / (far - near)
+        matrix[11] = 0f
+
+        matrix[12] = (right + left) / (right - left)
+        matrix[13] = (top + bottom) / (top - bottom)
+        matrix[14] = (far + near) / (far - near)
+        matrix[15] = 1f
+    }
+
     fun setToIdentity() {
         matrix[0] = 1.0f
         matrix[1] = 0.0f
