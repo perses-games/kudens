@@ -15,10 +15,15 @@ import kotlin.browser.document
 
 class Texture(val glTexture: WebGLTexture) {
 
+    fun bind() {
+        Game.gl().activeTexture(WebGLRenderingContext.TEXTURE0)
+        Game.gl().bindTexture(WebGLRenderingContext.TEXTURE_2D, glTexture);
+    }
+
 }
 
 object Textures {
-    var textures = HashMap<String, WebGLTexture>();
+    var textures = HashMap<String, Texture>();
     var startedLoading = 0
     var loaded = 0
 
@@ -27,7 +32,7 @@ object Textures {
     }
 
     fun load(name: String, filename: String) {
-        var gl = Game.webgl
+        var gl = Game.gl()
 
         startedLoading++
 
@@ -36,7 +41,7 @@ object Textures {
             var image = document.createElement("img") as HTMLImageElement
             image.onload = {
                 textureLoaded(webGlTexture, image)
-                textures.put(name, webGlTexture)
+                textures.put(name, Texture(webGlTexture))
                 loaded++
                 println("loaded texture $loaded/$startedLoading ${ready()}")
             }
@@ -47,7 +52,7 @@ object Textures {
     }
 
     fun textureLoaded(texture: WebGLTexture, image: HTMLImageElement) {
-        var gl = Game.webgl
+        var gl = Game.gl()
 
         gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture);
         gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1); // second argument must be an int

@@ -3,7 +3,9 @@ package com.persesgames.game
 import com.persesgames.math.Matrix4
 import com.persesgames.texture.Textures
 import org.khronos.webgl.WebGLRenderingContext
+import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLElement
 import kotlin.browser.document
 import kotlin.browser.window
 
@@ -17,8 +19,8 @@ class DefaultScreen: Screen() {
 
     override fun render() {
         // show loading  message?
-        Game.webgl.clearColor(1f, 1f, 0f, 1f)
-        Game.webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+        Game.gl().clearColor(1f, 1f, 0f, 1f)
+        Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
     }
 }
 
@@ -68,31 +70,64 @@ class View(
     }
 }
 
+class HTMLElements {
+    var container: HTMLElement
+    var webgl: WebGLRenderingContext
+    var canvas2d: CanvasRenderingContext2D
+
+    init {
+        container = document.createElement("div") as HTMLElement
+
+        var webGlCanvas = document.createElement("canvas") as HTMLCanvasElement
+        var canvas = document.createElement("canvas") as HTMLCanvasElement
+
+        container.setAttribute("style", "position: relative;")
+        webGlCanvas.setAttribute("style", "position: absolute; left: 0px; top: 0px;" )
+        canvas.setAttribute("style", "position: absolute; left: 0px; top: 0px; z-index: 10; width: 1000px; height: 500px;" )
+
+        document.body!!.appendChild(container)
+        container.appendChild(webGlCanvas)
+        container.appendChild(canvas)
+
+        webgl = webGlCanvas.getContext("webgl") as WebGLRenderingContext
+        canvas2d = canvas.getContext("2d") as CanvasRenderingContext2D
+
+    }
+}
+
 object Game {
     var started = false
     val view: View = View()
-    val webgl: WebGLRenderingContext by lazy {
-        var canvas = document.createElement("canvas") as HTMLCanvasElement
-        document.body!!.appendChild(canvas)
-        canvas.getContext("webgl") as WebGLRenderingContext
-    }
-
+    val html: HTMLElements by lazy { HTMLElements() }
     var currentScreen: Screen = DefaultScreen()
     var start = Date().getTime()
     var currentTime = start
     var currentDelta = 0f
 
+    fun gl() = html.webgl
+
     fun resize() {
-        var canvas = webgl.canvas
+        var canvas = gl().canvas
+
         // Check if the canvas is not the same size.
         if (canvas.width != window.innerWidth.toInt() ||
           canvas.height != window.innerHeight.toInt()) {
+            var textCanvas = html.canvas2d.canvas
 
             // Make the canvas the same size
             canvas.width = window.innerWidth.toInt()
             canvas.height = window.innerHeight.toInt()
 
-            webgl.viewport(0, 0, canvas.width, canvas.height)
+            textCanvas.width = 2000
+            textCanvas.height = 1000
+
+            textCanvas.setAttribute("style", "position: absolute; left: 0px; top: 0px; z-index: 10; width: ${window.innerWidth.toInt()}px; height: ${window.innerHeight.toInt()}px;" )
+
+            html.canvas2d.fillStyle = "green"
+            html.canvas2d.font = "bold 36pt Arial"
+            html.canvas2d.fillText("Hello World!", 10.0, 40.0)
+
+            gl().viewport(0, 0, canvas.width, canvas.height)
         }
     }
 
@@ -118,8 +153,8 @@ object Game {
 
     fun gameLoop() {
         if (!Textures.ready()) {
-            Game.webgl.clearColor(1f, 0f, 0f, 1f)
-            Game.webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+            Game.gl().clearColor(1f, 0f, 0f, 1f)
+            Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
         } else {
             resize();
 

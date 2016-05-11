@@ -27,8 +27,8 @@ class WelcomeScreen: Screen() {
     }
 
     override fun render() {
-        Game.webgl.clearColor(0f, 1f, 1f, 1f)
-        Game.webgl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+        Game.gl().clearColor(0f, 1f, 1f, 1f)
+        Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
 
         sprites.begin()
         sprites.draw(sprite, x, y);

@@ -6,10 +6,7 @@ import com.persesgames.shader.VertextAttributeInfo
 import com.persesgames.texture.Textures
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.WebGLRenderingContext
-import org.w3c.dom.HTMLCanvasElement
-import kotlin.browser.document
 import kotlin.browser.window
-import kotlin.dom.on
 
 /**
  * User: rnentjes
@@ -129,8 +126,7 @@ class Test(val webgl: WebGLRenderingContext) {
 
         program.begin()
 
-        webgl.activeTexture(WebGLRenderingContext.TEXTURE0)
-        webgl.bindTexture(WebGLRenderingContext.TEXTURE_2D, Textures.get("SHIP"));
+        Textures.get("SHIP").bind()
 
         program.setUniform1i("u_sampler", 0)
         program.setUniformMatrix4fv("u_projectionView", mMatrix.getFloat32Array())

@@ -92,6 +92,15 @@ class ShaderProgram(val webgl: WebGLRenderingContext, val mode: Int, vertexShade
         currentIndex += verts.length
     }
 
+    fun queueVertices(verts: Array<Float>) {
+        if((currentIndex + verts.size) >= verticesLength) {
+            flush();
+        }
+
+        vertices.set(verts, currentIndex)
+        currentIndex += verts.size
+    }
+
     fun begin() {
         webgl.useProgram(shaderProgram);
         webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
