@@ -46,15 +46,32 @@ class View(
     }
 
     fun updateView() {
+        val canvasWidth = window.innerWidth.toInt()
+        val canvasHeight = window.innerHeight.toInt()
+
+        aspectRatio = canvasWidth / canvasHeight.toFloat()
+
+        if (aspectRatio < minAspectRatio) {
+
+        }
+
+        if (aspectRatio > maxAspectRatio) {
+
+        }
+
         when(viewType) {
             ViewType.ABSOLUTE -> {
                 vMatrix.setOrthographicProjection(0f, 0f, width, height, 0.1f, 10f)
             }
             ViewType.WIDTH -> {
+                height = width * aspectRatio
 
+                vMatrix.setOrthographicProjection(0f, 0f, width, height, 0.1f, 10f)
             }
             ViewType.HEIGHT -> {
+                width = height / aspectRatio
 
+                vMatrix.setOrthographicProjection(0f, 0f, width, height, 0.1f, 10f)
             }
             ViewType.PROJECTION -> {
                 vMatrix.setPerspectiveProjection(angle, aspectRatio, 1f, 1f);
@@ -65,8 +82,18 @@ class View(
         }
     }
 
-    fun setToWidth(fl: Float) {
-        //throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun setToWidth(width: Float) {
+        this.width = width
+        this.viewType = ViewType.WIDTH
+
+        updateView()
+    }
+
+    fun setToHeight(height: Float) {
+        this.height = height
+        this.viewType = ViewType.HEIGHT
+
+        updateView()
     }
 }
 

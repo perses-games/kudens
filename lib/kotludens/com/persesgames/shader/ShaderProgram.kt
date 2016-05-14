@@ -8,11 +8,6 @@ import org.khronos.webgl.*
  * Time: 15:15
  */
 
-class VertextAttributeInfo(val locationName: String, val numElements: Int) {
-    var location = 0
-    var offset = 0
-}
-
 class ShaderProgram(val webgl: WebGLRenderingContext, val mode: Int, vertexShaderSource: String, fragmentShaderSource: String, val vainfo: Array<VertextAttributeInfo>) {
 
     var shaderProgram: WebGLProgram

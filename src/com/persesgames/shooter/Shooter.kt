@@ -49,5 +49,6 @@ class GameScreen: Screen() {
 
 fun main(args: Array<String>) {
     Game.view.setToWidth(2000f);
+
     Game.start(WelcomeScreen())
 }
