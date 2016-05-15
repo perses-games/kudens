@@ -19,16 +19,14 @@ import kotlin.browser.document
 
 private val vertexShaderSource = """
     attribute vec2 a_position;
-    attribute vec3 a_color;
+    attribute vec2 a_texCoord;
 
     uniform mat4 u_projectionView;
 
-    varying vec3 v_color;
     varying vec2 v_textCoord;
 
     void main(void) {
-        v_color = a_color;
-        v_textCoord = a_position.xy;
+        v_textCoord = a_texCoord;
 
         gl_Position = u_projectionView * vec4(a_position, -1, 1.0);
     }
@@ -39,11 +37,10 @@ private val fragmentShaderSource = """
 
     uniform sampler2D u_sampler;
 
-    varying vec3 v_color;
     varying vec2 v_textCoord;
 
     void main(void) {
-        gl_FragColor = texture2D(u_sampler, v_textCoord) * vec4(v_color, 1.0);
+        gl_FragColor = texture2D(u_sampler, v_textCoord);
     }
 """
 
@@ -60,13 +57,13 @@ class Texture(val glTexture: WebGLTexture, val shaderProgram: ShaderProgram<Text
     }
 
     fun queueDraw(x: Float, y: Float) {
-        shaderProgramMesh.queue( 0f, 0f, 1f, 1f, 1f);
-        shaderProgramMesh.queue( 0f, 1f, 1f, 1f, 1f);
-        shaderProgramMesh.queue( 1f, 1f, 1f, 1f, 1f);
+        shaderProgramMesh.queue( 0f,     0f,  0f, 0f);
+        shaderProgramMesh.queue( 0f,   100f,  0f, 1f);
+        shaderProgramMesh.queue( 100f, 100f,  1f, 1f);
 
-        shaderProgramMesh.queue( 1f, 1f, 1f, 1f, 1f);
-        shaderProgramMesh.queue( 1f, 0f, 1f, 1f, 1f);
-        shaderProgramMesh.queue( 0f, 0f, 1f, 1f, 1f);
+        shaderProgramMesh.queue( 100f, 100f,  1f, 1f);
+        shaderProgramMesh.queue( 100f,   0f,  1f, 0f);
+        shaderProgramMesh.queue( 0f,     0f,  0f, 0f);
     }
 
     fun render(userdata: TextureData) {
@@ -89,14 +86,14 @@ object Textures {
             program.webgl.bindTexture(WebGLRenderingContext.TEXTURE_2D, data.texture);
 
             program.setUniform1i("u_sampler", 0)
-            var matrix = Matrix4()
+            val matrix = Matrix4()
             matrix.setToIdentity()
-            program.setUniformMatrix4fv("u_projectionView", matrix.getFloat32Array())
+            program.setUniformMatrix4fv("u_projectionView", Game.view.vMatrix.getFloat32Array())
         }
 
         val vainfo = arrayOf(
           VertextAttributeInfo("a_position", 2),
-          VertextAttributeInfo("a_color", 3)
+          VertextAttributeInfo("a_texCoord", 2)
         )
 
         shaderProgram = ShaderProgram(Game.gl(), WebGLRenderingContext.TRIANGLES, vertexShaderSource, fragmentShaderSource, vainfo, setter)
@@ -107,13 +104,13 @@ object Textures {
     }
 
     fun load(name: String, filename: String) {
-        var gl = Game.gl()
+        val gl = Game.gl()
 
         startedLoading++
 
-        var webGlTexture = gl.createTexture()
+        val webGlTexture = gl.createTexture()
         if (webGlTexture != null) {
-            var image = document.createElement("img") as HTMLImageElement
+            val image = document.createElement("img") as HTMLImageElement
             image.onload = {
                 textureLoaded(webGlTexture, image)
                 textures.put(name, Texture(webGlTexture, shaderProgram))
@@ -127,7 +124,7 @@ object Textures {
     }
 
     fun textureLoaded(texture: WebGLTexture, image: HTMLImageElement) {
-        var gl = Game.gl()
+        val gl = Game.gl()
 
         gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture);
         gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1); // second argument must be an int
@@ -146,7 +143,6 @@ object Textures {
     }
 
     fun render() {
-
         for ((key, value) in textures) {
             val textureData = TextureData(Game.view.vMatrix, value.glTexture)
 

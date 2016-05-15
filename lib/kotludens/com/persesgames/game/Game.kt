@@ -32,6 +32,8 @@ enum class ViewType {
 }
 
 class View(
+  var windowWidth: Int = 2000,
+  var windowHeight: Int =1000,
   var width: Float = 1024f,
   var height: Float = 1024f,
   var angle: Float = 60f,
@@ -48,10 +50,7 @@ class View(
     }
 
     fun updateView() {
-        val canvasWidth = window.innerWidth.toInt()
-        val canvasHeight = window.innerHeight.toInt()
-
-        aspectRatio = canvasWidth / canvasHeight.toFloat()
+        aspectRatio = windowWidth / windowHeight.toFloat()
 
         if (aspectRatio < minAspectRatio) {
 
@@ -63,17 +62,17 @@ class View(
 
         when(viewType) {
             ViewType.ABSOLUTE -> {
-                vMatrix.setOrthographicProjection(0f, 0f, width, height, near, far)
+                vMatrix.setOrthographicProjection(0f, width, 0f, height, near, far)
             }
             ViewType.WIDTH -> {
-                height = width * aspectRatio
+                height = width / aspectRatio
 
-                vMatrix.setOrthographicProjection(0f, 0f, width, height, near, far)
+                vMatrix.setOrthographicProjection(-width / 2, width / 2, -height / 2, height / 2, near, far)
             }
             ViewType.HEIGHT -> {
-                width = height / aspectRatio
+                width = height * aspectRatio
 
-                vMatrix.setOrthographicProjection(0f, 0f, width, height, near, far)
+                vMatrix.setOrthographicProjection(-width / 2, width / 2, -height / 2, height / 2, near, far)
             }
             ViewType.PROJECTION -> {
                 vMatrix.setPerspectiveProjection(angle, aspectRatio, near, far);
@@ -82,6 +81,8 @@ class View(
                 throw IllegalStateException("ViewType $viewType not implemented!")
             }
         }
+
+        println("width: $width, height: $height")
     }
 
     fun setToWidth(width: Float) {
@@ -126,8 +127,8 @@ class HTMLElements {
     init {
         container = document.createElement("div") as HTMLElement
 
-        var webGlCanvas = document.createElement("canvas") as HTMLCanvasElement
-        var canvas = document.createElement("canvas") as HTMLCanvasElement
+        val webGlCanvas = document.createElement("canvas") as HTMLCanvasElement
+        val canvas = document.createElement("canvas") as HTMLCanvasElement
 
         container.setAttribute("style", "position: relative;")
         webGlCanvas.setAttribute("style", "position: absolute; left: 0px; top: 0px;" )
@@ -139,7 +140,6 @@ class HTMLElements {
 
         webgl = webGlCanvas.getContext("webgl") as WebGLRenderingContext
         canvas2d = canvas.getContext("2d") as CanvasRenderingContext2D
-
     }
 }
 
@@ -158,26 +158,28 @@ object Game {
         val canvas = gl().canvas
 
         // Check if the canvas is not the same size.
-        if (canvas.width != window.innerWidth.toInt() ||
-          canvas.height != window.innerHeight.toInt()) {
-            val textCanvas = html.canvas2d.canvas
+        if (view.windowWidth != window.innerWidth.toInt() ||
+            view.windowHeight != window.innerHeight.toInt()) {
+            view.windowWidth = window.innerWidth.toInt()
+            view.windowHeight = window.innerHeight.toInt()
 
             view.updateView()
+
+            val textCanvas = html.canvas2d.canvas
 
             // Make the canvas the same size
             canvas.width = view.width.toInt()
             canvas.height = view.height.toInt()
 
-            textCanvas.width = 2000
-            textCanvas.height = 1000
-
-            textCanvas.setAttribute("style", "position: absolute; left: 0px; top: 0px; z-index: 10; width: ${window.innerWidth.toInt()}px; height: ${window.innerHeight.toInt()}px;" )
+            textCanvas.width = view.width.toInt()
+            textCanvas.height = view.height.toInt()
 
             html.canvas2d.fillStyle = "green"
             html.canvas2d.font = "bold 36pt Arial"
             html.canvas2d.fillText("Hello World!", 10.0, 40.0)
 
-            gl().viewport(0, 0, window.innerWidth.toInt(), window.innerHeight.toInt())
+            gl().viewport(0, 0, view.windowWidth, view.windowHeight)
+            textCanvas.setAttribute("style", "position: absolute; left: 0px; top: 0px; z-index: 10; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
         }
     }
 
@@ -208,7 +210,7 @@ object Game {
         } else {
             resize();
 
-            var time = Date().getTime()
+            val time = Date().getTime()
             currentDelta = (currentTime - time) / 1000f
             currentTime = time
 
@@ -220,6 +222,5 @@ object Game {
             gameLoop()
         }
     }
-
 
 }

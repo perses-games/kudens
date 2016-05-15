@@ -1,11 +1,7 @@
 package com.persesgames.sprite
 
-import com.persesgames.game.Game
-import com.persesgames.shader.ShaderProgram
-import com.persesgames.shader.VertextAttributeInfo
+import com.persesgames.texture.Texture
 import com.persesgames.texture.Textures
-import org.khronos.webgl.Float32Array
-import org.khronos.webgl.WebGLRenderingContext
 
 /**
  * User: rnentjes
@@ -14,16 +10,13 @@ import org.khronos.webgl.WebGLRenderingContext
  */
 
 class Sprite(val textureName: String) {
-
+    val texture: Texture by lazy { Textures.get(textureName) }
 }
 
 class SpriteBatch {
 
     fun draw(sprite: Sprite, x: Float, y: Float) {
-        var texture = Textures.get(sprite.textureName)
-
-        texture.queueDraw(x, y)
-
+        sprite.texture.queueDraw(x, y)
     }
 
     fun render() {

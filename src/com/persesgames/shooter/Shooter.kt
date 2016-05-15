@@ -36,7 +36,6 @@ class WelcomeScreen: Screen() {
         sprites.draw(sprite, x, y);
         sprites.render()
     }
-
 }
 
 class GameScreen: Screen() {
@@ -50,7 +49,7 @@ class GameScreen: Screen() {
 }
 
 fun main(args: Array<String>) {
-    //Game.view.setToWidth(2000f);
+    Game.view.setToWidth(2000f);
 
     Game.start(WelcomeScreen())
 }
