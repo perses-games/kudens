@@ -13,8 +13,8 @@ import org.khronos.webgl.WebGLRenderingContext
 
 class WelcomeScreen: Screen() {
     var sprites = SpriteBatch()
-    var x = 100f
-    var y = 100f
+    var x = 1f
+    var y = 1f
     var sprite = Sprite("SHIP")
 
     override fun loadResources() {
@@ -30,9 +30,8 @@ class WelcomeScreen: Screen() {
         Game.gl().clearColor(0f, 1f, 1f, 1f)
         Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
 
-        sprites.begin()
         sprites.draw(sprite, x, y);
-        sprites.end();
+        sprites.render()
     }
 
 }

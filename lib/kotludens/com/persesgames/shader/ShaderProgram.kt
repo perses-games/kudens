@@ -8,7 +8,13 @@ import org.khronos.webgl.*
  * Time: 15:15
  */
 
-class ShaderProgram(val webgl: WebGLRenderingContext, val mode: Int, vertexShaderSource: String, fragmentShaderSource: String, val vainfo: Array<VertextAttributeInfo>) {
+class ShaderProgram<T>(
+  val webgl: WebGLRenderingContext,
+  val drawType: Int,
+  vertexShaderSource: String,
+  fragmentShaderSource: String,
+  val vainfo: Array<VertextAttributeInfo>,
+  val setter: (program: ShaderProgram<T>, data: T) -> Unit) {
 
     var shaderProgram: WebGLProgram
     var vertex: WebGLShader
@@ -18,8 +24,6 @@ class ShaderProgram(val webgl: WebGLRenderingContext, val mode: Int, vertexShade
     var currentIndex = 0
     var verticesLength = 0
     var vertices = Float32Array(0)
-
-    var attribBuffer: WebGLBuffer
 
     init {
         vertex = compileShader(vertexShaderSource, WebGLRenderingContext.VERTEX_SHADER)
@@ -58,9 +62,6 @@ class ShaderProgram(val webgl: WebGLRenderingContext, val mode: Int, vertexShade
 
         println("vertices.length ${vertices.length}");
 
-        attribBuffer = webgl.createBuffer() ?: throw IllegalStateException("Unable to create webgl buffer!")
-        webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
-
         println("ShaderProgram constructor done");
     }
 
@@ -78,28 +79,9 @@ class ShaderProgram(val webgl: WebGLRenderingContext, val mode: Int, vertexShade
         return result;
     }
 
-    fun queueVertices(verts: Float32Array) {
-        if((currentIndex + verts.length) >= verticesLength) {
-            flush();
-        }
-
-        vertices.set(verts, currentIndex)
-        currentIndex += verts.length
-    }
-
-    fun queueVertices(verts: Array<Float>) {
-        if((currentIndex + verts.size) >= verticesLength) {
-            flush();
-        }
-
-        vertices.set(verts, currentIndex)
-        currentIndex += verts.size
-    }
-
-    fun begin() {
+    fun begin(attribBuffer: WebGLBuffer, userdata: T) {
         webgl.useProgram(shaderProgram);
         webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
-        currentIndex = 0;
 
         // set attribute locations...
         for (info in vainfo.iterator()) {
@@ -107,18 +89,10 @@ class ShaderProgram(val webgl: WebGLRenderingContext, val mode: Int, vertexShade
             webgl.vertexAttribPointer(info.location, info.numElements, WebGLRenderingContext.FLOAT, false, verticesBlockSize * 4, info.offset * 4);
         }
 
-    }
-
-    fun flush() {
-        if (currentIndex > 0) {
-            webgl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, vertices, WebGLRenderingContext.DYNAMIC_DRAW);
-            webgl.drawArrays(mode, 0, (currentIndex / verticesBlockSize).toInt());
-            currentIndex = 0;
-        }
+        setter(this, userdata)
     }
 
     fun end() {
-        flush()
         webgl.useProgram(null)
     }
 
@@ -126,9 +100,9 @@ class ShaderProgram(val webgl: WebGLRenderingContext, val mode: Int, vertexShade
 
     fun getUniformLocation(location: String) = webgl.getUniformLocation(shaderProgram, location);
 
-    fun setUniform1f(location: String, value: Float) { flush(); webgl.uniform1f(getUniformLocation(location), value); }
-    fun setUniform4f(location: String, v1: Float, v2: Float, v3: Float, v4: Float) { flush(); webgl.uniform4f(getUniformLocation(location), v1, v2, v3, v4); }
-    fun setUniform1i(location: String, value: Int) { flush(); webgl.uniform1i(getUniformLocation(location), value); }
-    fun setUniformMatrix4fv(location: String, value: Float32Array) { flush(); webgl.uniformMatrix4fv(getUniformLocation(location), false, value); }
+    fun setUniform1f(location: String, value: Float) { webgl.uniform1f(getUniformLocation(location), value); }
+    fun setUniform4f(location: String, v1: Float, v2: Float, v3: Float, v4: Float) { webgl.uniform4f(getUniformLocation(location), v1, v2, v3, v4); }
+    fun setUniform1i(location: String, value: Int) { webgl.uniform1i(getUniformLocation(location), value); }
+    fun setUniformMatrix4fv(location: String, value: Float32Array) { webgl.uniformMatrix4fv(getUniformLocation(location), false, value); }
 
 }

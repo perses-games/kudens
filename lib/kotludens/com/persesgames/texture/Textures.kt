@@ -1,6 +1,10 @@
 package com.persesgames.texture
 
 import com.persesgames.game.Game
+import com.persesgames.math.Matrix4
+import com.persesgames.shader.ShaderProgram
+import com.persesgames.shader.ShaderProgramMesh
+import com.persesgames.shader.VertextAttributeInfo
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLTexture
 import org.w3c.dom.HTMLImageElement
@@ -13,19 +17,80 @@ import kotlin.browser.document
  * Time: 14:52
  */
 
-class Texture(val glTexture: WebGLTexture) {
+private val vertexShaderSource = """
+    attribute vec2 a_position;
+    attribute vec3 a_color;
 
-    fun bind() {
-        Game.gl().activeTexture(WebGLRenderingContext.TEXTURE0)
-        Game.gl().bindTexture(WebGLRenderingContext.TEXTURE_2D, glTexture);
+    uniform mat4 u_projectionView;
+
+    varying vec3 v_color;
+    varying vec2 v_textCoord;
+
+    void main(void) {
+        v_color = a_color;
+        v_textCoord = a_position.xy;
+
+        gl_Position = u_projectionView * vec4(a_position, -1, 1.0);
+    }
+"""
+
+private val fragmentShaderSource = """
+    precision mediump float;
+
+    uniform sampler2D u_sampler;
+
+    varying vec3 v_color;
+    varying vec2 v_textCoord;
+
+    void main(void) {
+        gl_FragColor = texture2D(u_sampler, v_textCoord) * vec4(v_color, 1.0);
+    }
+"""
+
+class TextureData(
+  val vMatrix: Matrix4
+) {
+
+
+}
+
+class Texture(val glTexture: WebGLTexture, val shaderProgram: ShaderProgram<TextureData>) {
+    val shaderProgramMesh: ShaderProgramMesh<TextureData>
+
+    init {
+        shaderProgramMesh = ShaderProgramMesh(shaderProgram)
     }
 
+    fun queueDraw(x: Float, y: Float) {
+        // shaderProgramMesh.queue(x, y, etc)
+    }
+
+    fun render(userdata: TextureData) {
+        Game.gl().activeTexture(WebGLRenderingContext.TEXTURE0)
+        Game.gl().bindTexture(WebGLRenderingContext.TEXTURE_2D, glTexture);
+
+        shaderProgramMesh.render(userdata)
+    }
 }
 
 object Textures {
     var textures = HashMap<String, Texture>();
     var startedLoading = 0
     var loaded = 0
+    val shaderProgram: ShaderProgram<TextureData>
+
+    init {
+        val setter = { program: ShaderProgram<TextureData>, data: TextureData ->
+            program.setUniformMatrix4fv("", data.vMatrix.getFloat32Array())
+        }
+
+        val vainfo = arrayOf(
+          VertextAttributeInfo("a_position", 2),
+          VertextAttributeInfo("a_color", 3)
+        )
+
+        shaderProgram = ShaderProgram(Game.gl(), WebGLRenderingContext.TRIANGLES, vertexShaderSource, fragmentShaderSource, vainfo, setter)
+    }
 
     fun loadSpriteSheet(name: String, filename: String) {
 
@@ -41,7 +106,7 @@ object Textures {
             var image = document.createElement("img") as HTMLImageElement
             image.onload = {
                 textureLoaded(webGlTexture, image)
-                textures.put(name, Texture(webGlTexture))
+                textures.put(name, Texture(webGlTexture, shaderProgram))
                 loaded++
                 println("loaded texture $loaded/$startedLoading ${ready()}")
             }
@@ -68,6 +133,13 @@ object Textures {
 
     fun clear() {
         // delete and unbind all textures...
+    }
+
+    fun render() {
+        var textureData = TextureData(Game.view.vMatrix)
+        for ((key, value) in textures) {
+            value.render(textureData)
+        }
     }
 
 }

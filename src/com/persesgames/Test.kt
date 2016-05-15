@@ -14,7 +14,7 @@ import kotlin.browser.window
  * Time: 13:17
  */
 
-val vertexShaderSource = """
+private val vertexShaderSource = """
     attribute vec2 a_position;
     attribute vec3 a_color;
 
@@ -31,7 +31,7 @@ val vertexShaderSource = """
     }
 """
 
-val fragmentShaderSource = """
+private val fragmentShaderSource = """
     precision mediump float;
 
     uniform sampler2D u_sampler;
@@ -56,7 +56,7 @@ class Test(val webgl: WebGLRenderingContext) {
     var mMatrix = Matrix4()
     var vMatrix = Matrix4()
     var pMatrix = Matrix4()
-    var program: ShaderProgram
+    var program: ShaderProgram<Any>
     var triangle: Float32Array
 
     init {
@@ -65,7 +65,7 @@ class Test(val webgl: WebGLRenderingContext) {
             VertextAttributeInfo("a_color", 3)
         )
 
-        program = ShaderProgram(webgl, WebGLRenderingContext.TRIANGLES, vertexShaderSource, fragmentShaderSource, vainfo)
+        program = ShaderProgram(webgl, WebGLRenderingContext.TRIANGLES, vertexShaderSource, fragmentShaderSource, vainfo, {a,b -> })
         triangle = Float32Array(arrayOf(
           0f, 0f, 1f, 0f, 0f,
           1f, 0f, 0f, 1f, 0f,
@@ -123,15 +123,15 @@ class Test(val webgl: WebGLRenderingContext) {
 //        pMatrix.mul(mMatrix)
         mMatrix.mul(vMatrix);
         mMatrix.mul(pMatrix);
-
+/*
         program.begin()
 
         Textures.get("SHIP").bind()
 
         program.setUniform1i("u_sampler", 0)
         program.setUniformMatrix4fv("u_projectionView", mMatrix.getFloat32Array())
-        program.queueVertices(triangle)
-        program.end()
+        //program.queueVertices(triangle)
+        program.end()*/
     }
 
     fun resize() {
