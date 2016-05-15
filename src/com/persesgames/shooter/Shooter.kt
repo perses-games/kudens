@@ -30,6 +30,9 @@ class WelcomeScreen: Screen() {
         Game.gl().clearColor(0f, 1f, 1f, 1f)
         Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
 
+        Game.gl().enable(WebGLRenderingContext.BLEND);
+        Game.gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA); //ONE_MINUS_DST_ALPHA);
+
         sprites.draw(sprite, x, y);
         sprites.render()
     }

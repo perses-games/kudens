@@ -35,6 +35,8 @@ class View(
   var width: Float = 1024f,
   var height: Float = 1024f,
   var angle: Float = 60f,
+  var near: Float = 0.1f,
+  var far: Float = 100f,
   var minAspectRatio: Float = 1f,
   var maxAspectRatio: Float = 1f,
   var viewType: ViewType = ViewType.WIDTH) {
@@ -61,20 +63,20 @@ class View(
 
         when(viewType) {
             ViewType.ABSOLUTE -> {
-                vMatrix.setOrthographicProjection(0f, 0f, width, height, 0.1f, 10f)
+                vMatrix.setOrthographicProjection(0f, 0f, width, height, near, far)
             }
             ViewType.WIDTH -> {
                 height = width * aspectRatio
 
-                vMatrix.setOrthographicProjection(0f, 0f, width, height, 0.1f, 10f)
+                vMatrix.setOrthographicProjection(0f, 0f, width, height, near, far)
             }
             ViewType.HEIGHT -> {
                 width = height / aspectRatio
 
-                vMatrix.setOrthographicProjection(0f, 0f, width, height, 0.1f, 10f)
+                vMatrix.setOrthographicProjection(0f, 0f, width, height, near, far)
             }
             ViewType.PROJECTION -> {
-                vMatrix.setPerspectiveProjection(angle, aspectRatio, 1f, 1f);
+                vMatrix.setPerspectiveProjection(angle, aspectRatio, near, far);
             }
             else -> {
                 throw IllegalStateException("ViewType $viewType not implemented!")
@@ -92,6 +94,25 @@ class View(
     fun setToHeight(height: Float) {
         this.height = height
         this.viewType = ViewType.HEIGHT
+
+        updateView()
+    }
+
+    fun setProjection(angle: Float) {
+        this.angle = angle
+        this.viewType = ViewType.PROJECTION
+
+        updateView()
+    }
+
+    fun setNear(near: Float) {
+        this.near = near
+
+        updateView()
+    }
+
+    fun setFar(far: Float) {
+        this.far = far
 
         updateView()
     }
@@ -134,16 +155,18 @@ object Game {
     fun gl() = html.webgl
 
     fun resize() {
-        var canvas = gl().canvas
+        val canvas = gl().canvas
 
         // Check if the canvas is not the same size.
         if (canvas.width != window.innerWidth.toInt() ||
           canvas.height != window.innerHeight.toInt()) {
-            var textCanvas = html.canvas2d.canvas
+            val textCanvas = html.canvas2d.canvas
+
+            view.updateView()
 
             // Make the canvas the same size
-            canvas.width = window.innerWidth.toInt()
-            canvas.height = window.innerHeight.toInt()
+            canvas.width = view.width.toInt()
+            canvas.height = view.height.toInt()
 
             textCanvas.width = 2000
             textCanvas.height = 1000
@@ -154,7 +177,7 @@ object Game {
             html.canvas2d.font = "bold 36pt Arial"
             html.canvas2d.fillText("Hello World!", 10.0, 40.0)
 
-            gl().viewport(0, 0, canvas.width, canvas.height)
+            gl().viewport(0, 0, window.innerWidth.toInt(), window.innerHeight.toInt())
         }
     }
 

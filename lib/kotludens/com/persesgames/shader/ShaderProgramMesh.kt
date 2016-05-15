@@ -1,5 +1,6 @@
 package com.persesgames.shader
 
+import org.khronos.webgl.Float32Array
 import org.khronos.webgl.WebGLBuffer
 import org.khronos.webgl.WebGLRenderingContext
 
@@ -18,7 +19,8 @@ class ShaderProgramMesh<T>(
   val shaderProgram: ShaderProgram<T>
 ) {
     val webgl = shaderProgram.webgl
-    val data: Array<Float> = Array(32796, { 0f })
+    //val data: Array<Float> = Array(4096, { 0f })
+    val data: Float32Array = Float32Array(4096)
     var currentIndex: Int = 0
     val attribBuffer: WebGLBuffer
 
@@ -27,21 +29,19 @@ class ShaderProgramMesh<T>(
         webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
     }
 
-    fun queue(vararg vert: Float) {
-        queue(*vert)
+    fun queue(vararg vertices: Float) {
+        data.set(vertices.toTypedArray(), currentIndex)
+        currentIndex += vertices.size
     }
 
     fun queue(vertices: Array<Float>) {
-        // shaderProgram.verticesBlockSize
-        for (index in 0..vertices.size-1) {
-            data[currentIndex + index] = vertices[index]
-        }
-
+        data.set(vertices, currentIndex)
         currentIndex += vertices.size
     }
 
     fun render(userdata: T) {
         if (currentIndex > 0) {
+            //println("currentIndex=$currentIndex blockSize=${shaderProgram.verticesBlockSize} drawLength=${shaderProgram.drawLength} drawing=${(currentIndex / shaderProgram.drawLength).toInt()}")
             if (currentIndex % shaderProgram.verticesBlockSize != 0) {
                 throw IllegalStateException("Number of vertices not a multiple of the attribute block size!")
             }

@@ -48,11 +48,9 @@ private val fragmentShaderSource = """
 """
 
 class TextureData(
-  val vMatrix: Matrix4
-) {
-
-
-}
+  val vMatrix: Matrix4,
+  val texture: WebGLTexture
+)
 
 class Texture(val glTexture: WebGLTexture, val shaderProgram: ShaderProgram<TextureData>) {
     val shaderProgramMesh: ShaderProgramMesh<TextureData>
@@ -62,7 +60,13 @@ class Texture(val glTexture: WebGLTexture, val shaderProgram: ShaderProgram<Text
     }
 
     fun queueDraw(x: Float, y: Float) {
-        // shaderProgramMesh.queue(x, y, etc)
+        shaderProgramMesh.queue( 0f, 0f, 0f, 1f, 1f);
+        shaderProgramMesh.queue( 0f, 1f, 1f, 0f, 1f);
+        shaderProgramMesh.queue( 1f, 1f, 1f, 1f, 0f);
+
+        shaderProgramMesh.queue( 1f, 1f, 0f, 1f, 1f);
+        shaderProgramMesh.queue( 1f, 0f, 1f, 0f, 1f);
+        shaderProgramMesh.queue( 0f, 0f, 1f, 1f, 0f);
     }
 
     fun render(userdata: TextureData) {
@@ -81,7 +85,10 @@ object Textures {
 
     init {
         val setter = { program: ShaderProgram<TextureData>, data: TextureData ->
-            program.setUniformMatrix4fv("", data.vMatrix.getFloat32Array())
+            program.webgl.bindTexture(WebGLRenderingContext.TEXTURE_2D, data.texture);
+
+            program.setUniform1i("u_sampler", 0)
+            program.setUniformMatrix4fv("u_projectionView", Matrix4().getFloat32Array())
         }
 
         val vainfo = arrayOf(
@@ -136,8 +143,10 @@ object Textures {
     }
 
     fun render() {
-        var textureData = TextureData(Game.view.vMatrix)
+
         for ((key, value) in textures) {
+            val textureData = TextureData(Game.view.vMatrix, value.glTexture)
+
             value.render(textureData)
         }
     }

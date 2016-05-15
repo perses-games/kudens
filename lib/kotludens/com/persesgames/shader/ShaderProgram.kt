@@ -21,9 +21,7 @@ class ShaderProgram<T>(
     var fragment: WebGLShader
 
     var verticesBlockSize = 0
-    var currentIndex = 0
-    var verticesLength = 0
-    var vertices = Float32Array(0)
+    var drawLength = 0
 
     init {
         vertex = compileShader(vertexShaderSource, WebGLRenderingContext.VERTEX_SHADER)
@@ -52,15 +50,16 @@ class ShaderProgram<T>(
             println("attrib: ${info.locationName}, info.location: ${info.location}, info.offset: ${info.offset}");
         }
 
+        when(drawType) {
+            WebGLRenderingContext.TRIANGLES -> {
+                drawLength = verticesBlockSize * 3
+            }
+            else -> {
+                drawLength = verticesBlockSize
+            }
+        }
+
         println("verticesBlockSize $verticesBlockSize");
-
-        this.currentIndex = 0;
-
-        // create vertices buffer
-        verticesLength = 4096 - (4096 % verticesBlockSize);
-        vertices = Float32Array(verticesLength);
-
-        println("vertices.length ${vertices.length}");
 
         println("ShaderProgram constructor done");
     }
@@ -81,13 +80,13 @@ class ShaderProgram<T>(
 
     fun begin(attribBuffer: WebGLBuffer, userdata: T) {
         webgl.useProgram(shaderProgram);
-        webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
 
         // set attribute locations...
         for (info in vainfo.iterator()) {
             webgl.enableVertexAttribArray(info.location);
             webgl.vertexAttribPointer(info.location, info.numElements, WebGLRenderingContext.FLOAT, false, verticesBlockSize * 4, info.offset * 4);
         }
+        webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
 
         setter(this, userdata)
     }
