@@ -60,13 +60,13 @@ class Texture(val glTexture: WebGLTexture, val shaderProgram: ShaderProgram<Text
     }
 
     fun queueDraw(x: Float, y: Float) {
-        shaderProgramMesh.queue( 0f, 0f, 0f, 1f, 1f);
-        shaderProgramMesh.queue( 0f, 1f, 1f, 0f, 1f);
-        shaderProgramMesh.queue( 1f, 1f, 1f, 1f, 0f);
+        shaderProgramMesh.queue( 0f, 0f, 1f, 1f, 1f);
+        shaderProgramMesh.queue( 0f, 1f, 1f, 1f, 1f);
+        shaderProgramMesh.queue( 1f, 1f, 1f, 1f, 1f);
 
-        shaderProgramMesh.queue( 1f, 1f, 0f, 1f, 1f);
-        shaderProgramMesh.queue( 1f, 0f, 1f, 0f, 1f);
-        shaderProgramMesh.queue( 0f, 0f, 1f, 1f, 0f);
+        shaderProgramMesh.queue( 1f, 1f, 1f, 1f, 1f);
+        shaderProgramMesh.queue( 1f, 0f, 1f, 1f, 1f);
+        shaderProgramMesh.queue( 0f, 0f, 1f, 1f, 1f);
     }
 
     fun render(userdata: TextureData) {
@@ -85,10 +85,13 @@ object Textures {
 
     init {
         val setter = { program: ShaderProgram<TextureData>, data: TextureData ->
+            program.webgl.activeTexture(WebGLRenderingContext.TEXTURE0);
             program.webgl.bindTexture(WebGLRenderingContext.TEXTURE_2D, data.texture);
 
             program.setUniform1i("u_sampler", 0)
-            program.setUniformMatrix4fv("u_projectionView", Matrix4().getFloat32Array())
+            var matrix = Matrix4()
+            matrix.setToIdentity()
+            program.setUniformMatrix4fv("u_projectionView", matrix.getFloat32Array())
         }
 
         val vainfo = arrayOf(

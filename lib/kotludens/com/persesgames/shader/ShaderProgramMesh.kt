@@ -41,7 +41,7 @@ class ShaderProgramMesh<T>(
 
     fun render(userdata: T) {
         if (currentIndex > 0) {
-            //println("currentIndex=$currentIndex blockSize=${shaderProgram.verticesBlockSize} drawLength=${shaderProgram.drawLength} drawing=${(currentIndex / shaderProgram.drawLength).toInt()}")
+            //println("currentIndex=$currentIndex blockSize=${shaderProgram.verticesBlockSize} drawLength=${shaderProgram.drawLength} drawing=${(currentIndex / shaderProgram.verticesBlockSize).toInt()}")
             if (currentIndex % shaderProgram.verticesBlockSize != 0) {
                 throw IllegalStateException("Number of vertices not a multiple of the attribute block size!")
             }

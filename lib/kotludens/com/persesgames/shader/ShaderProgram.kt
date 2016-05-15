@@ -34,7 +34,7 @@ class ShaderProgram<T>(
 
         if (webgl.getProgramParameter(shaderProgram, WebGLRenderingContext.LINK_STATUS) == false) {
             println(webgl.getProgramInfoLog(shaderProgram))
-            throw IllegalStateException("Unable to compile program!")
+            throw IllegalStateException("Unable to compile shader program!")
         }
 
         webgl.useProgram(shaderProgram)
@@ -65,7 +65,7 @@ class ShaderProgram<T>(
     }
 
     private fun compileShader(source: String, type: Int): WebGLShader {
-        var result: WebGLShader
+        val result: WebGLShader
 
         result = webgl.createShader(type) ?: throw IllegalStateException("Unable to request shader from webgl context!")
         webgl.shaderSource(result, source)
@@ -80,13 +80,13 @@ class ShaderProgram<T>(
 
     fun begin(attribBuffer: WebGLBuffer, userdata: T) {
         webgl.useProgram(shaderProgram);
+        webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
 
         // set attribute locations...
         for (info in vainfo.iterator()) {
             webgl.enableVertexAttribArray(info.location);
             webgl.vertexAttribPointer(info.location, info.numElements, WebGLRenderingContext.FLOAT, false, verticesBlockSize * 4, info.offset * 4);
         }
-        webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
 
         setter(this, userdata)
     }

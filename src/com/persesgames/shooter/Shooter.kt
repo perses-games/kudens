@@ -27,7 +27,7 @@ class WelcomeScreen: Screen() {
     }
 
     override fun render() {
-        Game.gl().clearColor(0f, 1f, 1f, 1f)
+        Game.gl().clearColor(0f, 0.5f, 1f, 1f)
         Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
 
         Game.gl().enable(WebGLRenderingContext.BLEND);
@@ -50,7 +50,7 @@ class GameScreen: Screen() {
 }
 
 fun main(args: Array<String>) {
-    Game.view.setToWidth(2000f);
+    //Game.view.setToWidth(2000f);
 
     Game.start(WelcomeScreen())
 }
