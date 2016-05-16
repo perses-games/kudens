@@ -28,7 +28,7 @@ private val vertexShaderSource = """
     void main(void) {
         v_textCoord = a_texCoord;
 
-        gl_Position = u_projectionView * vec4(a_position, -99, 1.0);
+        gl_Position = u_projectionView * vec4(a_position, -1, 1.0);
     }
 """
 
