@@ -181,7 +181,7 @@ object Game {
             html.canvas2d.font = "bold 36pt Arial"
             html.canvas2d.fillText("Hello World!", 10.0, 40.0)
 
-            gl().viewport(0, 0, view.windowWidth, view.windowHeight)
+            gl().viewport(0, 0, view.width.toInt(), view.height.toInt())
             canvas.setAttribute("style", "position: absolute; left: 0px; top: 0px; z-index: 5; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
             textCanvas.setAttribute("style", "position: absolute; left: 0px; top: 0px; z-index: 10; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
         }
