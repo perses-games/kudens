@@ -14,7 +14,7 @@ import kotlin.browser.window
  */
 
 class DefaultScreen: Screen() {
-    override fun update(time: Float) {
+    override fun update(time: Float, delta: Float) {
     }
 
     override fun render() {
@@ -152,6 +152,10 @@ object Game {
     var currentTime = start
     var currentDelta = 0f
 
+    var fps = 0
+    var fpsCount = 0
+    var fpsCountTime = 0f
+
     fun gl() = html.webgl
 
     fun resize() {
@@ -176,10 +180,10 @@ object Game {
 
             textCanvas.width = view.width.toInt()
             textCanvas.height = view.height.toInt()
-
-            html.canvas2d.fillStyle = "green"
-            html.canvas2d.font = "bold 36pt Arial"
-            html.canvas2d.fillText("Hello World!", 10.0, 40.0)
+//
+//            html.canvas2d.fillStyle = "green"
+//            html.canvas2d.font = "bold 36pt Arial"
+//            html.canvas2d.fillText("Hello World!", 10.0, 40.0)
 
             gl().viewport(0, 0, view.width.toInt(), view.height.toInt())
             canvas.setAttribute("style", "position: absolute; left: 0px; top: 0px; z-index: 5; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
@@ -214,11 +218,29 @@ object Game {
         } else {
             resize();
 
+            html.canvas2d.clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble());
+
+            Game.gl().clearColor(0f, 0f, 0f, 1f)
+            Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+
+            Game.gl().enable(WebGLRenderingContext.BLEND);
+            Game.gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA); //ONE_MINUS_DST_ALPHA);
+
             val time = Date().getTime()
-            currentDelta = (currentTime - time) / 1000f
+            currentDelta = (time - currentTime) / 1000f
             currentTime = time
 
-            currentScreen.update(currentDelta);
+            val timeInSeconds = (currentTime - start) / 1000f
+
+            fpsCountTime += currentDelta
+            fpsCount++
+            if (fpsCountTime > 1f) {
+                fps = fpsCount
+                fpsCountTime -= 1f
+                fpsCount = 0
+            }
+
+            currentScreen.update(timeInSeconds, currentDelta);
             currentScreen.render();
         }
 

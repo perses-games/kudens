@@ -19,6 +19,7 @@ import kotlin.browser.document
 
 private val vertexShaderSource = """
     attribute vec2 a_position;
+    attribute vec2 a_boundingBox;
     attribute vec2 a_texCoord;
 
     uniform mat4 u_projectionView;
@@ -28,7 +29,7 @@ private val vertexShaderSource = """
     void main(void) {
         v_textCoord = a_texCoord;
 
-        gl_Position = u_projectionView * vec4(a_position, -1, 1.0);
+        gl_Position = u_projectionView * vec4(a_position + a_boundingBox, -1, 1.0);
     }
 """
 
@@ -49,27 +50,36 @@ class TextureData(
   val texture: WebGLTexture
 )
 
-class Texture(val glTexture: WebGLTexture, val shaderProgram: ShaderProgram<TextureData>) {
+class Texture(
+  val glTexture: WebGLTexture,
+  val shaderProgram: ShaderProgram<TextureData>,
+  val width: Int,
+  val height: Int
+) {
     val shaderProgramMesh: ShaderProgramMesh<TextureData>
+    val left = -width / 2f
+    val right = width / 2f
+    val bottom = -height / 2f
+    val top = height / 2f
 
     init {
         shaderProgramMesh = ShaderProgramMesh(shaderProgram)
     }
 
     fun queueDraw(x: Float, y: Float) {
-        shaderProgramMesh.queue( -100f,     -100f,  0f, 0f);
-        shaderProgramMesh.queue( -100f,   100f,  0f, 1f);
-        shaderProgramMesh.queue( 100f, 100f,  1f, 1f);
-
-        shaderProgramMesh.queue( 100f, 100f,  1f, 1f);
-        shaderProgramMesh.queue( 100f,   -100f,  1f, 0f);
-        shaderProgramMesh.queue( -100f,     -100f,  0f, 0f);
+        shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f);
+        shaderProgramMesh.queue( x, y, left,  top,     0f, 1f);
+        shaderProgramMesh.queue( x, y, right, top,     1f, 1f);
+        shaderProgramMesh.queue( x, y, right, top,     1f, 1f);
+        shaderProgramMesh.queue( x, y, right, bottom,  1f, 0f);
+        shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f);
     }
 
     fun render(userdata: TextureData) {
         Game.gl().activeTexture(WebGLRenderingContext.TEXTURE0)
         Game.gl().bindTexture(WebGLRenderingContext.TEXTURE_2D, glTexture);
 
+        shaderProgramMesh.userdata = userdata
         shaderProgramMesh.render(userdata)
     }
 }
@@ -82,18 +92,16 @@ object Textures {
 
     init {
         val setter = { program: ShaderProgram<TextureData>, data: TextureData ->
-            program.webgl.activeTexture(WebGLRenderingContext.TEXTURE0);
-            program.webgl.bindTexture(WebGLRenderingContext.TEXTURE_2D, data.texture);
+            //program.webgl.activeTexture(WebGLRenderingContext.TEXTURE0);
+            //program.webgl.bindTexture(WebGLRenderingContext.TEXTURE_2D, data.texture);
 
             program.setUniform1i("u_sampler", 0)
-            val matrix = Matrix4()
-            matrix.setPerspectiveProjection(120f, 1f, 0.1f, 100f)
-            matrix.setOrthographicProjection(-1000f, 1000f, -1000f, 1000f, -0.1f, -100f)
             program.setUniformMatrix4fv("u_projectionView", Game.view.vMatrix.getFloat32Array())
         }
 
         val vainfo = arrayOf(
           VertextAttributeInfo("a_position", 2),
+          VertextAttributeInfo("a_boundingBox", 2),
           VertextAttributeInfo("a_texCoord", 2)
         )
 
@@ -114,7 +122,7 @@ object Textures {
             val image = document.createElement("img") as HTMLImageElement
             image.onload = {
                 textureLoaded(webGlTexture, image)
-                textures.put(name, Texture(webGlTexture, shaderProgram))
+                textures.put(name, Texture(webGlTexture, shaderProgram, image.width, image.height))
                 loaded++
                 println("loaded texture $loaded/$startedLoading ${ready()}")
             }

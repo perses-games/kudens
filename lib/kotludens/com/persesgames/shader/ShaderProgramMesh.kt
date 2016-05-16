@@ -20,32 +20,44 @@ class ShaderProgramMesh<T>(
 ) {
     val webgl = shaderProgram.webgl
     //val data: Array<Float> = Array(4096, { 0f })
-    val data: Float32Array = Float32Array(4096)
+    val data: Float32Array
     var currentIndex: Int = 0
     val attribBuffer: WebGLBuffer
     var counter = 0
+    var userdata: T? = null
 
     init {
+        data = Float32Array(4096 - (4096 % shaderProgram.drawLength))
+
         attribBuffer = webgl.createBuffer() ?: throw IllegalStateException("Unable to create webgl buffer!")
         webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
     }
 
     fun queue(vararg vertices: Float) {
-        data.set(vertices.toTypedArray(), currentIndex)
-        currentIndex += vertices.size
+        queue(vertices.toTypedArray())
     }
 
     fun queue(vertices: Array<Float>) {
         data.set(vertices, currentIndex)
         currentIndex += vertices.size
+
+        if (currentIndex == data.length) {
+            val ud = userdata
+            if (ud != null) {
+                render(ud)
+            } else {
+                println("Skipped draw call, to many values and userdata is not set!")
+                currentIndex = 0
+            }
+        }
     }
 
     fun render(userdata: T) {
         counter++
         if (currentIndex > 0) {
-            if (counter % 100 == 0) {
+/*            if (counter % 100 == 0) {
                 println("currentIndex=$currentIndex blockSize=${shaderProgram.verticesBlockSize} drawLength=${shaderProgram.drawLength} drawing=${(currentIndex / shaderProgram.verticesBlockSize).toInt()}")
-            }
+            }*/
             if (currentIndex % shaderProgram.verticesBlockSize != 0) {
                 throw IllegalStateException("Number of vertices not a multiple of the attribute block size!")
             }

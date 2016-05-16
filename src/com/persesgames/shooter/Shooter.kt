@@ -4,6 +4,7 @@ import com.persesgames.game.Game
 import com.persesgames.game.Screen
 import com.persesgames.sprite.Sprite
 import com.persesgames.sprite.SpriteBatch
+import com.persesgames.text.Texts
 import com.persesgames.texture.Textures
 import org.khronos.webgl.WebGLRenderingContext
 
@@ -16,31 +17,39 @@ class WelcomeScreen: Screen() {
     var x = 1f
     var y = 1f
     var sprite = Sprite("SHIP")
+    val random = Math.random()
 
     override fun loadResources() {
         Textures.load("SHIP", "images/ship2.png")
     }
 
-    override fun update(time: Float) {
-        x = 100f + Math.sin(time.toDouble()).toFloat() * 50f
-        y = 100f + Math.cos(time.toDouble()).toFloat() * 50f
+    override fun update(time: Float, delta: Float) {
+        x = Math.sin(time.toDouble()).toFloat() * 150f
+        y = Math.cos(time.toDouble()).toFloat() * 150f
     }
 
     override fun render() {
-        Game.gl().clearColor(0f, 0.5f, 1f, 1f)
-        Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+        for (index in 0..2500) {
+            val x = Math.random() * 1000f - 500f
+            val y = Math.random() * 1000f - 500f
 
-        Game.gl().enable(WebGLRenderingContext.BLEND);
-        Game.gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA); //ONE_MINUS_DST_ALPHA);
+            sprites.draw(sprite, x.toFloat(), y.toFloat());
+        }
 
         sprites.draw(sprite, x, y);
+        sprites.draw(sprite, -x, y);
+        sprites.draw(sprite, x, -y);
+        sprites.draw(sprite, -x, -y);
+
         sprites.render()
+
+        Texts.drawText(10f, 40f, "Hello! FPS ${Game.fps}", font = "bold 36pt Arial")
     }
 }
 
 class GameScreen: Screen() {
 
-    override fun update(time: Float) {
+    override fun update(time: Float, delta: Float) {
     }
 
     override fun render() {

@@ -13,7 +13,7 @@ abstract class Screen {
 
     }
 
-    abstract fun update(time: Float)
+    abstract fun update(time: Float, delta: Float)
 
     abstract fun render()
 
