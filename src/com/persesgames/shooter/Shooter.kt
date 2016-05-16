@@ -17,7 +17,6 @@ class WelcomeScreen: Screen() {
     var x = 1f
     var y = 1f
     var sprite = Sprite("SHIP")
-    val random = Math.random()
 
     override fun loadResources() {
         Textures.load("SHIP", "images/ship2.png")
