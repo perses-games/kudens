@@ -37,8 +37,8 @@ class View(
   var width: Float = 1024f,
   var height: Float = 1024f,
   var angle: Float = 60f,
-  var near: Float = 0.1f,
-  var far: Float = 100f,
+  var near: Float = -0.1f,
+  var far: Float = -100f,
   var minAspectRatio: Float = 1f,
   var maxAspectRatio: Float = 1f,
   var viewType: ViewType = ViewType.WIDTH) {
@@ -158,10 +158,13 @@ object Game {
         val canvas = gl().canvas
 
         // Check if the canvas is not the same size.
-        if (view.windowWidth != window.innerWidth.toInt() ||
-            view.windowHeight != window.innerHeight.toInt()) {
-            view.windowWidth = window.innerWidth.toInt()
-            view.windowHeight = window.innerHeight.toInt()
+        val windowWidth = window.innerWidth.toInt()
+        val windowHeight = window.innerHeight.toInt()
+
+        if (view.windowWidth != windowWidth ||
+            view.windowHeight != windowHeight) {
+            view.windowWidth = windowWidth
+            view.windowHeight = windowHeight
 
             view.updateView()
 
@@ -179,6 +182,7 @@ object Game {
             html.canvas2d.fillText("Hello World!", 10.0, 40.0)
 
             gl().viewport(0, 0, view.windowWidth, view.windowHeight)
+            canvas.setAttribute("style", "position: absolute; left: 0px; top: 0px; z-index: 5; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
             textCanvas.setAttribute("style", "position: absolute; left: 0px; top: 0px; z-index: 10; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
         }
     }

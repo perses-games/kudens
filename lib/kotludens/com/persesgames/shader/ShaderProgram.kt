@@ -92,6 +92,9 @@ class ShaderProgram<T>(
     }
 
     fun end() {
+        for (info in vainfo.iterator()) {
+            webgl.disableVertexAttribArray(info.location);
+        }
         webgl.useProgram(null)
     }
 

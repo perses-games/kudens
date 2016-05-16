@@ -28,7 +28,7 @@ private val vertexShaderSource = """
     void main(void) {
         v_textCoord = a_texCoord;
 
-        gl_Position = u_projectionView * vec4(a_position, -1, 1.0);
+        gl_Position = u_projectionView * vec4(a_position, -99, 1.0);
     }
 """
 
@@ -57,13 +57,13 @@ class Texture(val glTexture: WebGLTexture, val shaderProgram: ShaderProgram<Text
     }
 
     fun queueDraw(x: Float, y: Float) {
-        shaderProgramMesh.queue( 0f,     0f,  0f, 0f);
-        shaderProgramMesh.queue( 0f,   100f,  0f, 1f);
+        shaderProgramMesh.queue( -100f,     -100f,  0f, 0f);
+        shaderProgramMesh.queue( -100f,   100f,  0f, 1f);
         shaderProgramMesh.queue( 100f, 100f,  1f, 1f);
 
         shaderProgramMesh.queue( 100f, 100f,  1f, 1f);
-        shaderProgramMesh.queue( 100f,   0f,  1f, 0f);
-        shaderProgramMesh.queue( 0f,     0f,  0f, 0f);
+        shaderProgramMesh.queue( 100f,   -100f,  1f, 0f);
+        shaderProgramMesh.queue( -100f,     -100f,  0f, 0f);
     }
 
     fun render(userdata: TextureData) {
@@ -87,7 +87,8 @@ object Textures {
 
             program.setUniform1i("u_sampler", 0)
             val matrix = Matrix4()
-            matrix.setToIdentity()
+            matrix.setPerspectiveProjection(120f, 1f, 0.1f, 100f)
+            matrix.setOrthographicProjection(-1000f, 1000f, -1000f, 1000f, -0.1f, -100f)
             program.setUniformMatrix4fv("u_projectionView", Game.view.vMatrix.getFloat32Array())
         }
 
