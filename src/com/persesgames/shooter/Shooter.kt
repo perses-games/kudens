@@ -2,6 +2,7 @@ package com.persesgames.shooter
 
 import com.persesgames.game.Game
 import com.persesgames.game.Screen
+import com.persesgames.input.EmptyInputProcessor
 import com.persesgames.input.InputProcessor
 import com.persesgames.input.KeyCode
 import com.persesgames.input.Keys
@@ -16,9 +17,7 @@ import com.persesgames.texture.Textures
  * Created by rnentjes on 19-4-16.
  */
 
-class GameInputProcessor: InputProcessor {
-    override fun keyDown(keyCode: Int) {
-    }
+class GameInputProcessor: EmptyInputProcessor() {
 
     override fun keyPressed(charCode: Int) {
         println("charCode: $charCode")
@@ -27,9 +26,9 @@ class GameInputProcessor: InputProcessor {
         }
     }
 
-    override fun keyUp(keyCode: Int) {
+    override fun pointerClick(pointer: Int, x: Float, y: Float) {
+        println("POINTER $pointer -> ($x, $y)")
     }
-
 }
 
 class WelcomeScreen: Screen() {
@@ -97,7 +96,7 @@ class GameScreen: Screen() {
 }
 
 fun main(args: Array<String>) {
-    Game.view.setToWidth(4000f);
+    Game.view.setToWidth(2000f);
 
     Game.start(WelcomeScreen())
 }

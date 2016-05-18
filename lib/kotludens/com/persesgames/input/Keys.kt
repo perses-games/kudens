@@ -1,7 +1,9 @@
 package com.persesgames.input
 
+import com.persesgames.game.Game
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
+import org.w3c.dom.events.MouseEvent
 import java.util.*
 import kotlin.browser.document
 import kotlin.dom.on
@@ -28,9 +30,14 @@ interface InputProcessor {
 
     fun keyUp(keyCode: Int)
 
+    fun pointerClick(pointer: Int, x: Float, y: Float)
+
 }
 
-class DefaultProcessor: InputProcessor {
+open class EmptyInputProcessor : InputProcessor {
+    override fun pointerClick(pointer: Int, x: Float, y: Float) {
+    }
+
     override fun keyDown(keyCode: Int) {
     }
 
@@ -39,12 +46,14 @@ class DefaultProcessor: InputProcessor {
 
     override fun keyUp(keyCode: Int) {
     }
+
+
 }
 
 object Keys {
 
     private val keys: MutableMap<Int, Int> = HashMap();
-    private var inputProcesser: InputProcessor = DefaultProcessor()
+    private var inputProcesser: InputProcessor = EmptyInputProcessor()
 
     init {
         val body = document.body
@@ -59,6 +68,22 @@ object Keys {
 
             body.on("keypress", true) {
                 Keys.keyPress(it)
+            }
+
+            body.on("click", true) {
+                Keys.mouseClick(it)
+            }
+
+            body.on("mousedown", true) {
+                Keys.mouseMove(it)
+            }
+
+            body.on("mouseup", true) {
+                Keys.mouseMove(it)
+            }
+
+            body.on("mousemove", true) {
+                Keys.mouseMove(it)
             }
         }
     }
@@ -86,6 +111,24 @@ object Keys {
     private fun keyPress(key: Event) {
         if (key is KeyboardEvent) {
             inputProcesser.keyPressed(key.charCode)
+        }
+    }
+
+    private fun mouseClick(event: Event) {
+        if (event is MouseEvent) {
+            val vx: Float = Game.view.screenToGameCoordX(event.clientX.toFloat())
+            val vy: Float = Game.view.screenToGameCoordY(event.clientY.toFloat())
+
+            inputProcesser.pointerClick(event.button.toInt(), vx, vy)
+        }
+    }
+
+    private fun mouseMove(event: Event) {
+        if (event is MouseEvent) {
+            val vx: Float = Game.view.screenToGameCoordX(event.clientX.toFloat())
+            val vy: Float = Game.view.screenToGameCoordY(event.clientY.toFloat())
+
+
         }
     }
 

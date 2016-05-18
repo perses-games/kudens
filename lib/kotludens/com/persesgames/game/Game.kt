@@ -85,6 +85,54 @@ class View(
         println("width: $width, height: $height")
     }
 
+    fun screenToGameCoordX(screenX: Float): Float {
+        var result = screenX
+
+        when(viewType) {
+            ViewType.ABSOLUTE -> {
+                // nop
+            }
+            ViewType.WIDTH -> {
+                result = (screenX / windowWidth * width) - width / 2
+            }
+            ViewType.HEIGHT -> {
+                result = (screenX / windowWidth * width) - width / 2
+            }
+            ViewType.PROJECTION -> {
+                // uhm
+            }
+            else -> {
+                throw IllegalStateException("ViewType $viewType not implemented!")
+            }
+        }
+
+        return result
+    }
+
+    fun screenToGameCoordY(screenY: Float): Float {
+        var result = screenY
+
+        when(viewType) {
+            ViewType.ABSOLUTE -> {
+                // nop
+            }
+            ViewType.WIDTH -> {
+                result = (screenY / windowHeight * height) - height / 2
+            }
+            ViewType.HEIGHT -> {
+                result = (screenY / windowHeight * height) - height / 2
+            }
+            ViewType.PROJECTION -> {
+                // uhm
+            }
+            else -> {
+                throw IllegalStateException("ViewType $viewType not implemented!")
+            }
+        }
+
+        return result
+    }
+
     fun setToWidth(width: Float) {
         this.width = width
         this.viewType = ViewType.WIDTH
