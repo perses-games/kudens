@@ -41,7 +41,7 @@ class WelcomeScreen: Screen() {
         Textures.load("SHIP", "images/ship2.png")
         Sounds.load("EXPLOSION", "sounds/Explosion7.ogg")
 
-        Music.play("music/DST-TechnoBasic.ogg", 1.0, looping = true)
+        Music.play("music/DST-TechnoBasic.mp3", 1.0, looping = true)
 
         Keys.setInputProcessor(GameInputProcessor())
     }
@@ -62,10 +62,6 @@ class WelcomeScreen: Screen() {
 
         if (Keys.isDown(KeyCode.DOWN)) {
             y -= delta * speed;
-        }
-
-        if (Keys.isDown(KeyCode.SPACE)) {
-            //Music.play("sounds/Explosion7.ogg", 0.5)
         }
     }
 
