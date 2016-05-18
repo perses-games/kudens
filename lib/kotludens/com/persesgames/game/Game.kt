@@ -213,7 +213,7 @@ object Game {
 
     fun gameLoop() {
         if (!Textures.ready()) {
-            Game.gl().clearColor(1f, 0f, 0f, 1f)
+            Game.gl().clearColor(1f, 1f, 1f, 1f)
             Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
         } else {
             resize();
