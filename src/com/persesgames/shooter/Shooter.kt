@@ -39,6 +39,7 @@ var showFPS: Boolean = true
 class WelcomeScreen: Screen() {
 
     override fun loadResources() {
+        println("loading resource!")
         music = Music.play("music/DST-TechnoBasic.ogg", 1.0, looping = true)
 
         Keys.setInputProcessor(GameInputProcessor())
