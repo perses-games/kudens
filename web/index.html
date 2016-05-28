@@ -14,9 +14,43 @@
         canvas {
             position:absolute;
         }
+
+        #options {
+            padding: 15px;
+            position: absolute;
+            right: 25px;
+            top: 25px;
+            z-index: 20;
+            color: white;
+            background-color: rgba(45, 45, 45, 0.75);
+            border-radius: 5px;
+            font-weight: bold;
+            font-family: Arial, Courier;
+        }
+
+        #menu {
+            padding: 25px;
+            position: absolute;
+            left: 250px;
+            top: 250px;
+            z-index: 25;
+            color: white;
+            background-color: rgba(125, 45, 45, 0.75);
+            border-radius: 5px;
+            font-weight: bold;
+            font-family: Arial, Courier;
+        }
+
     </style>
 </head>
 <body>
+    <div id="options">
+        <input type="checkbox" checked="checked" onchange="Kotlin.modules.KotlinTest.com.persesgames.shooter.changeMusic_36rv4q$(this)" />Music<br/>
+        <input type="checkbox" checked="checked" onchange="Kotlin.modules.KotlinTest.com.persesgames.shooter.showFPS_36rv4q$(this)" />Show FPS
+    </div>
+    <div id="menu">
+        <div class="button" onclick="Kotlin.modules.KotlinTest.com.persesgames.shooter.playGame()">Play Game!</div>
+    </div>
     <script type="application/javascript" src="js/kotlin/kotlin.js"></script>
     <script type="application/javascript" src="js/generated/KotlinTest.js"></script>
 </body>
