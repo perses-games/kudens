@@ -42,6 +42,8 @@ class WelcomeScreen: Screen() {
         println("loading resource!")
         music = Music.play("music/DST-TechnoBasic.ogg", 1.0, looping = true)
 
+        Textures.loadSpriteSheet("images/data-0.json")
+
         Keys.setInputProcessor(GameInputProcessor())
     }
 
@@ -65,6 +67,7 @@ class GameScreen: Screen() {
     override fun loadResources() {
         Textures.load("SHIP", "images/ship2.png")
         Sounds.load("EXPLOSION", "sounds/Explosion7.ogg")
+
 
         Keys.setInputProcessor(GameInputProcessor())
     }
