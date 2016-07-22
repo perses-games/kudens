@@ -5,7 +5,9 @@ import com.persesgames.game.Screen
 import com.persesgames.input.EmptyInputProcessor
 import com.persesgames.input.KeyCode
 import com.persesgames.input.Keys
+import com.persesgames.map.tiled.TiledMap
 import com.persesgames.sound.Music
+import com.persesgames.sound.Sound
 import com.persesgames.sound.Sounds
 import com.persesgames.sprite.Sprite
 import com.persesgames.sprite.SpriteBatch
@@ -24,7 +26,9 @@ class GameInputProcessor: EmptyInputProcessor() {
     override fun keyPressed(charCode: Int) {
         println("charCode: $charCode")
         if (charCode == 32) {
-            Music.play("sounds/Explosion7.ogg", 0.5)
+            Sounds.play("EXPLOSION", 0.5f)
+        } else if (charCode == 'x'.toInt()) {
+            Sounds.play("DROP", 0.75f)
         }
     }
 
@@ -37,14 +41,28 @@ var music: HTMLAudioElement? = null
 var showFPS: Boolean = true
 
 class WelcomeScreen: Screen() {
+    val map = TiledMap("maps", "level_1_01.json")
 
     override fun loadResources() {
         println("loading resource!")
-        music = Music.play("music/DST-TechnoBasic.ogg", 1.0, looping = true)
+        //music = Music.play("music/DST-TechnoBasic.mp3", 1.0, looping = true)
 
         Textures.loadSpriteSheet("images/data-0.json")
 
         Keys.setInputProcessor(GameInputProcessor())
+
+        println("width: ${map.data.width}")
+        println("height: ${map.data.height}")
+        println("layers: ${map.data.layers?.size}")
+        val layers = map.data.layers
+        if (layers != null) {
+            println("layer0: ${layers[0].name}")
+        }
+        val tilesets = map.data.tilesets
+        if (tilesets != null) {
+            println("tilesets ${tilesets.size}")
+            println("tileset0: ${tilesets[0].name}")
+        }
     }
 
     override fun update(time: Float, delta: Float) {
@@ -67,8 +85,10 @@ class GameScreen: Screen() {
     override fun loadResources() {
         Textures.load("SHIP", "images/ship2.png")
         Sounds.load("EXPLOSION", "sounds/Explosion7.ogg")
+        Sounds.load("DROP", "sounds/Bomb_Drop.ogg")
 
-        Music.play("music/DST-TechnoBasic.mp3", 1.0, looping = true)
+        //Music.play("music/DST-TechnoBasic.mp3", 1.0, looping = true)
+
 
         Keys.setInputProcessor(GameInputProcessor())
     }

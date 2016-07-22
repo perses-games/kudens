@@ -118,7 +118,7 @@ class SpriteSheet(
 }
 
 object Textures {
-    var textures = HashMap<String, Texture>();
+    var textures = HashMap<String, Texture>()
     var startedLoading = 0
     var loaded = 0
     val shaderProgram: ShaderProgram<TextureData>

@@ -17,6 +17,7 @@ class Sound(val name:String, val url: String, val volume: Double = 0.75) {
         println("CREATING: $name")
         audio = document.createElement("audio") as HTMLAudioElement
 
+
         audio.src = url
         audio.pause()
         audio.load()
@@ -41,7 +42,7 @@ object Sounds {
         sounds.put(name, Sound(name, url, volume))
     }
 
-    fun play(name: String) {
+    fun play(name: String, volume: Float = 0.75f) {
         val sound: Sound = sounds[name] ?: throw IllegalArgumentException("Sound '$name' not found, load it first!")
 
         sound.play()
