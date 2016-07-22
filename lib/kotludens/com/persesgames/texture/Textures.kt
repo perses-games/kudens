@@ -8,6 +8,7 @@ import com.persesgames.shader.VertextAttributeInfo
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLTexture
 import org.w3c.dom.HTMLImageElement
+import org.w3c.fetch.Request
 import java.util.*
 import kotlin.browser.document
 
@@ -84,6 +85,38 @@ class Texture(
     }
 }
 
+/*
+{
+    "frame": {"x":921,"y":1,"w":182,"h":103},
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": {"x":4,"y":4,"w":182,"h":103},
+    "sourceSize": {"w":190,"h":110},
+    "pivot": {"x":0.5,"y":0.5}
+},
+*/
+
+class Rect(val x: Int, val y: Int, val w: Int, val h: Int)
+class Size(val w: Int, val h: Int)
+class Pivot(val x: Double, val y: Double)
+
+class SpriteSheetData(
+  val frame: Rect,
+  val rotated: Boolean,
+  val trimmed: Boolean,
+  val spriteSourceSize: Rect,
+  val sourceSize: Size,
+  val pivot: Pivot
+  )
+
+class SpriteSheet(
+    val glTexture: WebGLTexture,
+    val shaderProgram: ShaderProgram<SpriteSheetData>,
+    val data: Map<String, SpriteSheetData>
+) {
+
+}
+
 object Textures {
     var textures = HashMap<String, Texture>();
     var startedLoading = 0
@@ -108,8 +141,10 @@ object Textures {
         shaderProgram = ShaderProgram(Game.gl(), WebGLRenderingContext.TRIANGLES, vertexShaderSource, fragmentShaderSource, vainfo, setter)
     }
 
-    fun loadSpriteSheet(name: String, filename: String) {
+    fun loadSpriteSheet(name: String) {
+        //val data = Request(name).json()
 
+        //println(data)
     }
 
     fun load(name: String, filename: String) {

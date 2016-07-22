@@ -22,7 +22,7 @@ object Music {
         return audio;
     }
 
-    fun play(url: String, volume: Double = 0.75, looping: Boolean = false) {
+    fun play(url: String, volume: Double = 0.75, looping: Boolean = false): HTMLAudioElement {
         val audio = document.createElement("audio") as HTMLAudioElement
 
         audio.src = url
@@ -39,6 +39,8 @@ object Music {
                 playing.remove(audio)
             }
         })
+
+        return audio
     }
 
     fun stopAll() {
