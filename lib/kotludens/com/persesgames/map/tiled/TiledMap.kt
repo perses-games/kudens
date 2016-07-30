@@ -1,24 +1,22 @@
 package com.persesgames.map.tiled
 
+import com.persesgames.net.getUrlAsString
 import com.persesgames.texture.Textures
-import org.w3c.xhr.XMLHttpRequest
 import java.util.*
 
 /**
  * Created by rnentjes on 22-7-16.
  */
 
-fun getUrlAsString(url: String): String {
-    val req = XMLHttpRequest()
+class MapRenderer(data: MapData) {
 
-    req.open("GET", url, false)
-    req.send(null)
+    fun drawTile(tile: Int, x: Int, y: Int) {
 
-    return req.responseText
-}
+    }
 
-fun drawLayer(layer: MapLayer) {
+    fun drawLayer(layer: MapLayer) {
 
+    }
 }
 
 class MapData {
@@ -50,6 +48,7 @@ class MapLayer {
     var opacity: Float = 1f
     var type: String = ""
     var visible: Boolean = true
+    var draworder: String = ""
 }
 
 class MapTileset {

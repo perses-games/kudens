@@ -89,26 +89,25 @@ class GameScreen: Screen() {
 
         //Music.play("music/DST-TechnoBasic.mp3", 1.0, looping = true)
 
-
         Keys.setInputProcessor(GameInputProcessor())
     }
 
     override fun update(time: Float, delta: Float) {
         val speed = 500f // pixels per second
         if (Keys.isDown(KeyCode.LEFT)) {
-            x -= delta * speed;
+            x -= delta * speed
         }
 
         if (Keys.isDown(KeyCode.RIGHT)) {
-            x += delta * speed;
+            x += delta * speed
         }
 
         if (Keys.isDown(KeyCode.UP)) {
-            y += delta * speed;
+            y += delta * speed
         }
 
         if (Keys.isDown(KeyCode.DOWN)) {
-            y -= delta * speed;
+            y -= delta * speed
         }
     }
 
@@ -124,7 +123,8 @@ class GameScreen: Screen() {
         sprites.draw(sprite, x, y);
 
         sprites.render()
-                Texts.drawText(150f, 400f, "Playing teh Game!", font = "bold 72pt Arial")
+
+        Texts.drawText(150f, 400f, "Playing teh Game!", font = "bold 72pt Arial")
 
         if (showFPS) {
             Texts.drawText(20f, 100f, "Hello! FPS ${Game.fps}", font = "bold 72pt Arial")

@@ -1,6 +1,7 @@
 package com.persesgames.texture
 
 import com.persesgames.game.Game
+import com.persesgames.map.tiled.MapTileset
 import com.persesgames.math.Matrix4
 import com.persesgames.shader.ShaderProgram
 import com.persesgames.shader.ShaderProgramMesh
@@ -68,17 +69,17 @@ class Texture(
     }
 
     fun queueDraw(x: Float, y: Float) {
-        shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f);
-        shaderProgramMesh.queue( x, y, left,  top,     0f, 1f);
-        shaderProgramMesh.queue( x, y, right, top,     1f, 1f);
-        shaderProgramMesh.queue( x, y, right, top,     1f, 1f);
-        shaderProgramMesh.queue( x, y, right, bottom,  1f, 0f);
-        shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f);
+        shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f)
+        shaderProgramMesh.queue( x, y, left,  top,     0f, 1f)
+        shaderProgramMesh.queue( x, y, right, top,     1f, 1f)
+        shaderProgramMesh.queue( x, y, right, top,     1f, 1f)
+        shaderProgramMesh.queue( x, y, right, bottom,  1f, 0f)
+        shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f)
     }
 
     fun render(userdata: TextureData) {
         Game.gl().activeTexture(WebGLRenderingContext.TEXTURE0)
-        Game.gl().bindTexture(WebGLRenderingContext.TEXTURE_2D, glTexture);
+        Game.gl().bindTexture(WebGLRenderingContext.TEXTURE_2D, glTexture)
 
         shaderProgramMesh.userdata = userdata
         shaderProgramMesh.render(userdata)
@@ -165,6 +166,10 @@ object Textures {
         } else {
             throw IllegalStateException("Couldn't create webgl texture!")
         }
+    }
+
+    fun load(mapTileSet: MapTileset) {
+
     }
 
     fun textureLoaded(texture: WebGLTexture, image: HTMLImageElement) {
