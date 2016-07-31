@@ -125,7 +125,7 @@ object Game {
 
                 fpsCountTime += currentDelta
                 fpsCount++
-                if (fpsCountTime > 1f) {
+                while (fpsCountTime > 1f) {
                     fps = fpsCount
                     fpsCountTime -= 1f
                     fpsCount = 0

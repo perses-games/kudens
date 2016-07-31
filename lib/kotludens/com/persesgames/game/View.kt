@@ -1,6 +1,7 @@
 package com.persesgames.game
 
 import com.persesgames.math.Matrix4
+import kotlin.browser.document
 
 enum class ViewType {
     PROJECTION,
@@ -19,12 +20,17 @@ class View(
   var far: Float = -100f,
   var minAspectRatio: Float = 1f,
   var maxAspectRatio: Float = 1f,
-  var viewType: ViewType = ViewType.WIDTH) {
+  var viewType: ViewType = ViewType.WIDTH)
+{
     var vMatrix = Matrix4()
     var aspectRatio = 1f
 
     init {
         updateView()
+    }
+
+    fun requestFullscreen() {
+        document.documentElement?.requestFullscreen()
     }
 
     fun updateView() {
@@ -38,7 +44,7 @@ class View(
 
         }
 
-        when(viewType) {
+        when (viewType) {
             ViewType.ABSOLUTE -> {
                 vMatrix.setOrthographicProjection(0f, width, 0f, height, near, far)
             }
@@ -60,7 +66,7 @@ class View(
             }
         }
 
-        println("width: $width, height: $height")
+        //println("width: $width, height: $height")
     }
 
     fun screenToGameCoordX(screenX: Float): Float {

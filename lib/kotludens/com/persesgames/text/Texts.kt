@@ -9,9 +9,13 @@ import com.persesgames.game.Game
 object Texts {
 
     fun drawText(x: Float, y: Float, message: String, font: String = "bold 24pt Arial", fillStyle: String = "white") {
+        var yy = y
+        if (yy < 0) {
+            yy += Game.view.height
+        }
         Game.html.canvas2d.fillStyle = fillStyle
         Game.html.canvas2d.font = font
-        Game.html.canvas2d.fillText(message, x.toDouble(), y.toDouble())
+        Game.html.canvas2d.fillText(message, x.toDouble(), yy.toDouble())
     }
 
     fun drawLeftTop(left: Float, top: Float, message: String, font: String = "bold 24pt Arial", fillStyle: String = "white") {

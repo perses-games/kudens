@@ -144,11 +144,11 @@ class GameScreen: Screen() {
 
         sprites.render()
 
-        Texts.drawText(15f, 200f, "Music by DST", font = "bold 28pt Arial")
+        Texts.drawText(20f, 150f, "Drawing $numberOfSprites sprites per frame.")
 
         if (showFPS) {
-            Texts.drawText(20f, 100f, "Hello! FPS ${Game.fps}", font = "bold 72pt Arial")
-            Texts.drawText(20f, Game.view.height - 40f, "Drawing $numberOfSprites sprites per frame!")
+            Texts.drawText(20f, 100f, "FPS ${Game.fps}", font = "bold 72pt Arial", fillStyle="red")
+            Texts.drawText(15f, -20f, "Music by DST", font = "bold 28pt Arial", fillStyle="green")
         }
     }
 
@@ -176,12 +176,16 @@ fun showFPS(it: HTMLInputElement) {
     showFPS = it.checked
 }
 
+fun pause(it: HTMLInputElement) {
+    Game.pause = it.checked
+}
+
 fun playGame() {
     document.getElementById("menu")?.setAttribute("style", "display: none;")
 
     Game.setScreen(GameScreen())
 }
 
-fun pause(it: HTMLInputElement) {
-    Game.pause = it.checked
+fun fullscreen() {
+    Game.view.requestFullscreen()
 }
