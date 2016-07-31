@@ -81,19 +81,24 @@ class GameScreen: Screen() {
     var x = 0f
     var y = 0f
     var sprite = Sprite("SHIP")
+    var numberOfSprites: Int = 5000
+    var time: Float = 0f
 
     override fun loadResources() {
         Textures.load("SHIP", "images/ship2.png")
+
         Sounds.load("EXPLOSION", "sounds/Explosion7.ogg")
         Sounds.load("DROP", "sounds/Bomb_Drop.ogg")
 
-        //Music.play("music/DST-TechnoBasic.mp3", 1.0, looping = true)
+        music = Music.play("music/DST-TechnoBasic.mp3", 0.5, looping = true)
 
         Keys.setInputProcessor(GameInputProcessor())
     }
 
     override fun update(time: Float, delta: Float) {
-        val speed = 500f // pixels per second
+        this.time = time
+        val speed = 500f // units per second
+
         if (Keys.isDown(KeyCode.LEFT)) {
             x -= delta * speed
         }
@@ -109,25 +114,41 @@ class GameScreen: Screen() {
         if (Keys.isDown(KeyCode.DOWN)) {
             y -= delta * speed
         }
+
+        if (Keys.isDown(KeyCode.MINUS)) {
+            if (numberOfSprites > 25) {
+                numberOfSprites = (numberOfSprites * 0.9f).toInt()
+            }
+        }
+
+        if (Keys.isDown(KeyCode.PLUS)) {
+            numberOfSprites = (numberOfSprites * 1.1f).toInt()
+        }
     }
 
     override fun render() {
+        var r = 0f
+        var d = 0f
+        var x = 0f
+        var y = 0f
 
-        for (index in 0..100) {
-            val x = Math.random() * 2000f - 1000f
-            val y = Math.random() * 2000f - 1000f
+        val time = this.time / 10f
+        for (index in 0..numberOfSprites) {
+            r = index * 0.05f
+            d = index * 2.13f
+            x = (Math.sin((time + d).toDouble()) * r).toFloat()
+            y = (Math.cos((time + d).toDouble()) * r).toFloat()
 
-            sprites.draw(sprite, x.toFloat(), y.toFloat())
+            sprites.draw(sprite, x.toFloat(), y.toFloat(), scale = 0.4f + Math.sin(time.toDouble() + r).toFloat(), rotation = r * 10f)
         }
-
-        sprites.draw(sprite, x, y);
 
         sprites.render()
 
-        Texts.drawText(150f, 400f, "Playing teh Game!", font = "bold 72pt Arial")
+        Texts.drawText(15f, 200f, "Music by DST", font = "bold 28pt Arial")
 
         if (showFPS) {
             Texts.drawText(20f, 100f, "Hello! FPS ${Game.fps}", font = "bold 72pt Arial")
+            Texts.drawText(20f, Game.view.height - 40f, "Drawing $numberOfSprites sprites per frame!")
         }
     }
 
@@ -144,7 +165,7 @@ fun changeMusic(it: HTMLInputElement) {
 
     if (mus != null) {
         if (it.checked) {
-            mus.volume = 1.0
+            mus.volume = 0.5
         } else {
             mus.volume = 0.0
         }
@@ -159,4 +180,8 @@ fun playGame() {
     document.getElementById("menu")?.setAttribute("style", "display: none;")
 
     Game.setScreen(GameScreen())
+}
+
+fun pause(it: HTMLInputElement) {
+    Game.pause = it.checked
 }

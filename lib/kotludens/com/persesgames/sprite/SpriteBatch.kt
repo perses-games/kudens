@@ -15,8 +15,8 @@ class Sprite(val textureName: String) {
 
 class SpriteBatch {
 
-    fun draw(sprite: Sprite, x: Float, y: Float) {
-        sprite.texture.queueDraw(x, y)
+    fun draw(sprite: Sprite, x: Float, y: Float, scale: Float = 1f, rotation: Float = 0f) {
+        sprite.texture.queueDraw(x, y, scale, rotation)
     }
 
     fun render() {

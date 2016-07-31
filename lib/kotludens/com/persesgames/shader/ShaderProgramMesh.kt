@@ -19,15 +19,13 @@ class ShaderProgramMesh<T>(
   val shaderProgram: ShaderProgram<T>
 ) {
     val webgl = shaderProgram.webgl
-    //val data: Array<Float> = Array(4096, { 0f })
     val data: Float32Array
     var currentIndex: Int = 0
     val attribBuffer: WebGLBuffer
     var counter = 0
-    var userdata: T? = null
 
     init {
-        data = Float32Array(4096 - (4096 % shaderProgram.drawLength))
+        data = Float32Array(20000 - (20000 % shaderProgram.drawLength))
 
         attribBuffer = webgl.createBuffer() ?: throw IllegalStateException("Unable to create webgl buffer!")
         webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
@@ -42,15 +40,14 @@ class ShaderProgramMesh<T>(
         currentIndex += vertices.size
 
         if (currentIndex == data.length) {
-            val ud = userdata
-            if (ud != null) {
-                render(ud)
-            } else {
-                println("Skipped draw call, to many values and userdata is not set!")
-                currentIndex = 0
-            }
+            println("Skipped draw call, to many values!")
+            currentIndex = 0
         }
     }
+
+    fun remaining() = data.length - currentIndex
+
+    fun bufferFull() = currentIndex == data.length
 
     fun render(userdata: T) {
         counter++
@@ -64,9 +61,9 @@ class ShaderProgramMesh<T>(
 
             shaderProgram.begin(attribBuffer, userdata)
 
-            webgl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, data, WebGLRenderingContext.DYNAMIC_DRAW);
+            webgl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, data, WebGLRenderingContext.DYNAMIC_DRAW)
             webgl.drawArrays(shaderProgram.drawType, 0, (currentIndex / shaderProgram.verticesBlockSize).toInt())
-            currentIndex = 0;
+            currentIndex = 0
 
             shaderProgram.end()
         }

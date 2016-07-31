@@ -20,6 +20,8 @@ enum class KeyCode(val keyCode: Int) {
     DOWN(40),
     RIGHT(39),
     SPACE(32),
+    MINUS(109),
+    PLUS(107),
 }
 
 interface InputProcessor {

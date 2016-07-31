@@ -75,7 +75,7 @@ class ShaderProgram<T>(
             throw IllegalStateException("Unable to compile shader!\n${source}\n\n${webgl.getShaderInfoLog(result)}")
         }
 
-        return result;
+        return result
     }
 
     fun begin(attribBuffer: WebGLBuffer, userdata: T) {
@@ -84,8 +84,8 @@ class ShaderProgram<T>(
 
         // set attribute locations...
         for (info in vainfo.iterator()) {
-            webgl.enableVertexAttribArray(info.location);
-            webgl.vertexAttribPointer(info.location, info.numElements, WebGLRenderingContext.FLOAT, false, verticesBlockSize * 4, info.offset * 4);
+            webgl.enableVertexAttribArray(info.location)
+            webgl.vertexAttribPointer(info.location, info.numElements, WebGLRenderingContext.FLOAT, false, verticesBlockSize * 4, info.offset * 4)
         }
 
         setter(this, userdata)

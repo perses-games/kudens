@@ -23,15 +23,37 @@ private val vertexShaderSource = """
     attribute vec2 a_position;
     attribute vec2 a_boundingBox;
     attribute vec2 a_texCoord;
+    attribute float a_scale;
+    attribute float a_rotation;
 
     uniform mat4 u_projectionView;
 
     varying vec2 v_textCoord;
 
+    mat4 scale(float scale) {
+        return mat4(
+            vec4(scale, 0.0,   0.0,   0.0),
+            vec4(0.0,   scale, 0.0,   0.0),
+            vec4(0.0,   0.0,   scale, 0.0),
+            vec4(0.0,   0.0,   0.0,   1.0)
+        );
+    }
+
+    mat4 rotateZ(float angle) {
+        return mat4(
+            vec4(cos(angle),   sin(angle),  0.0,  0.0),
+            vec4(-sin(angle),  cos(angle),  0.0,  0.0),
+            vec4(0.0,          0.0,         1.0,  0.0),
+            vec4(0.0,          0.0,         0.0,  1.0)
+        );
+    }
+
     void main(void) {
         v_textCoord = a_texCoord;
 
-        gl_Position = u_projectionView * vec4(a_position + a_boundingBox, -1, 1.0);
+        vec4 scaledBox = vec4(a_boundingBox, 1.0, 1.0) * scale(a_scale) * rotateZ(a_rotation);
+
+        gl_Position = u_projectionView * vec4(a_position + scaledBox.xy, -1, 1.0);
     }
 """
 
@@ -68,21 +90,24 @@ class Texture(
         shaderProgramMesh = ShaderProgramMesh(shaderProgram)
     }
 
-    fun queueDraw(x: Float, y: Float) {
-        shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f)
-        shaderProgramMesh.queue( x, y, left,  top,     0f, 1f)
-        shaderProgramMesh.queue( x, y, right, top,     1f, 1f)
-        shaderProgramMesh.queue( x, y, right, top,     1f, 1f)
-        shaderProgramMesh.queue( x, y, right, bottom,  1f, 0f)
-        shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f)
+    fun queueDraw(x: Float, y: Float, scale: Float, rotation: Float) {
+        shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f, scale, rotation)
+        shaderProgramMesh.queue( x, y, left,  top,     0f, 1f, scale, rotation)
+        shaderProgramMesh.queue( x, y, right, top,     1f, 1f, scale, rotation)
+        shaderProgramMesh.queue( x, y, right, top,     1f, 1f, scale, rotation)
+        shaderProgramMesh.queue( x, y, right, bottom,  1f, 0f, scale, rotation)
+        shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f, scale, rotation)
+
+        if (shaderProgramMesh.remaining() < 36) {
+            render()
+        }
     }
 
-    fun render(userdata: TextureData) {
+    fun render() {
         Game.gl().activeTexture(WebGLRenderingContext.TEXTURE0)
         Game.gl().bindTexture(WebGLRenderingContext.TEXTURE_2D, glTexture)
 
-        shaderProgramMesh.userdata = userdata
-        shaderProgramMesh.render(userdata)
+        shaderProgramMesh.render(TextureData(Game.view.vMatrix, glTexture))
     }
 }
 
@@ -136,7 +161,9 @@ object Textures {
         val vainfo = arrayOf(
           VertextAttributeInfo("a_position", 2),
           VertextAttributeInfo("a_boundingBox", 2),
-          VertextAttributeInfo("a_texCoord", 2)
+          VertextAttributeInfo("a_texCoord", 2),
+          VertextAttributeInfo("a_scale", 1),
+          VertextAttributeInfo("a_rotation", 1)
         )
 
         shaderProgram = ShaderProgram(Game.gl(), WebGLRenderingContext.TRIANGLES, vertexShaderSource, fragmentShaderSource, vainfo, setter)
@@ -158,7 +185,10 @@ object Textures {
             val image = document.createElement("img") as HTMLImageElement
             image.onload = {
                 textureLoaded(webGlTexture, image)
-                textures.put(name, Texture(webGlTexture, shaderProgram, image.width, image.height))
+                val texture = Texture(webGlTexture, shaderProgram, image.width, image.height)
+
+                textures.put(name, texture)
+
                 loaded++
                 println("loaded texture $loaded/$startedLoading ${ready()}")
             }
@@ -175,12 +205,14 @@ object Textures {
     fun textureLoaded(texture: WebGLTexture, image: HTMLImageElement) {
         val gl = Game.gl()
 
-        gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture);
-        gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1); // second argument must be an int
-        gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, image);
-        gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST);
-        gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST);
-        gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
+        gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture)
+        gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1) // second argument must be an int
+        gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, image)
+        //gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST)
+        //gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST)
+        gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.LINEAR)
+        gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.LINEAR)
+        gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null)
     }
 
     fun ready() = loaded == startedLoading
@@ -193,9 +225,7 @@ object Textures {
 
     fun render() {
         for ((key, value) in textures) {
-            val textureData = TextureData(Game.view.vMatrix, value.glTexture)
-
-            value.render(textureData)
+            value.render()
         }
     }
 

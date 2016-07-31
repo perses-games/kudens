@@ -44,6 +44,7 @@ object Game {
     var start = Date().getTime()
     var currentTime = start
     var currentDelta = 0f
+    var pause: Boolean = false
 
     var fps = 0
     var fpsCount = 0
@@ -105,32 +106,34 @@ object Game {
             Game.gl().clearColor(1f, 1f, 1f, 1f)
             Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
         } else {
-            resize();
+            resize()
 
-            html.canvas2d.clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble());
+            if (!pause) {
+                html.canvas2d.clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble());
 
-            Game.gl().clearColor(0f, 0f, 0f, 1f)
-            Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+                Game.gl().clearColor(0f, 0f, 0f, 1f)
+                Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
 
-            Game.gl().enable(WebGLRenderingContext.BLEND);
-            Game.gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA); //ONE_MINUS_DST_ALPHA);
+                Game.gl().enable(WebGLRenderingContext.BLEND);
+                Game.gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA); //ONE_MINUS_DST_ALPHA);
 
-            val time = Date().getTime()
-            currentDelta = (time - currentTime) / 1000f
-            currentTime = time
+                val time = Date().getTime()
+                currentDelta = (time - currentTime) / 1000f
+                currentTime = time
 
-            val timeInSeconds = (currentTime - start) / 1000f
+                val timeInSeconds = (currentTime - start) / 1000f
 
-            fpsCountTime += currentDelta
-            fpsCount++
-            if (fpsCountTime > 1f) {
-                fps = fpsCount
-                fpsCountTime -= 1f
-                fpsCount = 0
+                fpsCountTime += currentDelta
+                fpsCount++
+                if (fpsCountTime > 1f) {
+                    fps = fpsCount
+                    fpsCountTime -= 1f
+                    fpsCount = 0
+                }
+
+                currentScreen.update(timeInSeconds, currentDelta);
+                currentScreen.render()
             }
-
-            currentScreen.update(timeInSeconds, currentDelta);
-            currentScreen.render();
         }
 
         window.requestAnimationFrame {
