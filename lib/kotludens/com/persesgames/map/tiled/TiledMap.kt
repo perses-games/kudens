@@ -1,6 +1,8 @@
 package com.persesgames.map.tiled
 
+import com.persesgames.game.Game
 import com.persesgames.net.getUrlAsString
+import com.persesgames.texture.Texture
 import com.persesgames.texture.Textures
 import java.util.*
 
@@ -10,13 +12,6 @@ import java.util.*
 
 class MapRenderer(data: MapData) {
 
-    fun drawTile(tile: Int, x: Int, y: Int) {
-
-    }
-
-    fun drawLayer(layer: MapLayer) {
-
-    }
 }
 
 class MapData {
@@ -67,10 +62,24 @@ class MapTileset {
     var tileproperties: MutableMap<String, MutableMap<String, String>> = HashMap()
 }
 
+class TilesetIndex(
+  val texture: Texture,
+  val tcLeft: Float,
+  val tcTop: Float,
+  val tcRight: Float,
+  val tcBottom: Float
+  ) {
+    fun render(x: Float, y: Float) {
+        texture.queueTileDraw(x, y, tcLeft, tcTop, tcRight, tcBottom)
+    }
+}
+
 class TiledMap(dir: String = "", url: String) {
     val properties: Map<String, String> = HashMap()
     val data: MapData
     val tiles: Array<String>
+    var first = true
+    //var tilesetIndex: Array<TilesetIndex> = Array(0, { TilesetIndex() })
 
     init {
         var tileDir = dir
@@ -90,5 +99,78 @@ class TiledMap(dir: String = "", url: String) {
         } else {
             tiles = Array(0, { "" })
         }
+    }
+
+    fun drawTile(tile: Int, x: Float, y: Float) {
+        if (first) {
+            println("Draw $tile on ($x, $y)")
+        }
+        val tilesets = data.tilesets
+        var name: String? = null
+        var gid: Int
+        var tcLeft = 0f
+        var tcTop = 0f
+        var tcRight = 0f
+        var tcBottom = 0f
+
+        if (tilesets != null) {
+            for (tileset in tilesets) {
+                val tilesHor = tileset.imagewidth / tileset.tilewidth
+                val tilesVer = tileset.imageheight / tileset.tileheight
+
+                if (tile >= tileset.firstgid && tile < tileset.firstgid + tileset.tilecount) {
+                    name = tileset.name
+                    gid = tile - tileset.firstgid
+
+                    val xi = gid % tilesHor
+                    val yi = gid / tilesHor
+                    val tw = 1f / tilesHor.toFloat()
+                    val th = 1f / tilesVer.toFloat()
+
+                    tcLeft = xi * tw
+                    tcTop = yi * th
+                    tcRight = tcLeft + tw
+                    tcBottom = tcTop - th
+                }
+            }
+        }
+
+        if (name != null) {
+            val texture = Textures.get(name)
+
+            texture.queueTileDraw(x, y, tcLeft, tcTop, tcRight, tcBottom)
+        }
+    }
+
+    fun drawLayer(layerIndex: Int, xo: Float, yo: Float) {
+        var x = 0f
+        var y = 0f
+        val layers = data.layers ?: throw IllegalArgumentException("MapData has no layers ($data)")
+        val layer = layers[layerIndex]
+
+        val layerData = layer.data
+        if (layerData != null) {
+            for (index in layerData.indices) {
+                // todo: determine if in view
+                // todo: determine tilewidth
+                if (xo+x*128f < Game.view.width && yo + y * 128 < Game.view.height) {
+                    drawTile(layerData[index], xo + x * 128f, yo + y * 128f)
+
+                    when (data.renderorder) {
+                        "right-down" -> {
+                            x++
+                            if (x > layer.width) {
+                                x = 0f
+                                y++
+                            }
+                        }
+                        else -> {
+                            throw IllegalStateException("Renderorder ${data.renderorder} not supported in $this")
+                        }
+                    }
+                }
+            }
+        }
+        first = false
     }
 }

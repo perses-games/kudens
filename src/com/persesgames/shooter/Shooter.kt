@@ -5,6 +5,7 @@ import com.persesgames.game.Screen
 import com.persesgames.input.EmptyInputProcessor
 import com.persesgames.input.KeyCode
 import com.persesgames.input.Keys
+import com.persesgames.map.tiled.MapRenderer
 import com.persesgames.map.tiled.TiledMap
 import com.persesgames.sound.Music
 import com.persesgames.sound.Sound
@@ -41,28 +42,15 @@ var music: HTMLAudioElement? = null
 var showFPS: Boolean = true
 
 class WelcomeScreen: Screen() {
-    val map = TiledMap("maps", "level_1_01.json")
 
     override fun loadResources() {
         println("loading resource!")
+
         //music = Music.play("music/DST-TechnoBasic.mp3", 1.0, looping = true)
 
         Textures.loadSpriteSheet("images/data-0.json")
 
         Keys.setInputProcessor(GameInputProcessor())
-
-        println("width: ${map.data.width}")
-        println("height: ${map.data.height}")
-        println("layers: ${map.data.layers?.size}")
-        val layers = map.data.layers
-        if (layers != null) {
-            println("layer0: ${layers[0].name}")
-        }
-        val tilesets = map.data.tilesets
-        if (tilesets != null) {
-            println("tilesets ${tilesets.size}")
-            println("tileset0: ${tilesets[0].name}")
-        }
     }
 
     override fun update(time: Float, delta: Float) {
@@ -77,6 +65,8 @@ class WelcomeScreen: Screen() {
 }
 
 class GameScreen: Screen() {
+    val map = TiledMap("maps", "level_1_01.json")
+
     var sprites = SpriteBatch()
     var x = 0f
     var y = 0f
@@ -93,6 +83,19 @@ class GameScreen: Screen() {
         music = Music.play("music/DST-TechnoBasic.mp3", 0.5, looping = true)
 
         Keys.setInputProcessor(GameInputProcessor())
+
+        println("width: ${map.data.width}")
+        println("height: ${map.data.height}")
+        println("layers: ${map.data.layers?.size}")
+        val layers = map.data.layers
+        if (layers != null) {
+            println("layer0: ${layers[0].name}")
+        }
+        val tilesets = map.data.tilesets
+        if (tilesets != null) {
+            println("tilesets ${tilesets.size}")
+            println("tileset0: ${tilesets[0].name}")
+        }
     }
 
     override fun update(time: Float, delta: Float) {
@@ -131,6 +134,8 @@ class GameScreen: Screen() {
         var d = 0f
         var x = 0f
         var y = 0f
+
+        map.drawLayer(1, 0f, 0f)
 
         val time = this.time / 10f
         for (index in 0..numberOfSprites) {

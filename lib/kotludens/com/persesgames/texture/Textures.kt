@@ -103,6 +103,19 @@ class Texture(
         }
     }
 
+    fun queueTileDraw(x: Float, y: Float, tcLeft: Float, tcTop: Float, tcRight: Float, tcBottom: Float) {
+        shaderProgramMesh.queue( x, y, left,  bottom,  tcLeft,  tcBottom, 1f/8f, 0f)
+        shaderProgramMesh.queue( x, y, left,  top,     tcLeft,  tcTop,    1f/8f, 0f)
+        shaderProgramMesh.queue( x, y, right, top,     tcRight, tcTop,    1f/8f, 0f)
+        shaderProgramMesh.queue( x, y, right, top,     tcRight, tcTop,    1f/8f, 0f)
+        shaderProgramMesh.queue( x, y, right, bottom,  tcRight, tcBottom, 1f/8f, 0f)
+        shaderProgramMesh.queue( x, y, left,  bottom,  tcLeft,  tcBottom, 1f/8f, 0f)
+
+        if (shaderProgramMesh.remaining() < 36) {
+            render()
+        }
+    }
+
     fun render() {
         Game.gl().activeTexture(WebGLRenderingContext.TEXTURE0)
         Game.gl().bindTexture(WebGLRenderingContext.TEXTURE_2D, glTexture)
@@ -217,7 +230,7 @@ object Textures {
 
     fun ready() = loaded == startedLoading
 
-    fun get(name: String) = textures.get(name) ?: throw IllegalArgumentException("Texture with name $name is not loaded!")
+    fun get(name: String) = textures[name] ?: throw IllegalArgumentException("Texture with name $name is not loaded!")
 
     fun clear() {
         // delete and unbind all textures...
