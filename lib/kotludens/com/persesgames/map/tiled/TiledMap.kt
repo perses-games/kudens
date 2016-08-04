@@ -10,10 +10,6 @@ import java.util.*
  * Created by rnentjes on 22-7-16.
  */
 
-class MapRenderer(data: MapData) {
-
-}
-
 class MapData {
     var version: Int = 1
     var properties: MutableMap<String, String> = HashMap()
@@ -127,10 +123,13 @@ class TiledMap(dir: String = "", url: String) {
                     val tw = 1f / tilesHor.toFloat()
                     val th = 1f / tilesVer.toFloat()
 
-                    tcLeft = xi * tw
-                    tcTop = yi * th
-                    tcRight = tcLeft + tw
-                    tcBottom = tcTop - th
+                    val pixelW = 0.1f / tileset.tilewidth
+                    val pixelH = 0.1f / tileset.tileheight
+
+                    tcLeft = xi * tw + pixelW
+                    tcTop = yi * th + pixelH
+                    tcRight = tcLeft + tw - pixelW
+                    tcBottom = tcTop - th - pixelH
                 }
             }
         }

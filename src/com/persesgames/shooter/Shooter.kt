@@ -5,10 +5,8 @@ import com.persesgames.game.Screen
 import com.persesgames.input.EmptyInputProcessor
 import com.persesgames.input.KeyCode
 import com.persesgames.input.Keys
-import com.persesgames.map.tiled.MapRenderer
 import com.persesgames.map.tiled.TiledMap
 import com.persesgames.sound.Music
-import com.persesgames.sound.Sound
 import com.persesgames.sound.Sounds
 import com.persesgames.sprite.Sprite
 import com.persesgames.sprite.SpriteBatch
@@ -22,7 +20,7 @@ import kotlin.browser.document
  * Created by rnentjes on 19-4-16.
  */
 
-class GameInputProcessor: EmptyInputProcessor() {
+class GameInputProcessor : EmptyInputProcessor() {
 
     override fun keyPressed(charCode: Int) {
         println("charCode: $charCode")
@@ -41,7 +39,7 @@ class GameInputProcessor: EmptyInputProcessor() {
 var music: HTMLAudioElement? = null
 var showFPS: Boolean = true
 
-class WelcomeScreen: Screen() {
+class WelcomeScreen : Screen() {
 
     override fun loadResources() {
         println("loading resource!")
@@ -53,8 +51,7 @@ class WelcomeScreen: Screen() {
         Keys.setInputProcessor(GameInputProcessor())
     }
 
-    override fun update(time: Float, delta: Float) {
-    }
+    override fun update(time: Float, delta: Float) { }
 
     override fun render() {
 
@@ -64,7 +61,7 @@ class WelcomeScreen: Screen() {
     }
 }
 
-class GameScreen: Screen() {
+class GameScreen : Screen() {
     val map = TiledMap("maps", "level_1_01.json")
 
     var sprites = SpriteBatch()
@@ -77,8 +74,8 @@ class GameScreen: Screen() {
     override fun loadResources() {
         Textures.load("SHIP", "images/ship2.png")
 
-        Sounds.load("EXPLOSION", "sounds/Explosion7.ogg")
-        Sounds.load("DROP", "sounds/Bomb_Drop.ogg")
+        Sounds.load("EXPLOSION", "sounds/Explosion7.ogg", channels = 2)
+        Sounds.load("DROP", "sounds/Bomb_Drop.ogg", channels = 4)
 
         music = Music.play("music/DST-TechnoBasic.mp3", 0.5, looping = true)
 
@@ -87,6 +84,7 @@ class GameScreen: Screen() {
         println("width: ${map.data.width}")
         println("height: ${map.data.height}")
         println("layers: ${map.data.layers?.size}")
+
         val layers = map.data.layers
         if (layers != null) {
             println("layer0: ${layers[0].name}")
@@ -152,8 +150,8 @@ class GameScreen: Screen() {
         Texts.drawText(20f, 150f, "Drawing $numberOfSprites sprites per frame.")
 
         if (showFPS) {
-            Texts.drawText(20f, 100f, "FPS ${Game.fps}", font = "bold 72pt Arial", fillStyle="red")
-            Texts.drawText(15f, -20f, "Music by DST", font = "bold 28pt Arial", fillStyle="green")
+            Texts.drawText(20f, 100f, "FPS ${Game.fps}", font = "bold 72pt Arial", fillStyle = "red")
+            Texts.drawText(15f, -20f, "Music by DST", font = "bold 28pt Arial", fillStyle = "green")
         }
     }
 

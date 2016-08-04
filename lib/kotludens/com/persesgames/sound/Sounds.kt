@@ -10,36 +10,42 @@ import kotlin.browser.document
  * Time: 12:34
  */
 
-class Sound(val name:String, val url: String, val volume: Double = 0.75) {
-    var audio: HTMLAudioElement
+class Sound(val name:String, val url: String, val volume: Double = 0.75, val numberOfChannels: Int) {
+    var channels: Array<HTMLAudioElement>
+    var nextChannel: Int = 0
 
     init {
         println("CREATING: $name")
-        audio = document.createElement("audio") as HTMLAudioElement
+        channels = Array(numberOfChannels, { document.createElement("audio") as HTMLAudioElement })
 
-
-        audio.src = url
-        audio.pause()
-        audio.load()
-        audio.volume = volume
+        for (audio in channels) {
+            audio.src = url
+            audio.pause()
+            audio.load()
+            audio.volume = volume
+        }
     }
 
     fun play() {
-        println("PLAYING: $name")
-        audio.currentTime = 0.0
-        audio.play()
+        println("PLAYING: $name - $nextChannel")
+        channels[nextChannel].currentTime = 0.0
+        channels[nextChannel].play()
+
+        nextChannel = (nextChannel + 1) % channels.size
     }
 
     fun pause() {
-        audio.pause()
+        for (audio in channels) {
+            audio.pause()
+        }
     }
 }
 
 object Sounds {
     val sounds: MutableMap<String, Sound> = HashMap()
 
-    fun load(name: String, url: String, volume: Double = 0.75 ) {
-        sounds.put(name, Sound(name, url, volume))
+    fun load(name: String, url: String, volume: Double = 0.75, channels: Int = 1 ) {
+        sounds.put(name, Sound(name, url, volume, channels))
     }
 
     fun play(name: String, volume: Float = 0.75f) {

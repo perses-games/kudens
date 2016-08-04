@@ -93,9 +93,6 @@
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="index.html" type="JavascriptDebugType" factoryName="JavaScript Debug" nameIsGenerated="true" uri="http://localhost:63342/KotlinTest/web/index.html">
-      <method />
-    </configuration>
     <configuration default="false" name="GenerateJS" type="K2JSConfigurationType" factoryName="Kotlin (JavaScript - experimental)">
       <K2JSConfigurationSettings>
         <option name="browserFamily" value="Chrome" />
@@ -103,6 +100,9 @@
         <option name="pageToOpenFilePath" value="" />
         <option name="shouldOpenInBrowserAfterTranslation" value="false" />
       </K2JSConfigurationSettings>
+      <method />
+    </configuration>
+    <configuration default="false" name="index.html" type="JavascriptDebugType" factoryName="JavaScript Debug" nameIsGenerated="true" uri="http://localhost:63342/KotlinTest/web/index.html">
       <method />
     </configuration>
   </component>
