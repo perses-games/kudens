@@ -1,5 +1,6 @@
 package com.persesgames.shooter
 
+import com.persesgames.game.DrawMode
 import com.persesgames.game.Game
 import com.persesgames.game.Screen
 import com.persesgames.input.EmptyInputProcessor
@@ -65,8 +66,8 @@ class GameScreen : Screen() {
     val map = TiledMap("maps", "level_1_01.json")
 
     var sprites = SpriteBatch()
-    var x = 0f
-    var y = 0f
+    var x = -640f + 64f
+    var y = 15500f
     var sprite = Sprite("SHIP")
     var numberOfSprites: Int = 5000
     var time: Float = 0f
@@ -102,18 +103,22 @@ class GameScreen : Screen() {
 
         if (Keys.isDown(KeyCode.LEFT)) {
             x -= delta * speed
+            println("x=$x")
         }
 
         if (Keys.isDown(KeyCode.RIGHT)) {
             x += delta * speed
+            println("x=$x")
         }
 
         if (Keys.isDown(KeyCode.UP)) {
             y += delta * speed
+            println("y=$y")
         }
 
         if (Keys.isDown(KeyCode.DOWN)) {
             y -= delta * speed
+            println("y=$y")
         }
 
         if (Keys.isDown(KeyCode.MINUS)) {
@@ -133,7 +138,8 @@ class GameScreen : Screen() {
         var x = 0f
         var y = 0f
 
-        map.drawLayer(1, 0f, 0f)
+        map.drawLayer(1, this.x, this.y)
+        map.drawLayer(2, this.x, this.y)
 
         val time = this.time / 10f
         for (index in 0..numberOfSprites) {
@@ -159,6 +165,7 @@ class GameScreen : Screen() {
 
 fun main(args: Array<String>) {
     Game.view.setToWidth(2000f)
+    Game.view.drawMode = DrawMode.LINEAR
 
     Game.start(WelcomeScreen())
 }

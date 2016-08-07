@@ -119,17 +119,27 @@ class TiledMap(dir: String = "", url: String) {
                     gid = tile - tileset.firstgid
 
                     val xi = gid % tilesHor
-                    val yi = gid / tilesHor
+                    var yi = gid / tilesHor
+                    yi = tilesVer - yi - 1
                     val tw = 1f / tilesHor.toFloat()
                     val th = 1f / tilesVer.toFloat()
 
-                    val pixelW = 0.1f / tileset.tilewidth
-                    val pixelH = 0.1f / tileset.tileheight
+                    val pixelW = 0.25f / tileset.tilewidth
+                    val pixelH = 0.25f / tileset.tileheight
 
-                    tcLeft = xi * tw + pixelW
-                    tcTop = yi * th + pixelH
-                    tcRight = tcLeft + tw - pixelW
-                    tcBottom = tcTop - th - pixelH
+                    tcLeft = xi * tw
+                    tcRight = tcLeft + tw
+
+                    // switch up/down because of texture coord 0,0 in left bottom corner
+                    tcBottom = yi * th
+                    tcTop = tcBottom + th
+
+                    tcLeft += pixelW
+                    tcRight -= pixelW
+
+                    tcBottom += pixelW
+                    tcTop -= pixelW
+
                 }
             }
         }
@@ -152,24 +162,33 @@ class TiledMap(dir: String = "", url: String) {
             for (index in layerData.indices) {
                 // todo: determine if in view
                 // todo: determine tilewidth
-                if (xo+x*128f < Game.view.width && yo + y * 128 < Game.view.height) {
+                //if (xo+x*128f < Game.view.width && yo + y * 128 < Game.view.height) {
                     drawTile(layerData[index], xo + x * 128f, yo + y * 128f)
 
                     when (data.renderorder) {
                         "right-down" -> {
                             x++
-                            if (x > layer.width) {
+                            if (x >= layer.width) {
                                 x = 0f
-                                y++
+                                y--
                             }
                         }
                         else -> {
                             throw IllegalStateException("Renderorder ${data.renderorder} not supported in $this")
                         }
                     }
-                }
+                //}
             }
         }
+
+        for (tileset in data.tilesets) {
+            if (Textures.has(tileset.name)) {
+                val tx = Textures.get(tileset.name)
+
+                tx.render()
+            }
+        }
+
         first = false
     }
 }

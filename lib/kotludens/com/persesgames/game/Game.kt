@@ -12,6 +12,11 @@ import kotlin.browser.window
  * Created by rnentjes on 19-4-16.
  */
 
+enum class DrawMode {
+    LINEAR,
+    NEAREST
+}
+
 class HTMLElements {
     var container: HTMLElement
     var webgl: WebGLRenderingContext

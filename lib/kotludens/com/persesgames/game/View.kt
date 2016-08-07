@@ -20,7 +20,8 @@ class View(
   var far: Float = -100f,
   var minAspectRatio: Float = 1f,
   var maxAspectRatio: Float = 1f,
-  var viewType: ViewType = ViewType.WIDTH)
+  var viewType: ViewType = ViewType.WIDTH,
+  var drawMode: DrawMode = DrawMode.LINEAR)
 {
     var vMatrix = Matrix4()
     var aspectRatio = 1f

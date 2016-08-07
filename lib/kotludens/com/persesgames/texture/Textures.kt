@@ -1,5 +1,6 @@
 package com.persesgames.texture
 
+import com.persesgames.game.DrawMode
 import com.persesgames.game.Game
 import com.persesgames.map.tiled.MapTileset
 import com.persesgames.math.Matrix4
@@ -221,15 +222,19 @@ object Textures {
         gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture)
         gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1) // second argument must be an int
         gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, image)
-        //gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST)
-        //gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST)
-        gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.LINEAR)
-        gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.LINEAR)
+        if (Game.view.drawMode == DrawMode.NEAREST) {
+            gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST)
+            gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST)
+        } else {
+            gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.LINEAR)
+            gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.LINEAR)
+        }
         gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null)
     }
 
     fun ready() = loaded == startedLoading
 
+    fun has(name: String) = textures[name] != null
     fun get(name: String) = textures[name] ?: throw IllegalArgumentException("Texture with name $name is not loaded!")
 
     fun clear() {
