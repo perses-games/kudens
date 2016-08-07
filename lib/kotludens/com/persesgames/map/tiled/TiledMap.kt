@@ -124,8 +124,8 @@ class TiledMap(dir: String = "", url: String) {
                     val tw = 1f / tilesHor.toFloat()
                     val th = 1f / tilesVer.toFloat()
 
-                    val pixelW = 0.25f / tileset.tilewidth
-                    val pixelH = 0.25f / tileset.tileheight
+                    val pixelW = 0.1f / tileset.tilewidth
+                    val pixelH = 0.1f / tileset.tileheight
 
                     tcLeft = xi * tw
                     tcRight = tcLeft + tw
@@ -137,9 +137,8 @@ class TiledMap(dir: String = "", url: String) {
                     tcLeft += pixelW
                     tcRight -= pixelW
 
-                    tcBottom += pixelW
-                    tcTop -= pixelW
-
+                    tcBottom += pixelH
+                    tcTop -= pixelH
                 }
             }
         }

@@ -31,7 +31,11 @@ class View(
     }
 
     fun requestFullscreen() {
-        document.documentElement?.requestFullscreen()
+        println("Requesting fullscreen")
+        if (document.fullscreenEnabled) {
+            println("fullscreen Enabled")
+            document.fullscreenElement?.requestFullscreen()
+        }
     }
 
     fun updateView() {
