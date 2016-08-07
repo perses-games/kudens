@@ -32,10 +32,18 @@ class View(
 
     fun requestFullscreen() {
         println("Requesting fullscreen")
-        if (document.fullscreenEnabled) {
-            println("fullscreen Enabled")
-            document.fullscreenElement?.requestFullscreen()
+        js("""
+        if (document.webkitFullscreenElement) {
+          document.webkitCancelFullScreen();
+        } else {
+          document.documentElement.webkitRequestFullScreen();
         }
+        """)
+        //if (document.fullscreenEnabled) {
+        //  println("fullscreen Enabled")
+        //Game.html.container.requestFullscreen()
+        //document.documentElement?.requestFullscreen()
+        //}
     }
 
     fun updateView() {
