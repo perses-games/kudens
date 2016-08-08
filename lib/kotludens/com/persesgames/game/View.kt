@@ -50,15 +50,15 @@ class View(
         aspectRatio = windowWidth / windowHeight.toFloat()
 
         if (aspectRatio < minAspectRatio) {
-            val oldWindowHeight = windowHeight
-            windowHeight = (windowWidth * minAspectRatio).toInt()
-            bottomOffset = (oldWindowHeight - windowHeight) / 2
+            aspectRatio = minAspectRatio
+
+            windowWidth = (windowHeight * aspectRatio).toInt()
         }
 
         if (aspectRatio > maxAspectRatio) {
-            val oldWindowWidth = windowWidth
-            windowWidth = (windowHeight * maxAspectRatio).toInt()
-            leftOffset = (oldWindowWidth - windowWidth) / 2
+            aspectRatio = maxAspectRatio
+
+            windowHeight = (windowWidth / aspectRatio).toInt()
         }
 
         when (viewType) {
@@ -68,12 +68,12 @@ class View(
             ViewType.WIDTH -> {
                 height = width / aspectRatio
 
-                vMatrix.setOrthographicProjection(-width / 2, width / 2, -height / 2, height / 2, near, far)
+                vMatrix.setOrthographicProjection(0f, width, 0f, height, near, far)
             }
             ViewType.HEIGHT -> {
                 width = height * aspectRatio
 
-                vMatrix.setOrthographicProjection(-width / 2, width / 2, -height / 2, height / 2, near, far)
+                vMatrix.setOrthographicProjection(0f, width, 0f, height, near, far)
             }
             ViewType.PROJECTION -> {
                 vMatrix.setPerspectiveProjection(angle, aspectRatio, near, far);

@@ -81,8 +81,12 @@ object Game {
             textCanvas.height = view.height.toInt()
 
             gl().viewport(0, 0, view.width.toInt(), view.height.toInt())
-            canvas.setAttribute("style", "position: absolute; left: 0px; top: 0px; z-index: 5; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
-            textCanvas.setAttribute("style", "position: absolute; left: 0px; top: 0px; z-index: 10; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
+
+            val left = 0 //(windowWidth - view.windowWidth) / 2
+            val top = 0 //(windowHeight - view.windowHeight) / 2
+
+            canvas.setAttribute("style", "position: absolute; left: ${left}px; top: ${top}px; z-index: 5; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
+            textCanvas.setAttribute("style", "position: absolute; left: ${left}px; top: ${top}px; z-index: 10; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
         }
     }
 
