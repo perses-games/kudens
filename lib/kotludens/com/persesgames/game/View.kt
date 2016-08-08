@@ -1,7 +1,6 @@
 package com.persesgames.game
 
 import com.persesgames.math.Matrix4
-import kotlin.browser.document
 
 enum class ViewType {
     PROJECTION,
@@ -12,7 +11,7 @@ enum class ViewType {
 
 class View(
   var windowWidth: Int = 2000,
-  var windowHeight: Int =1000,
+  var windowHeight: Int = 1000,
   var width: Float = 1024f,
   var height: Float = 1024f,
   var angle: Float = 60f,
@@ -20,9 +19,10 @@ class View(
   var far: Float = -100f,
   var minAspectRatio: Float = 1f,
   var maxAspectRatio: Float = 1f,
+  var leftOffset: Int = 0,
+  var bottomOffset: Int = 0,
   var viewType: ViewType = ViewType.WIDTH,
-  var drawMode: DrawMode = DrawMode.LINEAR)
-{
+  var drawMode: DrawMode = DrawMode.LINEAR) {
     var vMatrix = Matrix4()
     var aspectRatio = 1f
 
@@ -50,11 +50,15 @@ class View(
         aspectRatio = windowWidth / windowHeight.toFloat()
 
         if (aspectRatio < minAspectRatio) {
-
+            val oldWindowHeight = windowHeight
+            windowHeight = (windowWidth * minAspectRatio).toInt()
+            bottomOffset = (oldWindowHeight - windowHeight) / 2
         }
 
         if (aspectRatio > maxAspectRatio) {
-
+            val oldWindowWidth = windowWidth
+            windowWidth = (windowHeight * maxAspectRatio).toInt()
+            leftOffset = (oldWindowWidth - windowWidth) / 2
         }
 
         when (viewType) {
@@ -85,7 +89,7 @@ class View(
     fun screenToGameCoordX(screenX: Float): Float {
         var result = screenX
 
-        when(viewType) {
+        when (viewType) {
             ViewType.ABSOLUTE -> {
                 // nop
             }
@@ -109,15 +113,15 @@ class View(
     fun screenToGameCoordY(screenY: Float): Float {
         var result = screenY
 
-        when(viewType) {
+        when (viewType) {
             ViewType.ABSOLUTE -> {
                 // nop
             }
             ViewType.WIDTH -> {
-                result = - ( (screenY / windowHeight * height) - height / 2 )
+                result = -((screenY / windowHeight * height) - height / 2)
             }
             ViewType.HEIGHT -> {
-                result = - ( (screenY / windowHeight * height) - height / 2 )
+                result = -((screenY / windowHeight * height) - height / 2)
             }
             ViewType.PROJECTION -> {
                 // uhm
@@ -134,7 +138,7 @@ class View(
         var result = gameX
         val normalizedX = gameX + (width / 2)
 
-        when(viewType) {
+        when (viewType) {
             ViewType.ABSOLUTE -> {
                 // nop
             }
@@ -159,7 +163,7 @@ class View(
         var result = gameY
         val normalizedY = gameY + (height / 2)
 
-        when(viewType) {
+        when (viewType) {
             ViewType.ABSOLUTE -> {
                 // nop
             }
