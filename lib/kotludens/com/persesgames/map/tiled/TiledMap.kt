@@ -99,7 +99,7 @@ class TiledMap(dir: String = "", url: String) {
 
     fun drawTile(tile: Int, x: Float, y: Float) {
         if (first) {
-            println("Draw $tile on ($x, $y)")
+            //println("Draw $tile on ($x, $y)")
         }
         val tilesets = data.tilesets
         var name: String? = null
