@@ -54,7 +54,7 @@ private val vertexShaderSource = """
 
         vec4 scaledBox = vec4(a_boundingBox, 1.0, 1.0) * scale(a_scale) * rotateZ(a_rotation);
 
-        gl_Position = u_projectionView * vec4(a_position + scaledBox.xy, -1, 1.0);
+        gl_Position = u_projectionView * vec4(a_position + scaledBox.xy, 1.0, 1.0);
     }
 """
 

@@ -78,9 +78,9 @@ class Matrix4 {
         matrix[10] = -2f / (far - near)
         matrix[11] = 0f
 
-        matrix[12] = (right + left) / (right - left)
-        matrix[13] = (top + bottom) / (top - bottom)
-        matrix[14] = (far + near) / (far - near)
+        matrix[12] = - (right + left) / (right - left)
+        matrix[13] = - (top + bottom) / (top - bottom)
+        matrix[14] = - (far + near) / (far - near)
         matrix[15] = 1f
     }
 

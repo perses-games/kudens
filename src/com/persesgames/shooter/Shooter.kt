@@ -66,7 +66,7 @@ class GameScreen : Screen() {
     val map = TiledMap("maps", "level_1_01.json")
 
     var sprites = SpriteBatch()
-    var x = -2000f
+    var x = 0f
     var y = 15500f
     var sprite = Sprite("SHIP")
     var numberOfSprites: Int = 5000
@@ -145,13 +145,13 @@ class GameScreen : Screen() {
         for (index in 0..numberOfSprites) {
             r = index * 0.05f
             d = index * 2.13f
-            x = (Math.sin((time + d).toDouble()) * r).toFloat()
-            y = (Math.cos((time + d).toDouble()) * r).toFloat()
+            x = 1000f + (Math.sin((time + d).toDouble()) * r).toFloat()
+            y = 500f + (Math.cos((time + d).toDouble()) * r).toFloat()
 
             sprites.draw(sprite, x.toFloat(), y.toFloat(), scale = 0.4f + Math.sin(time.toDouble() + r).toFloat(), rotation = r * 10f)
         }
 
-        sprites.draw(sprite, -350f, -350f, scale = 4f, rotation = -time)
+        sprites.draw(sprite, 350f, 350f, scale = 4f, rotation = -time)
 
         sprites.render()
 
