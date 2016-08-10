@@ -104,13 +104,13 @@ class Texture(
         }
     }
 
-    fun queueTileDraw(x: Float, y: Float, tcLeft: Float, tcTop: Float, tcRight: Float, tcBottom: Float) {
-        shaderProgramMesh.queue( x, y, left,  bottom,  tcLeft,  tcBottom, 1f/8f, 0f)
-        shaderProgramMesh.queue( x, y, left,  top,     tcLeft,  tcTop,    1f/8f, 0f)
-        shaderProgramMesh.queue( x, y, right, top,     tcRight, tcTop,    1f/8f, 0f)
-        shaderProgramMesh.queue( x, y, right, top,     tcRight, tcTop,    1f/8f, 0f)
-        shaderProgramMesh.queue( x, y, right, bottom,  tcRight, tcBottom, 1f/8f, 0f)
-        shaderProgramMesh.queue( x, y, left,  bottom,  tcLeft,  tcBottom, 1f/8f, 0f)
+    fun queueTileDraw(x: Float, y: Float, tcLeft: Float, tcTop: Float, tcRight: Float, tcBottom: Float, scale: Float) {
+        shaderProgramMesh.queue( x, y, left,  bottom,  tcLeft,  tcBottom, scale, 0f)
+        shaderProgramMesh.queue( x, y, left,  top,     tcLeft,  tcTop,    scale, 0f)
+        shaderProgramMesh.queue( x, y, right, top,     tcRight, tcTop,    scale, 0f)
+        shaderProgramMesh.queue( x, y, right, top,     tcRight, tcTop,    scale, 0f)
+        shaderProgramMesh.queue( x, y, right, bottom,  tcRight, tcBottom, scale, 0f)
+        shaderProgramMesh.queue( x, y, left,  bottom,  tcLeft,  tcBottom, scale, 0f)
 
         if (shaderProgramMesh.remaining() < 36) {
             render()

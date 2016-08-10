@@ -10,6 +10,8 @@ enum class ViewType {
 }
 
 class View(
+  var lastWindowWidth: Int = 2000,
+  var lastWindowHeight: Int = 1000,
   var windowWidth: Int = 2000,
   var windowHeight: Int = 1000,
   var width: Float = 1024f,
@@ -52,13 +54,13 @@ class View(
         if (aspectRatio < minAspectRatio) {
             aspectRatio = minAspectRatio
 
-            windowWidth = (windowHeight * aspectRatio).toInt()
+            windowHeight = (windowWidth / aspectRatio).toInt()
         }
 
         if (aspectRatio > maxAspectRatio) {
             aspectRatio = maxAspectRatio
 
-            windowHeight = (windowWidth / aspectRatio).toInt()
+            windowWidth = (windowHeight * aspectRatio).toInt()
         }
 
         when (viewType) {

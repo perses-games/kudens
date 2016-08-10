@@ -64,8 +64,10 @@ object Game {
         val windowWidth = window.innerWidth.toInt()
         val windowHeight = window.innerHeight.toInt()
 
-        if (view.windowWidth != windowWidth ||
-            view.windowHeight != windowHeight) {
+        if (view.lastWindowWidth != windowWidth ||
+            view.lastWindowHeight != windowHeight) {
+            view.lastWindowWidth = windowWidth
+            view.lastWindowHeight = windowHeight
             view.windowWidth = windowWidth
             view.windowHeight = windowHeight
 
@@ -82,8 +84,8 @@ object Game {
 
             gl().viewport(0, 0, view.width.toInt(), view.height.toInt())
 
-            val left = 0 //(windowWidth - view.windowWidth) / 2
-            val top = 0 //(windowHeight - view.windowHeight) / 2
+            val left = (windowWidth - view.windowWidth) / 2
+            val top = (windowHeight - view.windowHeight) / 2
 
             canvas.setAttribute("style", "position: absolute; left: ${left}px; top: ${top}px; z-index: 5; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
             textCanvas.setAttribute("style", "position: absolute; left: ${left}px; top: ${top}px; z-index: 10; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )

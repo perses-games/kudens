@@ -64,11 +64,7 @@ class TilesetIndex(
   val tcTop: Float,
   val tcRight: Float,
   val tcBottom: Float
-  ) {
-    fun render(x: Float, y: Float) {
-        texture.queueTileDraw(x, y, tcLeft, tcTop, tcRight, tcBottom)
-    }
-}
+  )
 
 class TiledMap(dir: String = "", url: String) {
     val properties: Map<String, String> = HashMap()
@@ -108,6 +104,7 @@ class TiledMap(dir: String = "", url: String) {
         var tcTop = 0f
         var tcRight = 0f
         var tcBottom = 0f
+        var scale = 1f
 
         if (tilesets != null) {
             for (tileset in tilesets) {
@@ -139,6 +136,8 @@ class TiledMap(dir: String = "", url: String) {
 
                     tcBottom += pixelH
                     tcTop -= pixelH
+
+                    scale = (tileset.tilewidth / tileset.imagewidth.toFloat())
                 }
             }
         }
@@ -146,7 +145,7 @@ class TiledMap(dir: String = "", url: String) {
         if (name != null) {
             val texture = Textures.get(name)
 
-            texture.queueTileDraw(x, y, tcLeft, tcTop, tcRight, tcBottom)
+            texture.queueTileDraw(x, y, tcLeft, tcTop, tcRight, tcBottom, scale)
         }
     }
 

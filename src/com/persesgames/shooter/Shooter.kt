@@ -66,7 +66,7 @@ class GameScreen : Screen() {
     val map = TiledMap("maps", "level_1_01.json")
 
     var sprites = SpriteBatch()
-    var x = -640f + 64f
+    var x = -2000f
     var y = 15500f
     var sprite = Sprite("SHIP")
     var numberOfSprites: Int = 5000
@@ -99,7 +99,7 @@ class GameScreen : Screen() {
 
     override fun update(time: Float, delta: Float) {
         this.time = time
-        val speed = 500f // units per second
+        val speed = 1500f // units per second
 
         if (Keys.isDown(KeyCode.LEFT)) {
             x -= delta * speed
@@ -151,6 +151,8 @@ class GameScreen : Screen() {
             sprites.draw(sprite, x.toFloat(), y.toFloat(), scale = 0.4f + Math.sin(time.toDouble() + r).toFloat(), rotation = r * 10f)
         }
 
+        sprites.draw(sprite, -350f, -350f, scale = 4f, rotation = -time)
+
         sprites.render()
 
         Texts.drawText(20f, 150f, "Drawing $numberOfSprites sprites per frame.")
@@ -166,6 +168,9 @@ class GameScreen : Screen() {
 fun main(args: Array<String>) {
     Game.view.setToWidth(2000f)
     Game.view.drawMode = DrawMode.LINEAR
+
+    Game.view.minAspectRatio = 0.9f
+    Game.view.maxAspectRatio = 1.5f
 
     Game.start(WelcomeScreen())
 }
