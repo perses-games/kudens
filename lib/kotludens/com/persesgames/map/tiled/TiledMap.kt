@@ -1,10 +1,10 @@
 package com.persesgames.map.tiled
 
-import com.persesgames.game.Game
 import com.persesgames.net.getUrlAsString
 import com.persesgames.texture.Texture
 import com.persesgames.texture.Textures
 import java.util.*
+import kotlin.browser.window
 
 /**
  * Created by rnentjes on 22-7-16.
@@ -59,17 +59,25 @@ class MapTileset {
 }
 
 class TilesetIndex(
-  val texture: Texture,
+  val texture: Texture?,
   val tcLeft: Float,
   val tcTop: Float,
   val tcRight: Float,
-  val tcBottom: Float
-  )
+  val tcBottom: Float,
+  val scale: Float
+  ) {
+    constructor() : this(null, 0f, 0f, 0f, 0f, 0f)
+
+    fun render(x: Float, y: Float) {
+        texture?.queueTileDraw(x, y, tcLeft, tcTop, tcRight, tcBottom, scale)
+    }
+}
 
 class TiledMap(dir: String = "", url: String) {
     val properties: Map<String, String> = HashMap()
     val data: MapData
-    val tiles: Array<String>
+    val tileset: Array<String>
+    val tiles: Array<TilesetIndex>
     var first = true
     //var tilesetIndex: Array<TilesetIndex> = Array(0, { TilesetIndex() })
 
@@ -83,70 +91,77 @@ class TiledMap(dir: String = "", url: String) {
         println("map data is loaded")
         val tilesets = data.tilesets
         if (tilesets != null) {
-            tiles = Array(tilesets.size, { "" })
+            tileset = Array(tilesets.size, { "" })
+            var maxGid = 0
             for (index in 0..tilesets.size - 1) {
-                tiles[index] = tilesets[index].name
+                tileset[index] = tilesets[index].name
                 Textures.load(tilesets[index].name, tileDir + tilesets[index].image)
+                maxGid = Math.max(maxGid, tilesets[index].firstgid + tilesets[index].tilecount)
             }
+
+            tiles = Array(maxGid, { TilesetIndex() })
         } else {
-            tiles = Array(0, { "" })
+            tileset = Array(0, { "" })
+            tiles = Array(0, { TilesetIndex() })
+        }
+
+        cacheTiles()
+    }
+
+    fun cacheTiles() {
+        if (!Textures.ready()) {
+            window.setTimeout({ cacheTiles() }, 10)
+        } else {
+            val tilesets = data.tilesets
+            var tcLeft = 0f
+            var tcTop = 0f
+            var tcRight = 0f
+            var tcBottom = 0f
+
+            if (tilesets != null) {
+
+
+                for (tileset in tilesets) {
+                    val tilesHor = tileset.imagewidth / tileset.tilewidth
+                    val tilesVer = tileset.imageheight / tileset.tileheight
+                    val scale = (tileset.tilewidth / tileset.imagewidth.toFloat())
+
+                    for (index in tileset.firstgid..tileset.firstgid + tileset.tilecount) {
+                        val texture = Textures.get(tileset.name)
+
+                        val gid = index - tileset.firstgid
+
+                        val xi = gid % tilesHor
+                        var yi = gid / tilesHor
+                        yi = tilesVer - yi - 1
+                        val tw = 1f / tilesHor.toFloat()
+                        val th = 1f / tilesVer.toFloat()
+
+                        val pixelW = 0.1f / tileset.tilewidth
+                        val pixelH = 0.1f / tileset.tileheight
+
+                        tcLeft = xi * tw
+                        tcRight = tcLeft + tw
+
+                        // switch up/down because of texture coord 0,0 in left bottom corner
+                        tcBottom = yi * th
+                        tcTop = tcBottom + th
+
+                        tcLeft += pixelW
+                        tcRight -= pixelW
+
+                        tcBottom += pixelH
+                        tcTop -= pixelH
+
+                        tiles[index] = TilesetIndex(texture, tcLeft, tcTop, tcRight, tcBottom, scale)
+                    }
+                }
+            }
         }
     }
 
     fun drawTile(tile: Int, x: Float, y: Float) {
-        if (first) {
-            //println("Draw $tile on ($x, $y)")
-        }
-        val tilesets = data.tilesets
-        var name: String? = null
-        var gid: Int
-        var tcLeft = 0f
-        var tcTop = 0f
-        var tcRight = 0f
-        var tcBottom = 0f
-        var scale = 1f
-
-        if (tilesets != null) {
-            for (tileset in tilesets) {
-                val tilesHor = tileset.imagewidth / tileset.tilewidth
-                val tilesVer = tileset.imageheight / tileset.tileheight
-
-                if (tile >= tileset.firstgid && tile < tileset.firstgid + tileset.tilecount) {
-                    name = tileset.name
-                    gid = tile - tileset.firstgid
-
-                    val xi = gid % tilesHor
-                    var yi = gid / tilesHor
-                    yi = tilesVer - yi - 1
-                    val tw = 1f / tilesHor.toFloat()
-                    val th = 1f / tilesVer.toFloat()
-
-                    val pixelW = 0.1f / tileset.tilewidth
-                    val pixelH = 0.1f / tileset.tileheight
-
-                    tcLeft = xi * tw
-                    tcRight = tcLeft + tw
-
-                    // switch up/down because of texture coord 0,0 in left bottom corner
-                    tcBottom = yi * th
-                    tcTop = tcBottom + th
-
-                    tcLeft += pixelW
-                    tcRight -= pixelW
-
-                    tcBottom += pixelH
-                    tcTop -= pixelH
-
-                    scale = (tileset.tilewidth / tileset.imagewidth.toFloat())
-                }
-            }
-        }
-
-        if (name != null) {
-            val texture = Textures.get(name)
-
-            texture.queueTileDraw(x, y, tcLeft, tcTop, tcRight, tcBottom, scale)
-        }
+        tiles[tile].render(x, y)
     }
 
     fun drawLayer(layerIndex: Int, xo: Float, yo: Float) {

@@ -6,6 +6,7 @@ apply plugin: 'idea'
 
 sourceSets {
     main.kotlin.srcDirs += 'lib/kotludens'
+    main.kotlin.srcDirs += 'src'
 }
 
 repositories {
@@ -16,7 +17,7 @@ repositories {
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.3'
+    ext.kotlin_version = '1.0.5-2'
     repositories {
         maven {
             url "http://nexus.astraeus.nl/nexus/content/groups/public"

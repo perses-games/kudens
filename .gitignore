@@ -1,3 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
 gradle.properties
 web/js/generated
+KotlinTest.iws
+.gradle/
+.idea/workspace.xml
+build/
+out/
