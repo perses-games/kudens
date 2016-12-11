@@ -166,7 +166,7 @@ class GameScreen : Screen() {
 }
 
 fun main(args: Array<String>) {
-    Game.view.setToWidth(2000f)
+    Game.view.setToHeight(1000f)
     Game.view.drawMode = DrawMode.LINEAR
 
     Game.view.minAspectRatio = 0.9f
