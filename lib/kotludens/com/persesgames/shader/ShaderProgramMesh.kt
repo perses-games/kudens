@@ -32,7 +32,7 @@ class ShaderProgramMesh<T>(
     }
 
     fun queue(vararg vertices: Float) {
-        queue(vertices.toTypedArray())
+        queue(vertices as Array<Float>)
     }
 
     fun queue(vertices: Array<Float>) {

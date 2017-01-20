@@ -17,7 +17,7 @@ repositories {
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.5-2'
+    ext.kotlin_version = '1.0.6'
     repositories {
         maven {
             url "http://nexus.astraeus.nl/nexus/content/groups/public"
@@ -31,7 +31,6 @@ buildscript {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-js-library:$kotlin_version"
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 task jarSources(type:Jar){
@@ -45,10 +44,6 @@ artifacts {
 def outDir = "${buildDir}/kotlin2js/main/"
 
 compileKotlin2Js {
-    sourceSets {
-        main.kotlin.srcDirs += 'src'
-    }
-
     kotlinOptions.metaInfo = true
 
     compileKotlin2Js.kotlinOptions.sourceMap = true
