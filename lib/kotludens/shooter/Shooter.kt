@@ -162,7 +162,6 @@ class GameScreen : Screen() {
             Texts.drawText(15f, -20f, "Music by DST", font = "bold 28pt Arial", fillStyle = "green")
         }
     }
-
 }
 
 fun main(args: Array<String>) {

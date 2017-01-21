@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kotlin-webgl-test.iml" filepath="$PROJECT_DIR$/.idea/modules/kotlin-webgl-test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kotlin-webgl-test_main.iml" filepath="$PROJECT_DIR$/.idea/modules/kotlin-webgl-test_main.iml" group="kotlin-webgl-test" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kotlin-webgl-test_test.iml" filepath="$PROJECT_DIR$/.idea/modules/kotlin-webgl-test_test.iml" group="kotlin-webgl-test" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kudens.iml" filepath="$PROJECT_DIR$/.idea/modules/kudens.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kudens_main.iml" filepath="$PROJECT_DIR$/.idea/modules/kudens_main.iml" group="kudens" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kudens_test.iml" filepath="$PROJECT_DIR$/.idea/modules/kudens_test.iml" group="kudens" />
     </modules>
   </component>
 </project>

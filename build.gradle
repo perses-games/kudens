@@ -3,9 +3,16 @@ version '1.0.0-SNAPSHOT'
 
 apply plugin: 'kotlin2js'
 apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+idea {
+    module {
+        name = "kudens"
+    }
+}
 
 sourceSets {
-    main.kotlin.srcDirs += 'lib/kotludens'
     main.kotlin.srcDirs += 'src'
 }
 
@@ -17,7 +24,7 @@ repositories {
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.6'
+    ext.kotlin_version = '1.1.0-beta-18'
     repositories {
         maven {
             url "http://nexus.astraeus.nl/nexus/content/groups/public"
@@ -35,36 +42,63 @@ dependencies {
 
 task jarSources(type:Jar){
     from sourceSets.main.allSource
+
     classifier = 'source'
 }
+
 artifacts {
     compile jarSources
 }
-
-def outDir = "${buildDir}/kotlin2js/main/"
 
 compileKotlin2Js {
     kotlinOptions.metaInfo = true
 
     compileKotlin2Js.kotlinOptions.sourceMap = true
-    compileKotlin2Js.kotlinOptions.outputFile = "${projectDir}/web/js/generated/KotlinTest.js"
+    compileKotlin2Js.kotlinOptions.outputFile = "${buildDir}/kotlinjs/kudens.js"
     compileKotlin2Js.kotlinOptions.suppressWarnings = true
     compileKotlin2Js.kotlinOptions.verbose = true
 }
 
-jar {
-    from sourceSets.main.allSource
-    include "**/*.kt"
+def outDir = "${buildDir}/kotlinjs/"
 
+jar {
     from outDir
     include "**/*.js"
 
     manifest {
         attributes(
-                "Specification-Title": "Kotlin JavaScript Lib",
-                "Kotlin-JS-Module-Name": "test-library"
+                "Specification-Title": "Kudens game lib",
+                "Kotlin-JS-Module-Name": "lib-kudens"
         )
     }
 }
 
 jar.dependsOn(compileKotlin2Js)
+
+build.doLast {
+    configurations.compile.each { File file ->
+        copy {
+            includeEmptyDirs = false
+
+            from zipTree(file.absolutePath)
+            into "${projectDir}/web"
+            include { fileTreeElement ->
+                def path = fileTreeElement.path
+                path.endsWith(".js") && (path.startsWith("META-INF/resources/") || !path.startsWith("META-INF/"))
+            }
+        }
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "http://nexus.astraeus.nl/nexus/content/repositories/releases") {
+                authentication(userName: nexusUsername, password: nexusPassword)
+            }
+            snapshotRepository(url: "http://nexus.astraeus.nl/nexus/content/repositories/snapshots") {
+                authentication(userName: nexusUsername, password: nexusPassword)
+            }
+        }
+    }
+}

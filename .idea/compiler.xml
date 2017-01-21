@@ -4,6 +4,8 @@
     <bytecodeTargetLevel>
       <module name="kotlin-webgl-test_main" target="1.8" />
       <module name="kotlin-webgl-test_test" target="1.8" />
+      <module name="kudens_main" target="1.8" />
+      <module name="kudens_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
