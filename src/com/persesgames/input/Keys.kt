@@ -4,7 +4,6 @@ import com.persesgames.game.Game
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.MouseEvent
-import java.util.*
 import kotlin.browser.document
 import kotlin.dom.on
 
@@ -37,24 +36,19 @@ interface InputProcessor {
 }
 
 open class EmptyInputProcessor : InputProcessor {
-    override fun pointerClick(pointer: Int, x: Float, y: Float) {
-    }
 
-    override fun keyDown(keyCode: Int) {
-    }
+    override fun pointerClick(pointer: Int, x: Float, y: Float) { }
 
-    override fun keyPressed(charCode: Int) {
-    }
+    override fun keyDown(keyCode: Int) { }
 
-    override fun keyUp(keyCode: Int) {
-    }
+    override fun keyPressed(charCode: Int) { }
 
-
+    override fun keyUp(keyCode: Int) { }
 }
 
 object Keys {
 
-    private val keys: MutableMap<Int, Int> = HashMap();
+    private val keys: MutableMap<Int, Int> = HashMap()
     private var inputProcesser: InputProcessor = EmptyInputProcessor()
 
     init {

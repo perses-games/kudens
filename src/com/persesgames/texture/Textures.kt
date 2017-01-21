@@ -10,8 +10,6 @@ import com.persesgames.shader.VertextAttributeInfo
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLTexture
 import org.w3c.dom.HTMLImageElement
-import org.w3c.fetch.Request
-import java.util.*
 import kotlin.browser.document
 
 /**
@@ -161,9 +159,6 @@ object Textures {
 
     init {
         val setter = { program: ShaderProgram<TextureData>, data: TextureData ->
-            //program.webgl.activeTexture(WebGLRenderingContext.TEXTURE0);
-            //program.webgl.bindTexture(WebGLRenderingContext.TEXTURE_2D, data.texture);
-
             program.setUniform1i("u_sampler", 0)
             program.setUniformMatrix4fv("u_projectionView", Game.view.vMatrix.getFloat32Array())
         }

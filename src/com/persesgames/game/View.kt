@@ -78,7 +78,7 @@ class View(
                 vMatrix.setOrthographicProjection(0f, width, 0f, height, near, far)
             }
             ViewType.PROJECTION -> {
-                vMatrix.setPerspectiveProjection(angle, aspectRatio, near, far);
+                vMatrix.setPerspectiveProjection(angle, aspectRatio, near, far)
             }
             else -> {
                 throw IllegalStateException("ViewType $viewType not implemented!")

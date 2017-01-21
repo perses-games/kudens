@@ -19,13 +19,12 @@ class ShaderProgramMesh<T>(
   val shaderProgram: ShaderProgram<T>
 ) {
     val webgl = shaderProgram.webgl
-    val data: Float32Array
+    val data: Float32Array = Float32Array(20000 - (20000 % shaderProgram.drawLength))
     var currentIndex: Int = 0
     val attribBuffer: WebGLBuffer
     var counter = 0
 
     init {
-        data = Float32Array(20000 - (20000 % shaderProgram.drawLength))
 
         attribBuffer = webgl.createBuffer() ?: throw IllegalStateException("Unable to create webgl buffer!")
         webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
@@ -52,9 +51,6 @@ class ShaderProgramMesh<T>(
     fun render(userdata: T) {
         counter++
         if (currentIndex > 0) {
-/*            if (counter % 100 == 0) {
-                println("currentIndex=$currentIndex blockSize=${shaderProgram.verticesBlockSize} drawLength=${shaderProgram.drawLength} drawing=${(currentIndex / shaderProgram.verticesBlockSize).toInt()}")
-            }*/
             if (currentIndex % shaderProgram.verticesBlockSize != 0) {
                 throw IllegalStateException("Number of vertices not a multiple of the attribute block size!")
             }

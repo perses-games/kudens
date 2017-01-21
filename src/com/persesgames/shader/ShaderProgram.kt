@@ -39,15 +39,15 @@ class ShaderProgram<T>(
 
         webgl.useProgram(shaderProgram)
 
-        this.verticesBlockSize = 0;
+        this.verticesBlockSize = 0
 
         // set attribute locations...
         for (info in vainfo.iterator()) {
             info.location = webgl.getAttribLocation(shaderProgram, info.locationName)
-            info.offset = verticesBlockSize;
+            info.offset = verticesBlockSize
 
-            verticesBlockSize += info.numElements;
-            println("attrib: ${info.locationName}, info.location: ${info.location}, info.offset: ${info.offset}");
+            verticesBlockSize += info.numElements
+            //println("attrib: ${info.locationName}, info.location: ${info.location}, info.offset: ${info.offset}")
         }
 
         when(drawType) {
@@ -59,15 +59,14 @@ class ShaderProgram<T>(
             }
         }
 
-        println("verticesBlockSize $verticesBlockSize");
+        //println("verticesBlockSize $verticesBlockSize")
 
-        println("ShaderProgram constructor done");
+        //println("ShaderProgram constructor done")
     }
 
     private fun compileShader(source: String, type: Int): WebGLShader {
-        val result: WebGLShader
+        val result: WebGLShader = webgl.createShader(type) ?: throw IllegalStateException("Unable to request shader from webgl context!")
 
-        result = webgl.createShader(type) ?: throw IllegalStateException("Unable to request shader from webgl context!")
         webgl.shaderSource(result, source)
         webgl.compileShader(result)
 

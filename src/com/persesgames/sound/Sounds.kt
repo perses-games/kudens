@@ -1,7 +1,6 @@
 package com.persesgames.sound
 
 import org.w3c.dom.HTMLAudioElement
-import java.util.*
 import kotlin.browser.document
 
 /**
@@ -15,7 +14,7 @@ class Sound(val name:String, val url: String, val volume: Double = 0.75, val num
     var nextChannel: Int = 0
 
     init {
-        println("CREATING: $name")
+        //println("CREATING: $name")
         channels = Array(numberOfChannels, { document.createElement("audio") as HTMLAudioElement })
 
         for (audio in channels) {
@@ -27,7 +26,7 @@ class Sound(val name:String, val url: String, val volume: Double = 0.75, val num
     }
 
     fun play() {
-        println("PLAYING: $name - $nextChannel")
+        //println("PLAYING: $name - $nextChannel")
         channels[nextChannel].currentTime = 0.0
         channels[nextChannel].play()
 

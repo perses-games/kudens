@@ -3,7 +3,6 @@ package com.persesgames.map.tiled
 import com.persesgames.net.getUrlAsString
 import com.persesgames.texture.Texture
 import com.persesgames.texture.Textures
-import java.util.*
 import kotlin.browser.window
 
 /**
