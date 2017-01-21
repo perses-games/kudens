@@ -39,7 +39,7 @@ class ShaderProgramMesh<T>(
         currentIndex += vertices.size
 
         if (currentIndex == data.length) {
-            println("Skipped draw call, to many values!")
+            //println("Skipped draw call, to many values!")
             currentIndex = 0
         }
     }

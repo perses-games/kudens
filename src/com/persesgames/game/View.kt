@@ -33,7 +33,7 @@ class View(
     }
 
     fun requestFullscreen() {
-        println("Requesting fullscreen")
+        //println("Requesting fullscreen")
         js("""
         if (document.webkitFullscreenElement) {
           document.webkitCancelFullScreen();

@@ -87,7 +87,7 @@ class TiledMap(dir: String = "", url: String) {
         }
 
         data = JSON.parse<MapData>(getUrlAsString(tileDir + url))
-        println("map data is loaded")
+        //println("map data is loaded")
         val tilesets = data.tilesets
         if (tilesets != null) {
             tileset = Array(tilesets.size, { "" })

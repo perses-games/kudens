@@ -33,7 +33,7 @@ class ShaderProgram<T>(
         webgl.linkProgram(shaderProgram)
 
         if (webgl.getProgramParameter(shaderProgram, WebGLRenderingContext.LINK_STATUS) == false) {
-            println(webgl.getProgramInfoLog(shaderProgram))
+            //println(webgl.getProgramInfoLog(shaderProgram))
             throw IllegalStateException("Unable to compile shader program!")
         }
 

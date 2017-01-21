@@ -195,7 +195,7 @@ object Textures {
                 textures.put(name, texture)
 
                 loaded++
-                println("loaded texture $loaded/$startedLoading ${ready()}")
+                //println("loaded texture $loaded/$startedLoading ${ready()}")
             }
             image.src = filename
         } else {

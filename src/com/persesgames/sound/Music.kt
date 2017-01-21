@@ -33,7 +33,7 @@ object Music {
                 audio.currentTime = 0.0
                 audio.play()
             } else {
-                println("REMOVING: $audio")
+                //println("REMOVING: $audio")
                 audio.remove()
                 playing.remove(audio)
             }
