@@ -39,7 +39,7 @@ buildscript {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-js-library:$kotlin_version"
 }
-
+/*
 task jarSources(type:Jar){
     from sourceSets.main.allSource
 
@@ -48,7 +48,7 @@ task jarSources(type:Jar){
 
 artifacts {
     compile jarSources
-}
+}*/
 
 compileKotlin2Js {
     kotlinOptions.metaInfo = true
@@ -67,7 +67,6 @@ jar {
 
     manifest {
         attributes(
-                "Specification-Title": "Kudens game lib",
                 "Kotlin-JS-Module-Name": "lib-kudens"
         )
     }
@@ -75,6 +74,7 @@ jar {
 
 jar.dependsOn(compileKotlin2Js)
 
+/*
 build.doLast {
     configurations.compile.each { File file ->
         copy {
@@ -89,6 +89,7 @@ build.doLast {
         }
     }
 }
+*/
 
 uploadArchives {
     repositories {

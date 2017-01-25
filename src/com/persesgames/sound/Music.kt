@@ -18,7 +18,7 @@ object Music {
 
         audio.src = url
 
-        return audio;
+        return audio
     }
 
     fun play(url: String, volume: Double = 0.75, looping: Boolean = false): HTMLAudioElement {
