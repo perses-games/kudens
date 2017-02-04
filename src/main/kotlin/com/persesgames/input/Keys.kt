@@ -6,6 +6,7 @@ import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.MouseEvent
 import kotlin.browser.document
 import kotlin.dom.on
+import kotlin.js.Date
 
 /**
  * User: rnentjes
@@ -90,7 +91,7 @@ object Keys {
 
     private fun keyDown(key: Event) {
         if (key is KeyboardEvent) {
-            keys.put(key.keyCode, Date().getTime())
+            keys.put(key.keyCode, Date().getTime().toInt())
 
             inputProcesser.keyDown(key.keyCode)
         }

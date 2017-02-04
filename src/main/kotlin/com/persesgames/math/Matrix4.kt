@@ -1,6 +1,7 @@
 package com.persesgames.math
 
 import org.khronos.webgl.Float32Array
+import kotlin.js.Math
 
 /**
  * User: rnentjes

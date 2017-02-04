@@ -7,6 +7,7 @@ import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import kotlin.browser.document
 import kotlin.browser.window
+import kotlin.js.Date
 
 /**
  * Created by rnentjes on 19-4-16.
@@ -129,7 +130,7 @@ object Game {
                 Game.gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA); //ONE_MINUS_DST_ALPHA);
 
                 val time = Date().getTime()
-                currentDelta = (time - currentTime) / 1000f
+                currentDelta = ((time - currentTime) / 1000f).toFloat()
                 currentTime = time
 
                 val timeInSeconds = (currentTime - start) / 1000f
@@ -142,7 +143,7 @@ object Game {
                     fpsCount = 0
                 }
 
-                currentScreen.update(timeInSeconds, currentDelta);
+                currentScreen.update(timeInSeconds.toFloat(), currentDelta);
                 currentScreen.render()
             }
         }

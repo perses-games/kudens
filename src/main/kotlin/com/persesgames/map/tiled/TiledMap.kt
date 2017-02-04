@@ -4,6 +4,7 @@ import com.persesgames.net.getUrlAsString
 import com.persesgames.texture.Texture
 import com.persesgames.texture.Textures
 import kotlin.browser.window
+import kotlin.js.Math
 
 /**
  * Created by rnentjes on 22-7-16.
