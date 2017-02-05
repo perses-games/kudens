@@ -31,14 +31,14 @@ class ShaderProgramMesh<T>(
     }
 
     fun queue(vararg vertices: Float) {
-        queue(vertices as Array<Float>)
+        queueArray(vertices as Array<Float>)
     }
 
-    fun queue(vertices: Array<Float>) {
+    fun queueArray(vertices: Array<Float>) {
         data.set(vertices, currentIndex)
         currentIndex += vertices.size
 
-        if (currentIndex == data.length) {
+        if (bufferFull()) {
             //println("Skipped draw call, to many values!")
             currentIndex = 0
         }
