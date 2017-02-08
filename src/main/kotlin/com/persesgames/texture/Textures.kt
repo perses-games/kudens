@@ -7,6 +7,7 @@ import com.persesgames.math.Matrix4
 import com.persesgames.shader.ShaderProgram
 import com.persesgames.shader.ShaderProgramMesh
 import com.persesgames.shader.VertextAttributeInfo
+import org.khronos.webgl.ArrayBufferView
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLTexture
 import org.w3c.dom.HTMLImageElement
@@ -17,7 +18,7 @@ import kotlin.browser.document
  * Date: 17-4-16
  * Time: 14:52
  */
-
+//language=GLSL
 private val vertexShaderSource = """
     attribute vec2 a_position;
     attribute vec2 a_boundingBox;
@@ -203,16 +204,70 @@ object Textures {
         }
     }
 
+    fun create(name: String, image: HTMLImageElement) {
+        val gl = Game.gl()
+
+        startedLoading++
+
+        val webGlTexture = gl.createTexture()
+        if (webGlTexture != null) {
+            textureLoaded(webGlTexture, image)
+            val texture = Texture(webGlTexture, shaderProgram, image.width, image.height)
+
+            textures.put(name, texture)
+
+            loaded++
+        } else {
+            throw IllegalStateException("Couldn't create webgl texture!")
+        }
+    }
+
+
+    fun create(name: String, width: Int, height: Int, image: ArrayBufferView) {
+        val gl = Game.gl()
+
+        startedLoading++
+
+        val webGlTexture = gl.createTexture()
+        if (webGlTexture != null) {
+            textureLoaded(webGlTexture, width, height, image)
+            val texture = Texture(webGlTexture, shaderProgram, width, height)
+
+            textures.put(name, texture)
+
+            loaded++
+        } else {
+            throw IllegalStateException("Couldn't create webgl texture!")
+        }
+    }
+
     fun load(mapTileSet: MapTileset) {
 
     }
 
-    fun textureLoaded(texture: WebGLTexture, image: HTMLImageElement) {
+    private fun textureLoaded(texture: WebGLTexture, image: HTMLImageElement) {
         val gl = Game.gl()
 
         gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture)
         gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1) // second argument must be an int
         gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, image)
+        setTextureParameters();
+        gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null)
+    }
+
+    private fun textureLoaded(texture: WebGLTexture, width: Int, height: Int, image: ArrayBufferView) {
+        val gl = Game.gl()
+
+        gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture)
+        gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1) // second argument must be an int
+        gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, width, height, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, image)
+        setTextureParameters();
+        gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null)
+    }
+
+    private fun setTextureParameters() {
+        val gl = Game.gl()
+
         if (Game.view.drawMode == DrawMode.NEAREST) {
             gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST)
             gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST)
@@ -222,7 +277,6 @@ object Textures {
         }
         gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, WebGLRenderingContext.CLAMP_TO_EDGE)
         gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, WebGLRenderingContext.CLAMP_TO_EDGE)
-        gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null)
     }
 
     fun ready() = loaded == startedLoading
