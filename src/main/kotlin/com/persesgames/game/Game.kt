@@ -52,6 +52,11 @@ object Game {
     var currentDelta = 0f
     var pause: Boolean = false
 
+    var clearRed = 0f
+    var clearGreen = 0f
+    var clearBlue = 0f
+    var clearAlpha = 0f
+
     var fps = 0
     var fpsCount = 0
     var fpsCountTime = 0f
@@ -113,6 +118,13 @@ object Game {
         currentScreen.loadResources()
     }
 
+    fun setClearColor(r: Float, g: Float, b: Float, a: Float) {
+        clearRed = r
+        clearGreen = g
+        clearBlue = b
+        clearAlpha = a
+    }
+
     fun gameLoop() {
         if (!Textures.ready()) {
             Game.gl().clearColor(1f, 1f, 1f, 1f)
@@ -123,11 +135,11 @@ object Game {
             if (!pause) {
                 html.canvas2d.clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble());
 
-                Game.gl().clearColor(0f, 0f, 0f, 1f)
+                Game.gl().clearColor(clearRed, clearGreen, clearBlue, clearAlpha)
                 Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
 
-                Game.gl().enable(WebGLRenderingContext.BLEND);
-                Game.gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA); //ONE_MINUS_DST_ALPHA);
+                Game.gl().enable(WebGLRenderingContext.BLEND)
+                Game.gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA) //ONE_MINUS_DST_ALPHA);
 
                 val time = Date().getTime()
                 currentDelta = ((time - currentTime) / 1000f).toFloat()
@@ -143,7 +155,7 @@ object Game {
                     fpsCount = 0
                 }
 
-                currentScreen.update(timeInSeconds.toFloat(), currentDelta);
+                currentScreen.update(timeInSeconds.toFloat(), currentDelta)
                 currentScreen.render()
             }
         }
