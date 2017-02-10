@@ -18,8 +18,8 @@
         </option>
         <option name="versionInfo">
           <KotlinVersionInfo>
-            <option name="apiLevel" value="1.1" />
-            <option name="languageLevel" value="1.1" />
+            <option name="apiLevel" value="1.0" />
+            <option name="languageLevel" value="1.0" />
             <option name="targetPlatformName" value="JavaScript " />
           </KotlinVersionInfo>
         </option>

@@ -49,7 +49,7 @@ open class EmptyInputProcessor : InputProcessor {
 
 object Keys {
 
-    private val keys: MutableMap<Int, Int> = HashMap()
+    private val keys: MutableMap<Int, Double> = HashMap()
     private var inputProcesser: InputProcessor = EmptyInputProcessor()
 
     init {
@@ -82,6 +82,8 @@ object Keys {
             body.on("mousemove", true) {
                 Keys.mouseMove(it)
             }
+        } else {
+            console.log("Can't register key events, document.body is null!?")
         }
     }
 
@@ -91,7 +93,7 @@ object Keys {
 
     private fun keyDown(key: Event) {
         if (key is KeyboardEvent) {
-            keys.put(key.keyCode, Date().getTime().toInt())
+            keys.put(key.keyCode, Date().getTime())
 
             inputProcesser.keyDown(key.keyCode)
         }
@@ -132,5 +134,11 @@ object Keys {
     fun isDown(keyCode: Int) = keys.containsKey(keyCode)
 
     fun isDown(keyCode: KeyCode) = keys.containsKey(keyCode.keyCode)
+
+    fun wasPressed(keyCode: Int, delta: Double): Boolean {
+        val time = keys[keyCode]
+
+        return (time != null && time > (Date().getTime() - delta))
+    }
 
 }

@@ -23,7 +23,6 @@
                 <option name="apiVersion" value="1.1" />
                 <option name="suppressWarnings" value="true" />
                 <option name="verbose" value="true" />
-                <option name="coroutinesWarn" value="true" />
               </K2JSCompilerArguments>
             </option>
             <option name="_commonCompilerArguments">
@@ -35,7 +34,6 @@
                 <option name="pluginClasspaths">
                   <array />
                 </option>
-                <option name="coroutinesWarn" value="true" />
                 <option name="pluginOptions">
                   <array />
                 </option>
@@ -62,7 +60,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
     <output-test url="file://$MODULE_DIR$/../../build/classes/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/test">

@@ -23,7 +23,6 @@
                 <option name="apiVersion" value="1.1" />
                 <option name="suppressWarnings" value="true" />
                 <option name="verbose" value="true" />
-                <option name="coroutinesWarn" value="true" />
               </K2JSCompilerArguments>
             </option>
             <option name="_commonCompilerArguments">
@@ -35,7 +34,6 @@
                 <option name="pluginClasspaths">
                   <array />
                 </option>
-                <option name="coroutinesWarn" value="true" />
                 <option name="pluginOptions">
                   <array />
                 </option>
@@ -54,19 +52,18 @@
         </option>
         <option name="versionInfo">
           <KotlinVersionInfo>
-            <option name="apiLevel" value="1.1" />
-            <option name="languageLevel" value="1.1" />
+            <option name="apiLevel" value="1.0" />
+            <option name="languageLevel" value="1.0" />
             <option name="targetPlatformName" value="JavaScript " />
           </KotlinVersionInfo>
         </option>
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/../../build/classes/main" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../src">
-      <sourceFolder url="file://$MODULE_DIR$/../../src" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../../src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/kotlin" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
