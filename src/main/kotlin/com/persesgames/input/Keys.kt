@@ -55,31 +55,31 @@ object Keys {
     init {
         val body = document.body
         if (body != null) {
-            body.on("keydown", true) {
+            body.onkeydown = {
                 Keys.keyDown(it)
             }
 
-            body.on("keyup", true) {
+            body.onkeyup = {
                 Keys.keyUp(it)
             }
 
-            body.on("keypress", true) {
+            body.onkeypress = {
                 Keys.keyPress(it)
             }
 
-            body.on("click", true) {
+            body.onclick = {
                 Keys.mouseClick(it)
             }
 
-            body.on("mousedown", true) {
+            body.onmousedown = {
                 Keys.mouseMove(it)
             }
 
-            body.on("mouseup", true) {
+            body.onmouseup = {
                 Keys.mouseMove(it)
             }
 
-            body.on("mousemove", true) {
+            body.onmousemove = {
                 Keys.mouseMove(it)
             }
         } else {

@@ -11,11 +11,15 @@
             <option name="k2jsCompilerArguments">
               <K2JSCompilerArguments />
             </option>
+            <option name="k2jvmCompilerArguments">
+              <K2JVMCompilerArguments />
+            </option>
             <option name="_commonCompilerArguments">
               <DummyImpl />
             </option>
           </KotlinCompilerInfo>
         </option>
+        <option name="useProjectSettings" value="false" />
         <option name="versionInfo">
           <KotlinVersionInfo>
             <option name="apiLevel" value="1.0" />

@@ -28,7 +28,7 @@ object Music {
         audio.volume = volume
         audio.play()
 
-        audio.on("ended", true, {
+        audio.onended = {
             if (looping) {
                 audio.currentTime = 0.0
                 audio.play()
@@ -37,7 +37,7 @@ object Music {
                 audio.remove()
                 playing.remove(audio)
             }
-        })
+        }
 
         return audio
     }
