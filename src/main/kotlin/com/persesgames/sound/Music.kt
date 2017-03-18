@@ -2,7 +2,6 @@ package com.persesgames.sound
 
 import org.w3c.dom.HTMLAudioElement
 import kotlin.browser.document
-import kotlin.dom.on
 
 /**
  * User: rnentjes

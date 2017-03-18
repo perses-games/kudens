@@ -7,7 +7,7 @@
           <KotlinCompilerInfo>
             <option name="compilerSettings">
               <CompilerSettings>
-                <option name="additionalArguments" value="$MODULE_DIR$/../../build/kotlinjs/kudens.js /home/rnentjes/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-js/1.1.0-beta-38/dea46fa0ee81d4e90f45867a7dc81557979479f3/kotlin-stdlib-js-1.1.0-beta-38.jar: v5 plain call" />
+                <option name="additionalArguments" value="-verbose" />
               </CompilerSettings>
             </option>
             <option name="k2jsCompilerArguments">
@@ -22,7 +22,7 @@
                 <option name="languageVersion" value="1.1" />
                 <option name="apiVersion" value="1.1" />
                 <option name="suppressWarnings" value="true" />
-                <option name="verbose" value="true" />
+                <option name="coroutinesWarn" value="true" />
               </K2JSCompilerArguments>
             </option>
             <option name="k2jvmCompilerArguments">
@@ -33,21 +33,12 @@
                 <option name="languageVersion" value="1.1" />
                 <option name="apiVersion" value="1.1" />
                 <option name="suppressWarnings" value="true" />
-                <option name="verbose" value="true" />
                 <option name="pluginClasspaths">
                   <array />
                 </option>
+                <option name="coroutinesWarn" value="true" />
                 <option name="pluginOptions">
                   <array />
-                </option>
-                <option name="freeArgs">
-                  <list>
-                    <option value="$MODULE_DIR$/../../build/kotlinjs/kudens.js" />
-                    <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-js/1.1.0-beta-38/dea46fa0ee81d4e90f45867a7dc81557979479f3/kotlin-stdlib-js-1.1.0-beta-38.jar:" />
-                    <option value="v5" />
-                    <option value="plain" />
-                    <option value="call" />
-                  </list>
                 </option>
               </DummyImpl>
             </option>
@@ -64,8 +55,8 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/../../build/classes/main" />
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+    <output url="file://$MODULE_DIR$/../../build/kotlinjs" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
@@ -74,6 +65,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-js:1.1.0-beta-38" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-js:1.1.1" level="project" />
   </component>
 </module>

@@ -5,7 +5,6 @@ import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.MouseEvent
 import kotlin.browser.document
-import kotlin.dom.on
 import kotlin.js.Date
 
 /**
