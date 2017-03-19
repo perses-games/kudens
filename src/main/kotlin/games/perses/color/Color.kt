@@ -1,4 +1,4 @@
-package com.persesgames.color
+package games.perses.color
 
 /**
  * User: rnentjes

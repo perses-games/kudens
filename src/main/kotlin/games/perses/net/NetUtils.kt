@@ -1,4 +1,4 @@
-package com.persesgames.net
+package games.perses.net
 
 import org.w3c.xhr.XMLHttpRequest
 

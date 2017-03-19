@@ -1,8 +1,8 @@
-package com.persesgames.map.tiled
+package games.perses.map.tiled
 
-import com.persesgames.net.getUrlAsString
-import com.persesgames.texture.Texture
-import com.persesgames.texture.Textures
+import games.perses.net.getUrlAsString
+import games.perses.texture.Texture
+import games.perses.texture.Textures
 import kotlin.browser.window
 import kotlin.js.Math
 

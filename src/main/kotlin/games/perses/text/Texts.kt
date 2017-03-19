@@ -1,6 +1,6 @@
-package com.persesgames.text
+package games.perses.text
 
-import com.persesgames.game.Game
+import games.perses.game.Game
 
 /**
  * Created by rnentjes on 16-5-16.

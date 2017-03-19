@@ -1,6 +1,6 @@
-package com.persesgames.game
+package games.perses.game
 
-import com.persesgames.texture.Textures
+import games.perses.texture.Textures
 import org.khronos.webgl.WebGLRenderingContext
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
@@ -127,19 +127,19 @@ object Game {
 
     fun gameLoop() {
         if (!Textures.ready()) {
-            Game.gl().clearColor(1f, 1f, 1f, 1f)
-            Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+            gl().clearColor(1f, 1f, 1f, 1f)
+            gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
         } else {
             resize()
 
             if (!pause) {
                 html.canvas2d.clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble());
 
-                Game.gl().clearColor(clearRed, clearGreen, clearBlue, clearAlpha)
-                Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+                gl().clearColor(clearRed, clearGreen, clearBlue, clearAlpha)
+                gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
 
-                Game.gl().enable(WebGLRenderingContext.BLEND)
-                Game.gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA) //ONE_MINUS_DST_ALPHA);
+                gl().enable(WebGLRenderingContext.BLEND)
+                gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA) //ONE_MINUS_DST_ALPHA);
 
                 val time = Date().getTime()
                 currentDelta = ((time - currentTime) / 1000f).toFloat()

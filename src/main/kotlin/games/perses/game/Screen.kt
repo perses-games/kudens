@@ -1,4 +1,4 @@
-package com.persesgames.game
+package games.perses.game
 
 import org.khronos.webgl.WebGLRenderingContext
 

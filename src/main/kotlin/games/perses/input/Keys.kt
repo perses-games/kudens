@@ -1,6 +1,6 @@
-package com.persesgames.input
+package games.perses.input
 
-import com.persesgames.game.Game
+import games.perses.game.Game
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.MouseEvent
@@ -55,31 +55,31 @@ object Keys {
         val body = document.body
         if (body != null) {
             body.onkeydown = {
-                Keys.keyDown(it)
+                keyDown(it)
             }
 
             body.onkeyup = {
-                Keys.keyUp(it)
+                keyUp(it)
             }
 
             body.onkeypress = {
-                Keys.keyPress(it)
+                keyPress(it)
             }
 
             body.onclick = {
-                Keys.mouseClick(it)
+                mouseClick(it)
             }
 
             body.onmousedown = {
-                Keys.mouseMove(it)
+                mouseMove(it)
             }
 
             body.onmouseup = {
-                Keys.mouseMove(it)
+                mouseMove(it)
             }
 
             body.onmousemove = {
-                Keys.mouseMove(it)
+                mouseMove(it)
             }
         } else {
             console.log("Can't register key events, document.body is null!?")

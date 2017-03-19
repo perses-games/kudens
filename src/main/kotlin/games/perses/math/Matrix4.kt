@@ -1,4 +1,4 @@
-package com.persesgames.math
+package games.perses.math
 
 import org.khronos.webgl.Float32Array
 import kotlin.js.Math

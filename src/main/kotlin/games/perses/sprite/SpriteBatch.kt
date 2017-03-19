@@ -1,7 +1,7 @@
-package com.persesgames.sprite
+package games.perses.sprite
 
-import com.persesgames.texture.Texture
-import com.persesgames.texture.Textures
+import games.perses.texture.Texture
+import games.perses.texture.Textures
 
 /**
  * User: rnentjes

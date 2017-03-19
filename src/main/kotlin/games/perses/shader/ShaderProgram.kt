@@ -1,4 +1,4 @@
-package com.persesgames.shader
+package games.perses.shader
 
 import org.khronos.webgl.*
 

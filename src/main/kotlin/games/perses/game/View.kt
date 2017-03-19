@@ -1,6 +1,6 @@
-package com.persesgames.game
+package games.perses.game
 
-import com.persesgames.math.Matrix4
+import games.perses.math.Matrix4
 
 enum class ViewType {
     PROJECTION,

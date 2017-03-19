@@ -1,12 +1,12 @@
-package com.persesgames.texture
+package games.perses.texture
 
-import com.persesgames.game.DrawMode
-import com.persesgames.game.Game
-import com.persesgames.map.tiled.MapTileset
-import com.persesgames.math.Matrix4
-import com.persesgames.shader.ShaderProgram
-import com.persesgames.shader.ShaderProgramMesh
-import com.persesgames.shader.VertextAttributeInfo
+import games.perses.game.DrawMode
+import games.perses.game.Game
+import games.perses.map.tiled.MapTileset
+import games.perses.math.Matrix4
+import games.perses.shader.ShaderProgram
+import games.perses.shader.ShaderProgramMesh
+import games.perses.shader.VertextAttributeInfo
 import org.khronos.webgl.ArrayBufferView
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLTexture
@@ -145,9 +145,9 @@ class SpriteSheetData(
   )
 
 class SpriteSheet(
-    val glTexture: WebGLTexture,
-    val shaderProgram: ShaderProgram<SpriteSheetData>,
-    val data: Map<String, SpriteSheetData>
+  val glTexture: WebGLTexture,
+  val shaderProgram: ShaderProgram<SpriteSheetData>,
+  val data: Map<String, SpriteSheetData>
 ) {
 
 }
@@ -172,7 +172,7 @@ object Textures {
           VertextAttributeInfo("a_rotation", 1)
         )
 
-        shaderProgram = ShaderProgram(Game.gl(), WebGLRenderingContext.TRIANGLES, vertexShaderSource, fragmentShaderSource, vainfo, setter)
+        shaderProgram = ShaderProgram(Game.gl(), WebGLRenderingContext.Companion.TRIANGLES, vertexShaderSource, fragmentShaderSource, vainfo, setter)
     }
 
     fun loadSpriteSheet(name: String) {

@@ -1,4 +1,4 @@
-package com.persesgames.texture
+package games.perses.texture
 
 /**
  * User: rnentjes

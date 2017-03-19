@@ -1,4 +1,4 @@
-package com.persesgames.sound
+package games.perses.sound
 
 import org.w3c.dom.HTMLAudioElement
 import kotlin.browser.document
