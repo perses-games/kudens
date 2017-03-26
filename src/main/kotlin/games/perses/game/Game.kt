@@ -37,8 +37,31 @@ class HTMLElements {
         container.appendChild(webGlCanvas)
         container.appendChild(canvas)
 
-        webgl = webGlCanvas.getContext("webgl") as WebGLRenderingContext
-        canvas2d = canvas.getContext("2d") as CanvasRenderingContext2D
+        val canvas2dcanvas = canvas.getContext("2d")
+
+        var webglcanvas = webGlCanvas.getContext("webgl")
+        if (webglcanvas == null) {
+            console.log("webgl context not found, trying experimental-webgl.")
+            webglcanvas = webGlCanvas.getContext("experimental-webgl")
+        }
+
+        if (webglcanvas is WebGLRenderingContext) {
+            webgl = webglcanvas
+        } else {
+            console.log("webgl?", webglcanvas)
+            window.alert("Your browser doesn't seem to support webgl!")
+
+            throw IllegalStateException("Your browser doesn't seem to support webgl!")
+        }
+
+        if (canvas2dcanvas is CanvasRenderingContext2D) {
+            canvas2d = canvas2dcanvas
+        } else {
+            console.log("canvas2d?", canvas2dcanvas)
+            window.alert("Your browser doesn't seem to support 2d canvas!")
+
+            throw IllegalStateException("Your browser doesn't seem to support webgl!")
+        }
     }
 }
 

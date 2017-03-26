@@ -10,7 +10,7 @@ import kotlin.browser.document
  */
 
 class Sound(val name:String, val url: String, val volume: Double = 0.75, val numberOfChannels: Int) {
-    var channels: Array<HTMLAudioElement>
+    var channels: Array<HTMLAudioElement?>
     var nextChannel: Int = 0
 
     init {
@@ -18,24 +18,26 @@ class Sound(val name:String, val url: String, val volume: Double = 0.75, val num
         channels = Array(numberOfChannels, { document.createElement("audio") as HTMLAudioElement })
 
         for (audio in channels) {
-            audio.src = url
-            audio.pause()
-            audio.load()
-            audio.volume = volume
+            if (audio != null) {
+                audio.src = url
+                audio.pause()
+                audio.load()
+                audio.volume = volume
+            }
         }
     }
 
     fun play() {
         //println("PLAYING: $name - $nextChannel")
-        channels[nextChannel].currentTime = 0.0
-        channels[nextChannel].play()
+        channels[nextChannel]?.currentTime = 0.0
+        channels[nextChannel]?.play()
 
         nextChannel = (nextChannel + 1) % channels.size
     }
 
     fun pause() {
         for (audio in channels) {
-            audio.pause()
+            audio?.pause()
         }
     }
 }
