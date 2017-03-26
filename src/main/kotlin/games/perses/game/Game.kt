@@ -55,7 +55,7 @@ object Game {
     var clearRed = 0f
     var clearGreen = 0f
     var clearBlue = 0f
-    var clearAlpha = 0f
+    var clearAlpha = 1f
 
     var fps = 0
     var fpsCount = 0

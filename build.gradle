@@ -1,5 +1,5 @@
-group 'com.persesgames'
-version '1.0.0-SNAPSHOT'
+group 'perses.games'
+version '1.1.0-SNAPSHOT'
 
 apply plugin: 'kotlin2js'
 apply plugin: 'idea'

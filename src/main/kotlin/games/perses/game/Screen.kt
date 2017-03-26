@@ -8,20 +8,15 @@ import org.khronos.webgl.WebGLRenderingContext
 
 abstract class Screen {
 
-    open fun loadResources() {
+    open fun loadResources() {}
 
-    }
-
-    open fun closeResources() {
-
-    }
+    open fun closeResources() {}
 
     abstract fun update(time: Float, delta: Float)
 
     abstract fun render()
 
 }
-
 
 class DefaultScreen: Screen() {
     override fun update(time: Float, delta: Float) {
