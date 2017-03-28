@@ -34,7 +34,6 @@ class View(
     }
 
     fun requestFullscreen() {
-        println("Requesting fullscreen")
         val element = document.body
         //language=javascript
         js("""
@@ -72,8 +71,6 @@ class View(
 
     fun isFullscreen(): Boolean {
         val fse = js("document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement");
-
-        console.log("fse: ", fse)
 
         return fse != undefined
     }
