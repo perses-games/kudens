@@ -1,6 +1,7 @@
 package games.perses.game
 
 import games.perses.math.Matrix4
+import kotlin.browser.document
 
 enum class ViewType {
     PROJECTION,
@@ -33,19 +34,48 @@ class View(
     }
 
     fun requestFullscreen() {
-        //println("Requesting fullscreen")
+        println("Requesting fullscreen")
+        val element = document.body
+        //language=javascript
         js("""
-        if (document.webkitFullscreenElement) {
-          document.webkitCancelFullScreen();
-        } else {
-          document.documentElement.webkitRequestFullScreen();
-        }
+             if(element.requestFullscreen) {
+                element.requestFullscreen();
+              } else if(element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+              } else if(element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+              } else if(element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+              }
         """)
-        //if (document.fullscreenEnabled) {
-        //  println("fullscreen Enabled")
-        //Game.html.container.requestFullscreen()
-        //document.documentElement?.requestFullscreen()
-        //}
+    }
+
+    fun exitFullscreen() {
+        js("""
+              if(document.exitFullscreen) {
+                document.exitFullscreen();
+              } else if(document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+              } else if(document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+              }
+        """)
+    }
+
+    fun switchFullscreen() {
+        if (isFullscreen()) {
+            exitFullscreen()
+        } else {
+            requestFullscreen()
+        }
+    }
+
+    fun isFullscreen(): Boolean {
+        val fse = js("document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement");
+
+        console.log("fse: ", fse)
+
+        return fse != undefined
     }
 
     fun updateView() {
