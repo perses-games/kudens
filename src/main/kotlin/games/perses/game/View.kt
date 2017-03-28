@@ -85,7 +85,7 @@ class View(
             }
         }
 
-        println("width: $width, height: $height")
+        //println("width: $width, height: $height")
     }
 
     fun screenToGameCoordX(screenX: Float): Float {
