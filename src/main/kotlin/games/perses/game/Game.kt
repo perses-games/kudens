@@ -84,6 +84,9 @@ object Game {
     var fpsCount = 0
     var fpsCountTime = 0f
 
+    var borderLeft = 0
+    var borderTop = 0
+
     fun gl() = html.webgl
 
     fun resize() {
@@ -113,11 +116,11 @@ object Game {
 
             gl().viewport(0, 0, view.width.toInt(), view.height.toInt())
 
-            val left = (windowWidth - view.windowWidth) / 2
-            val top = (windowHeight - view.windowHeight) / 2
+            borderLeft = (windowWidth - view.windowWidth) / 2
+            borderTop = (windowHeight - view.windowHeight) / 2
 
-            canvas.setAttribute("style", "position: absolute; left: ${left}px; top: ${top}px; z-index: 5; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
-            textCanvas.setAttribute("style", "position: absolute; left: ${left}px; top: ${top}px; z-index: 10; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
+            canvas.setAttribute("style", "position: absolute; left: ${borderLeft}px; top: ${borderTop}px; z-index: 5; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
+            textCanvas.setAttribute("style", "position: absolute; left: ${borderLeft}px; top: ${borderTop}px; z-index: 10; width: ${view.windowWidth}px; height: ${view.windowHeight}px;" )
         }
     }
 
@@ -134,7 +137,7 @@ object Game {
     }
 
     fun setScreen(screen: Screen) {
-        currentScreen.closeResources()
+        currentScreen.unloadResources()
 
         currentScreen = screen
 

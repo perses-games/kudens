@@ -85,7 +85,7 @@ class View(
             }
         }
 
-        //println("width: $width, height: $height")
+        println("width: $width, height: $height")
     }
 
     fun screenToGameCoordX(screenX: Float): Float {
@@ -95,11 +95,8 @@ class View(
             ViewType.ABSOLUTE -> {
                 // nop
             }
-            ViewType.WIDTH -> {
-                result = (screenX / windowWidth * width) - width / 2
-            }
-            ViewType.HEIGHT -> {
-                result = (screenX / windowWidth * width) - width / 2
+            ViewType.WIDTH, ViewType.HEIGHT -> {
+                result = ( (screenX - Game.borderLeft) * width / windowWidth )
             }
             ViewType.PROJECTION -> {
                 // uhm
@@ -119,11 +116,8 @@ class View(
             ViewType.ABSOLUTE -> {
                 // nop
             }
-            ViewType.WIDTH -> {
-                result = -((screenY / windowHeight * height) - height / 2)
-            }
-            ViewType.HEIGHT -> {
-                result = -((screenY / windowHeight * height) - height / 2)
+            ViewType.WIDTH, ViewType.HEIGHT -> {
+                result = height - ( (screenY - Game.borderTop) * height / windowHeight )
             }
             ViewType.PROJECTION -> {
                 // uhm
@@ -144,11 +138,8 @@ class View(
             ViewType.ABSOLUTE -> {
                 // nop
             }
-            ViewType.WIDTH -> {
-                result = (windowWidth / width * normalizedX)
-            }
-            ViewType.HEIGHT -> {
-                result = (windowWidth / width * normalizedX)
+            ViewType.WIDTH, ViewType.HEIGHT -> {
+                result = ( gameX / width * windowWidth ) + Game.borderLeft
             }
             ViewType.PROJECTION -> {
                 // uhm
@@ -169,11 +160,8 @@ class View(
             ViewType.ABSOLUTE -> {
                 // nop
             }
-            ViewType.WIDTH -> {
-                result = windowHeight - (windowHeight / height * normalizedY)
-            }
-            ViewType.HEIGHT -> {
-                result = windowHeight - (windowHeight / height * normalizedY)
+            ViewType.WIDTH, ViewType.HEIGHT -> {
+                result = height - ( gameY / height * windowHeight ) + Game.borderTop
             }
             ViewType.PROJECTION -> {
                 // uhm

@@ -33,6 +33,8 @@ interface InputProcessor {
 
     fun pointerClick(pointer: Int, x: Float, y: Float)
 
+    //fun mouseMove(x: Float, y: Float)
+
 }
 
 open class EmptyInputProcessor : InputProcessor {
@@ -44,6 +46,8 @@ open class EmptyInputProcessor : InputProcessor {
     override fun keyPressed(charCode: Int) { }
 
     override fun keyUp(keyCode: Int) { }
+
+    //override fun mouseMove(x: Float, y: Float) { }
 }
 
 object Keys {
@@ -126,7 +130,7 @@ object Keys {
             val vx: Float = Game.view.screenToGameCoordX(event.clientX.toFloat())
             val vy: Float = Game.view.screenToGameCoordY(event.clientY.toFloat())
 
-
+            //println("mouse move ${event.clientX.toFloat()}, ${event.clientY.toFloat()} -> $vx, $vy")
         }
     }
 

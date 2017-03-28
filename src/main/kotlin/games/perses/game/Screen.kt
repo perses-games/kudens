@@ -10,7 +10,15 @@ abstract class Screen {
 
     open fun loadResources() {}
 
-    open fun closeResources() {}
+    @Deprecated(
+      message = "replace with unloadResources",
+      replaceWith = ReplaceWith("unloadResources()")
+    )
+    open fun closeResources() {
+        unloadResources()
+    }
+
+    open fun unloadResources() {}
 
     abstract fun update(time: Float, delta: Float)
 

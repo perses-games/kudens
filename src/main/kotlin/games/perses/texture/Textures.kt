@@ -285,7 +285,7 @@ object Textures {
     fun get(name: String) = textures[name] ?: throw IllegalArgumentException("Texture with name $name is not loaded!")
 
     fun clear() {
-        // delete and unbind all textures...
+        // todo: delete and unbind all textures...
     }
 
     fun render() {
