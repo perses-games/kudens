@@ -9,7 +9,7 @@ import kotlin.browser.document
  * Time: 12:34
  */
 
-class Sound(val name:String, val url: String, val volume: Double = 0.75, val numberOfChannels: Int) {
+class Sound(val name:String, val url: String, val defaultVolume: Double = 0.75, val numberOfChannels: Int) {
     var channels: Array<HTMLAudioElement?>
     var nextChannel: Int = 0
 
@@ -22,13 +22,14 @@ class Sound(val name:String, val url: String, val volume: Double = 0.75, val num
                 audio.src = url
                 audio.pause()
                 audio.load()
-                audio.volume = volume
+                audio.volume = defaultVolume
             }
         }
     }
 
-    fun play() {
+    fun play(volume: Double = defaultVolume) {
         //println("PLAYING: $name - $nextChannel")
+        channels[nextChannel]?.volume = volume
         channels[nextChannel]?.currentTime = 0.0
         channels[nextChannel]?.play()
 
@@ -49,10 +50,14 @@ object Sounds {
         sounds.put(name, Sound(name, url, volume, channels))
     }
 
-    fun play(name: String, volume: Float = 0.75f) {
+    fun play(name: String, volume: Double? = null) {
         val sound: Sound = sounds[name] ?: throw IllegalArgumentException("Sound '$name' not found, load it first!")
 
-        sound.play()
+        if (volume != null) {
+            sound.play(volume)
+        } else {
+            sound.play()
+        }
     }
 
     fun pause(name: String) {
