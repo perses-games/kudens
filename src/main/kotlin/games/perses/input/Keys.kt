@@ -1,6 +1,7 @@
 package games.perses.input
 
 import games.perses.game.Game
+import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.MouseEvent
@@ -118,8 +119,8 @@ object Keys {
 
     private fun mouseClick(event: Event) {
         if (event is MouseEvent) {
-            val vx: Float = Game.view.screenToGameCoordX(event.clientX.toFloat())
-            val vy: Float = Game.view.screenToGameCoordY(event.clientY.toFloat())
+            val vx: Float = Game.view.screenToGameCoordX(event.getX(Game.html.container).toFloat())
+            val vy: Float = Game.view.screenToGameCoordY(event.getY(Game.html.container).toFloat())
 
             inputProcesser.pointerClick(event.button.toInt(), vx, vy)
         }
@@ -127,8 +128,8 @@ object Keys {
 
     private fun mouseMove(event: Event) {
         if (event is MouseEvent) {
-            val vx: Float = Game.view.screenToGameCoordX(event.clientX.toFloat())
-            val vy: Float = Game.view.screenToGameCoordY(event.clientY.toFloat())
+            val vx: Float = Game.view.screenToGameCoordX(event.getX(Game.html.container).toFloat())
+            val vy: Float = Game.view.screenToGameCoordY(event.getY(Game.html.container).toFloat())
 
             //println("mouse move ${event.clientX.toFloat()}, ${event.clientY.toFloat()} -> $vx, $vy")
         }
@@ -145,3 +146,7 @@ object Keys {
     }
 
 }
+
+fun MouseEvent.getX(element: Element) = this.pageX - element.getBoundingClientRect().left
+
+fun MouseEvent.getY(element: Element) = this.pageY - element.getBoundingClientRect().top

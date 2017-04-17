@@ -74,6 +74,7 @@ object Game {
     var currentTime = start
     var currentDelta = 0f
     var pause: Boolean = false
+    var clearScreenEveryFrame = true
 
     var clearRed = 0f
     var clearGreen = 0f
@@ -152,38 +153,44 @@ object Game {
     }
 
     fun gameLoop() {
-        if (!Textures.ready()) {
-            gl().clearColor(1f, 1f, 1f, 1f)
-            gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
-        } else {
-            resize()
-
-            if (!pause) {
-                html.canvas2d.clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble());
-
-                gl().clearColor(clearRed, clearGreen, clearBlue, clearAlpha)
+        try {
+            if (!Textures.ready()) {
+                gl().clearColor(1f, 1f, 1f, 1f)
                 gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+            } else {
+                resize()
 
-                gl().enable(WebGLRenderingContext.BLEND)
-                gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA) //ONE_MINUS_DST_ALPHA);
+                if (!pause) {
+                    html.canvas2d.clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble());
 
-                val time = Date().getTime()
-                currentDelta = ((time - currentTime) / 1000f).toFloat()
-                currentTime = time
+                    if (clearScreenEveryFrame) {
+                        gl().clearColor(clearRed, clearGreen, clearBlue, clearAlpha)
+                        gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+                    }
 
-                val timeInSeconds = (currentTime - start) / 1000f
+                    gl().enable(WebGLRenderingContext.BLEND)
+                    gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA) //ONE_MINUS_DST_ALPHA);
 
-                fpsCountTime += currentDelta
-                fpsCount++
-                while (fpsCountTime > 1f) {
-                    fps = fpsCount
-                    fpsCountTime -= 1f
-                    fpsCount = 0
+                    val time = Date().getTime()
+                    currentDelta = ((time - currentTime) / 1000f).toFloat()
+                    currentTime = time
+
+                    val timeInSeconds = (currentTime - start) / 1000f
+
+                    fpsCountTime += currentDelta
+                    fpsCount++
+                    while (fpsCountTime > 1f) {
+                        fps = fpsCount
+                        fpsCountTime -= 1f
+                        fpsCount = 0
+                    }
+
+                    currentScreen.update(timeInSeconds.toFloat(), currentDelta)
+                    currentScreen.render()
                 }
-
-                currentScreen.update(timeInSeconds.toFloat(), currentDelta)
-                currentScreen.render()
             }
+        } catch(e: Exception) {
+            console.log(e.message, e)
         }
 
         window.requestAnimationFrame {
