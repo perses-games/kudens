@@ -1,32 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id="kudens" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="perses.games" external.system.module.version="1.1.1" type="JAVA_MODULE" version="4">
+<module external.linked.project.id="kudens" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="perses.games" external.system.module.version="1.1.2-SNAPSHOT" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="1">
-        <option name="compilerInfo">
-          <KotlinCompilerInfo>
-            <option name="compilerSettings">
-              <CompilerSettings />
-            </option>
-            <option name="k2jsCompilerArguments">
-              <K2JSCompilerArguments />
-            </option>
-            <option name="k2jvmCompilerArguments">
-              <K2JVMCompilerArguments />
-            </option>
-            <option name="_commonCompilerArguments">
-              <DummyImpl />
-            </option>
-          </KotlinCompilerInfo>
-        </option>
-        <option name="useProjectSettings" value="false" />
-        <option name="versionInfo">
-          <KotlinVersionInfo>
-            <option name="apiLevel" value="1.0" />
-            <option name="languageLevel" value="1.0" />
-            <option name="targetPlatformName" value="JavaScript " />
-          </KotlinVersionInfo>
-        </option>
+      <configuration version="2" platform="JavaScript " useProjectSettings="false">
+        <compilerSettings />
+        <compilerArguments>
+          <option name="languageVersion" value="1.0" />
+          <option name="apiVersion" value="1.0" />
+        </compilerArguments>
       </configuration>
     </facet>
   </component>
