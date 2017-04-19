@@ -18,6 +18,7 @@ import kotlin.browser.document
  * Date: 17-4-16
  * Time: 14:52
  */
+
 //language=GLSL
 private val vertexShaderSource = """
     attribute vec2 a_position;
@@ -57,6 +58,7 @@ private val vertexShaderSource = """
     }
 """
 
+//language=GLSL
 private val fragmentShaderSource = """
     precision mediump float;
 
@@ -86,7 +88,7 @@ class Texture(
     val bottom = -height / 2f
     val top = height / 2f
 
-    fun queueDraw(x: Float, y: Float, scale: Float, rotation: Float) {
+    fun queueDraw(x: Float, y: Float, scale: Float = 1f, rotation: Float = 0f) {
         shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f, scale, rotation)
         shaderProgramMesh.queue( x, y, left,  top,     0f, 1f, scale, rotation)
         shaderProgramMesh.queue( x, y, right, top,     1f, 1f, scale, rotation)
@@ -99,13 +101,37 @@ class Texture(
         }
     }
 
-    fun queueTileDraw(x: Float, y: Float, tcLeft: Float, tcTop: Float, tcRight: Float, tcBottom: Float, scale: Float) {
-        shaderProgramMesh.queue( x, y, left,  bottom,  tcLeft,  tcBottom, scale, 0f)
-        shaderProgramMesh.queue( x, y, left,  top,     tcLeft,  tcTop,    scale, 0f)
-        shaderProgramMesh.queue( x, y, right, top,     tcRight, tcTop,    scale, 0f)
-        shaderProgramMesh.queue( x, y, right, top,     tcRight, tcTop,    scale, 0f)
-        shaderProgramMesh.queue( x, y, right, bottom,  tcRight, tcBottom, scale, 0f)
-        shaderProgramMesh.queue( x, y, left,  bottom,  tcLeft,  tcBottom, scale, 0f)
+    fun queueTileDraw(x: Float, y: Float, tcLeft: Float, tcTop: Float, tcRight: Float, tcBottom: Float, scale: Float = 1f, rotation: Float = 0f) {
+        shaderProgramMesh.queue( x, y, left,  bottom,  tcLeft,  tcBottom, scale, rotation)
+        shaderProgramMesh.queue( x, y, left,  top,     tcLeft,  tcTop,    scale, rotation)
+        shaderProgramMesh.queue( x, y, right, top,     tcRight, tcTop,    scale, rotation)
+        shaderProgramMesh.queue( x, y, right, top,     tcRight, tcTop,    scale, rotation)
+        shaderProgramMesh.queue( x, y, right, bottom,  tcRight, tcBottom, scale, rotation)
+        shaderProgramMesh.queue( x, y, left,  bottom,  tcLeft,  tcBottom, scale, rotation)
+
+        if (shaderProgramMesh.remaining() < 36) {
+            render()
+        }
+    }
+
+    fun queueTileDraw(x: Float, y: Float, horCount: Int, verCount: Int, frame: Int, scale: Float = 1f, rotation: Float = 0f) {
+        val tcw = 1f / horCount
+        val tch = 1f / verCount
+
+        val tcx = frame % (horCount * verCount) * tcw
+        val tcy = frame / (horCount * verCount) * tch
+
+        val left = -(width / horCount) / 2f
+        val right = (width / horCount) / 2f
+        val bottom = -(height / verCount) / 2f
+        val top = (height / verCount) / 2f
+
+        shaderProgramMesh.queue( x, y, left,  bottom,  tcx,       tcy + tch, scale, rotation)
+        shaderProgramMesh.queue( x, y, left,  top,     tcx,       tcy,       scale, rotation)
+        shaderProgramMesh.queue( x, y, right, top,     tcx + tcw, tcy,       scale, rotation)
+        shaderProgramMesh.queue( x, y, right, top,     tcx + tcw, tcy,       scale, rotation)
+        shaderProgramMesh.queue( x, y, right, bottom,  tcx + tcw, tcy + tch, scale, rotation)
+        shaderProgramMesh.queue( x, y, left,  bottom,  tcx,       tcy + tch, scale, rotation)
 
         if (shaderProgramMesh.remaining() < 36) {
             render()

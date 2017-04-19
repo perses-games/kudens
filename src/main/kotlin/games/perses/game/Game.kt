@@ -45,8 +45,8 @@ class HTMLElements {
             webglcanvas = webGlCanvas.getContext("experimental-webgl")
         }
 
-        if (webglcanvas is WebGLRenderingContext) {
-            webgl = webglcanvas
+        if (webglcanvas != null) {
+            webgl = webglcanvas as WebGLRenderingContext
         } else {
             console.log("webgl?", webglcanvas)
             window.alert("Your browser doesn't seem to support webgl!")
@@ -54,8 +54,8 @@ class HTMLElements {
             throw IllegalStateException("Your browser doesn't seem to support webgl!")
         }
 
-        if (canvas2dcanvas is CanvasRenderingContext2D) {
-            canvas2d = canvas2dcanvas
+        if (canvas2dcanvas != null) {
+            canvas2d = canvas2dcanvas as CanvasRenderingContext2D
         } else {
             console.log("canvas2d?", canvas2dcanvas)
             window.alert("Your browser doesn't seem to support 2d canvas!")

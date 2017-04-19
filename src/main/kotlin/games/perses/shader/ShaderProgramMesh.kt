@@ -27,7 +27,7 @@ class ShaderProgramMesh<T>(
     init {
 
         attribBuffer = webgl.createBuffer() ?: throw IllegalStateException("Unable to create webgl buffer!")
-        webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer);
+        webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer)
     }
 
     fun queue(vararg vertices: Float) {
