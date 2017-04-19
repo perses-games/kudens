@@ -7,6 +7,7 @@ import games.perses.game.Game
  */
 object Texts {
 
+    // TODO: use same coords for webgl and canvas 2d
     fun drawText(x: Float, y: Float, message: String, font: String = "bold 24pt Arial", fillStyle: String = "white") {
         var yy = y
         var xx = x
@@ -25,8 +26,8 @@ object Texts {
 
     fun drawLeftTop(left: Float, top: Float, message: String, font: String = "bold 24pt Arial", fillStyle: String = "white") {
         drawText(
-          Game.view.gameToScreenCoordX(-Game.view.width / 2f + left),
-          Game.view.gameToScreenCoordY(Game.view.height / 2f - top),
+          left,
+          /* Game.view.height - */ top,
           message,
           font,
           fillStyle
