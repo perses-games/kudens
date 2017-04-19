@@ -118,20 +118,20 @@ class Texture(
         val tcw = 1f / horCount
         val tch = 1f / verCount
 
-        val tcx = frame % (horCount * verCount) * tcw
-        val tcy = frame / (horCount * verCount) * tch
+        val tcx = frame % horCount * tcw
+        val tcy = 1f - (frame / horCount * tch)
 
         val left = -(width / horCount) / 2f
         val right = (width / horCount) / 2f
         val bottom = -(height / verCount) / 2f
         val top = (height / verCount) / 2f
 
-        shaderProgramMesh.queue( x, y, left,  bottom,  tcx,       tcy + tch, scale, rotation)
+        shaderProgramMesh.queue( x, y, left,  bottom,  tcx,       tcy - tch, scale, rotation)
         shaderProgramMesh.queue( x, y, left,  top,     tcx,       tcy,       scale, rotation)
         shaderProgramMesh.queue( x, y, right, top,     tcx + tcw, tcy,       scale, rotation)
         shaderProgramMesh.queue( x, y, right, top,     tcx + tcw, tcy,       scale, rotation)
-        shaderProgramMesh.queue( x, y, right, bottom,  tcx + tcw, tcy + tch, scale, rotation)
-        shaderProgramMesh.queue( x, y, left,  bottom,  tcx,       tcy + tch, scale, rotation)
+        shaderProgramMesh.queue( x, y, right, bottom,  tcx + tcw, tcy - tch, scale, rotation)
+        shaderProgramMesh.queue( x, y, left,  bottom,  tcx,       tcy - tch, scale, rotation)
 
         if (shaderProgramMesh.remaining() < 36) {
             render()
