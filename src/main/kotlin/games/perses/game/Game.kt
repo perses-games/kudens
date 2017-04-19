@@ -88,6 +88,24 @@ object Game {
     var borderLeft = 0
     var borderTop = 0
 
+    var focus = true
+
+    init {
+        window.onfocus = {
+            println("GOT FOCUS!")
+
+            focus = true
+            ""
+        }
+        window.onblur = {
+            println("LOST FOCUS!")
+
+            focus = false
+            ""
+        }
+
+    }
+
     fun gl() = html.webgl
 
     fun resize() {
@@ -185,7 +203,10 @@ object Game {
                         fpsCount = 0
                     }
 
-                    currentScreen.update(timeInSeconds.toFloat(), currentDelta)
+                    if (focus) {
+                        currentScreen.update(timeInSeconds.toFloat(), currentDelta)
+                    }
+
                     currentScreen.render()
                 }
             }
