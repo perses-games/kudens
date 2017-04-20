@@ -15,6 +15,7 @@ import kotlin.js.Date
  */
 
 enum class KeyCode(val keyCode: Int) {
+    SHIFT(16),
     ESC(27),
     LEFT(37),
     UP(38),
