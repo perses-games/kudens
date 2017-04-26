@@ -78,7 +78,7 @@ class TextureData(
 
 class Texture(
   val glTexture: WebGLTexture,
-  val shaderProgram: ShaderProgram<TextureData>,
+  shaderProgram: ShaderProgram<TextureData>,
   val width: Int,
   val height: Int
 ) {
@@ -308,15 +308,19 @@ object Textures {
     fun ready() = loaded == startedLoading
 
     fun has(name: String) = textures[name] != null
-    fun get(name: String) = textures[name] ?: throw IllegalArgumentException("Texture with name $name is not loaded!")
-
-    fun clear() {
-        // todo: delete and unbind all textures...
-    }
+    operator fun get(name: String) = textures[name] ?: throw IllegalArgumentException("Texture with name $name is not loaded!")
 
     fun render() {
         for ((key, value) in textures) {
             value.render()
+        }
+    }
+
+    fun dispose() {
+        val gl = Game.gl()
+
+        for (texture in textures.values) {
+            gl.deleteTexture(texture.glTexture)
         }
     }
 
