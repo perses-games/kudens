@@ -10,12 +10,12 @@ import kotlin.browser.document
  */
 
 class Sound(val name:String, val url: String, val defaultVolume: Double = 0.75, val numberOfChannels: Int) {
-    var channels: Array<HTMLAudioElement?>
+    var channels: Array<HTMLAudioElement?> =
+      Array(numberOfChannels, { document.createElement("audio") as HTMLAudioElement })
     var nextChannel: Int = 0
 
     init {
         //println("CREATING: $name")
-        channels = Array(numberOfChannels, { document.createElement("audio") as HTMLAudioElement })
 
         for (audio in channels) {
             if (audio != null) {
@@ -41,6 +41,12 @@ class Sound(val name:String, val url: String, val defaultVolume: Double = 0.75, 
             audio?.pause()
         }
     }
+
+    fun dispose() {
+        for (audio in channels) {
+            audio?.dispose()
+        }
+    }
 }
 
 object Sounds {
@@ -64,5 +70,22 @@ object Sounds {
         val sound: Sound = sounds[name] ?: throw IllegalArgumentException("Sound '$name' not found, load it first!")
 
         sound.pause()
+    }
+
+    fun dispose(name: String) {
+        val sound: Sound? = sounds[name]
+
+        if (sound != null) {
+            sounds.remove(name)
+            sound.dispose()
+        }
+    }
+
+    fun disposeAll() {
+        for (sound in sounds.values) {
+            sound.dispose()
+        }
+
+        sounds.clear()
     }
 }

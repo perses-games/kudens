@@ -9,6 +9,11 @@ import kotlin.browser.document
  * Time: 13:02
  */
 
+fun HTMLAudioElement.dispose() {
+    this.pause()
+    this.parentNode?.removeChild(this)
+}
+
 object Music {
     val playing: MutableSet<HTMLAudioElement> = HashSet()
 
@@ -33,7 +38,7 @@ object Music {
                 audio.play()
             } else {
                 //println("REMOVING: $audio")
-                audio.remove()
+                audio.parentNode?.removeChild(audio)
                 playing.remove(audio)
             }
         }
