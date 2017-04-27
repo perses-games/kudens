@@ -4,3 +4,4 @@
 * Added Texture.queueTileDraw
 * Made screen clear every frame optional
 * Added fullscreen support
+* Fix some resource lifecycle bugs
