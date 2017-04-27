@@ -158,9 +158,9 @@ object Game {
     fun setScreen(screen: Screen) {
         currentScreen.unloadResources()
 
-        currentScreen = screen
+        screen.loadResources()
 
-        currentScreen.loadResources()
+        currentScreen = screen
     }
 
     fun setClearColor(r: Float, g: Float, b: Float, a: Float) {

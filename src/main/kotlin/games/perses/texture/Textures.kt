@@ -322,6 +322,10 @@ object Textures {
         for (texture in textures.values) {
             gl.deleteTexture(texture.glTexture)
         }
+
+        startedLoading = 0
+        loaded = 0
+        textures.clear()
     }
 
 }
