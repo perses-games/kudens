@@ -92,13 +92,13 @@ object Game {
 
     init {
         window.onfocus = {
-            println("GOT FOCUS!")
+            //println("GOT FOCUS!")
 
             focus = true
             ""
         }
         window.onblur = {
-            println("LOST FOCUS!")
+            //println("LOST FOCUS!")
 
             focus = false
             ""
@@ -158,9 +158,9 @@ object Game {
     fun setScreen(screen: Screen) {
         currentScreen.unloadResources()
 
-        screen.loadResources()
-
         currentScreen = screen
+
+        screen.loadResources()
     }
 
     fun setClearColor(r: Float, g: Float, b: Float, a: Float) {
@@ -211,7 +211,8 @@ object Game {
                 }
             }
         } catch(e: Exception) {
-            console.log(e.message, e)
+            println("Some error...")
+            console.log(e)
         }
 
         window.requestAnimationFrame {

@@ -3,33 +3,30 @@
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
       <configuration version="2" platform="JavaScript " useProjectSettings="false">
-        <compilerSettings>
-          <option name="additionalArguments" value="-verbose" />
-        </compilerSettings>
+        <compilerSettings />
         <compilerArguments>
           <option name="outputFile" value="$MODULE_DIR$/../../build/kotlinjs/kudens.js" />
           <option name="noStdlib" value="true" />
           <option name="sourceMap" value="true" />
           <option name="metaInfo" value="true" />
           <option name="target" value="v5" />
-          <option name="moduleKind" value="plain" />
           <option name="main" value="call" />
           <option name="languageVersion" value="1.1" />
           <option name="apiVersion" value="1.1" />
-          <option name="suppressWarnings" value="true" />
-          <option name="pluginClasspaths">
-            <array />
-          </option>
-          <option name="coroutinesWarn" value="true" />
           <option name="pluginOptions">
             <array />
           </option>
+          <option name="pluginClasspaths">
+            <array />
+          </option>
+          <option name="suppressWarnings" value="true" />
+          <option name="coroutinesWarn" value="true" />
         </compilerArguments>
       </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
-    <output url="file://$MODULE_DIR$/../../build/kotlinjs" />
+    <output url="file://$MODULE_DIR$/../../out/production/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
@@ -38,6 +35,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-js:1.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-js:1.1.2" level="project" />
   </component>
 </module>

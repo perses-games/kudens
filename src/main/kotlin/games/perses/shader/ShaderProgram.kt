@@ -102,6 +102,8 @@ class ShaderProgram<T>(
     fun getUniformLocation(location: String) = webgl.getUniformLocation(shaderProgram, location);
 
     fun setUniform1f(location: String, value: Float) { webgl.uniform1f(getUniformLocation(location), value); }
+    fun setUniform2f(location: String, v1: Float, v2: Float) { webgl.uniform2f(getUniformLocation(location), v1, v2); }
+    fun setUniform3f(location: String, v1: Float, v2: Float, v3: Float) { webgl.uniform3f(getUniformLocation(location), v1, v2, v3); }
     fun setUniform4f(location: String, v1: Float, v2: Float, v3: Float, v4: Float) { webgl.uniform4f(getUniformLocation(location), v1, v2, v3, v4); }
     fun setUniform1i(location: String, value: Int) { webgl.uniform1i(getUniformLocation(location), value); }
     fun setUniformMatrix4fv(location: String, value: Float32Array) { webgl.uniformMatrix4fv(getUniformLocation(location), false, value); }

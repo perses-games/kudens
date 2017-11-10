@@ -89,12 +89,12 @@ class Texture(
     val top = height / 2f
 
     fun queueDraw(x: Float, y: Float, scale: Float = 1f, rotation: Float = 0f) {
-        shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f, scale, rotation)
-        shaderProgramMesh.queue( x, y, left,  top,     0f, 1f, scale, rotation)
-        shaderProgramMesh.queue( x, y, right, top,     1f, 1f, scale, rotation)
-        shaderProgramMesh.queue( x, y, right, top,     1f, 1f, scale, rotation)
-        shaderProgramMesh.queue( x, y, right, bottom,  1f, 0f, scale, rotation)
-        shaderProgramMesh.queue( x, y, left,  bottom,  0f, 0f, scale, rotation)
+        shaderProgramMesh.queueArray(arrayOf(x, y, left,  bottom,  0f, 0f, scale, rotation))
+        shaderProgramMesh.queueArray(arrayOf(x, y, left,  top,     0f, 1f, scale, rotation))
+        shaderProgramMesh.queueArray(arrayOf(x, y, right, top,     1f, 1f, scale, rotation))
+        shaderProgramMesh.queueArray(arrayOf(x, y, right, top,     1f, 1f, scale, rotation))
+        shaderProgramMesh.queueArray(arrayOf(x, y, right, bottom,  1f, 0f, scale, rotation))
+        shaderProgramMesh.queueArray(arrayOf(x, y, left,  bottom,  0f, 0f, scale, rotation))
 
         if (shaderProgramMesh.remaining() < 36) {
             render()
@@ -102,12 +102,12 @@ class Texture(
     }
 
     fun queueTileDraw(x: Float, y: Float, tcLeft: Float, tcTop: Float, tcRight: Float, tcBottom: Float, scale: Float = 1f, rotation: Float = 0f) {
-        shaderProgramMesh.queue( x, y, left,  bottom,  tcLeft,  tcBottom, scale, rotation)
-        shaderProgramMesh.queue( x, y, left,  top,     tcLeft,  tcTop,    scale, rotation)
-        shaderProgramMesh.queue( x, y, right, top,     tcRight, tcTop,    scale, rotation)
-        shaderProgramMesh.queue( x, y, right, top,     tcRight, tcTop,    scale, rotation)
-        shaderProgramMesh.queue( x, y, right, bottom,  tcRight, tcBottom, scale, rotation)
-        shaderProgramMesh.queue( x, y, left,  bottom,  tcLeft,  tcBottom, scale, rotation)
+        shaderProgramMesh.queueArray(arrayOf(x, y, left,  bottom,  tcLeft,  tcBottom, scale, rotation))
+        shaderProgramMesh.queueArray(arrayOf(x, y, left,  top,     tcLeft,  tcTop,    scale, rotation))
+        shaderProgramMesh.queueArray(arrayOf(x, y, right, top,     tcRight, tcTop,    scale, rotation))
+        shaderProgramMesh.queueArray(arrayOf(x, y, right, top,     tcRight, tcTop,    scale, rotation))
+        shaderProgramMesh.queueArray(arrayOf(x, y, right, bottom,  tcRight, tcBottom, scale, rotation))
+        shaderProgramMesh.queueArray(arrayOf(x, y, left,  bottom,  tcLeft,  tcBottom, scale, rotation))
 
         if (shaderProgramMesh.remaining() < 36) {
             render()
