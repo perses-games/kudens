@@ -33,4 +33,5 @@ object Texts {
           fillStyle
         )
     }
+
 }

@@ -3,6 +3,7 @@ package games.perses.shader
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.WebGLBuffer
 import org.khronos.webgl.WebGLRenderingContext
+import org.khronos.webgl.set
 
 /**
  * User: rnentjes
@@ -25,13 +26,19 @@ class ShaderProgramMesh<T>(
     var counter = 0
 
     init {
-
         attribBuffer = webgl.createBuffer() ?: throw IllegalStateException("Unable to create webgl buffer!")
         webgl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, attribBuffer)
     }
 
     fun queue(vararg vertices: Float) {
-        queueArray(vertices.toTypedArray())
+        for (vertice in vertices) {
+            data[currentIndex++] = vertice
+        }
+
+        if (bufferFull()) {
+            println("Skipped draw call, to many values!")
+            currentIndex = 0
+        }
     }
 
     fun queueArray(vertices: Array<Float>) {
@@ -39,7 +46,7 @@ class ShaderProgramMesh<T>(
         currentIndex += vertices.size
 
         if (bufferFull()) {
-            //println("Skipped draw call, to many values!")
+            println("Skipped draw call, to many values!")
             currentIndex = 0
         }
     }
@@ -58,7 +65,7 @@ class ShaderProgramMesh<T>(
             shaderProgram.begin(attribBuffer, userdata)
 
             webgl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, data, WebGLRenderingContext.DYNAMIC_DRAW)
-            webgl.drawArrays(shaderProgram.drawType, 0, (currentIndex / shaderProgram.verticesBlockSize).toInt())
+            webgl.drawArrays(shaderProgram.drawType, 0, (currentIndex / shaderProgram.verticesBlockSize))
             currentIndex = 0
 
             shaderProgram.end()
