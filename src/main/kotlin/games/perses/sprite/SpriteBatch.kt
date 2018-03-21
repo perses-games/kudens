@@ -10,17 +10,17 @@ import games.perses.texture.Textures
  */
 
 class Sprite(val textureName: String) {
-    val texture: Texture by lazy { Textures.get(textureName) }
+  val texture: Texture by lazy { Textures[textureName] }
 }
 
 class SpriteBatch {
 
-    fun draw(sprite: Sprite, x: Float, y: Float, scale: Float = 1f, rotation: Float = 0f) {
-        sprite.texture.queueDraw(x, y, scale, rotation)
-    }
+  fun draw(sprite: Sprite, x: Float, y: Float, scale: Float = 1f, rotation: Float = 0f) {
+    sprite.texture.queueDraw(x, y, scale, rotation)
+  }
 
-    fun render() {
-        Textures.render()
-    }
+  fun render() {
+    Textures.render()
+  }
 
 }

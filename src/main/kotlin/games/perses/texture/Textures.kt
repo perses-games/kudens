@@ -72,78 +72,95 @@ private val fragmentShaderSource = """
 """
 
 class TextureData(
-  val vMatrix: Matrix4,
-  val texture: WebGLTexture
+    val vMatrix: Matrix4,
+    val texture: WebGLTexture
 )
 
 class Texture(
-  val glTexture: WebGLTexture,
-  shaderProgram: ShaderProgram<TextureData>,
-  val width: Int,
-  val height: Int
+    val glTexture: WebGLTexture,
+    shaderProgram: ShaderProgram<TextureData>,
+    val width: Int,
+    val height: Int
 ) {
-    val shaderProgramMesh: ShaderProgramMesh<TextureData> = ShaderProgramMesh(shaderProgram)
-    val left = -width / 2f
-    val right = width / 2f
-    val bottom = -height / 2f
-    val top = height / 2f
+  val shaderProgramMesh: ShaderProgramMesh<TextureData> = ShaderProgramMesh(shaderProgram)
+  val left = -width / 2f
+  val right = width / 2f
+  val bottom = -height / 2f
+  val top = height / 2f
 
-    fun queueDraw(x: Float, y: Float, scale: Float = 1f, rotation: Float = 0f) {
-        shaderProgramMesh.queueArray(arrayOf(x, y, left,  bottom,  0f, 0f, scale, rotation))
-        shaderProgramMesh.queueArray(arrayOf(x, y, left,  top,     0f, 1f, scale, rotation))
-        shaderProgramMesh.queueArray(arrayOf(x, y, right, top,     1f, 1f, scale, rotation))
-        shaderProgramMesh.queueArray(arrayOf(x, y, right, top,     1f, 1f, scale, rotation))
-        shaderProgramMesh.queueArray(arrayOf(x, y, right, bottom,  1f, 0f, scale, rotation))
-        shaderProgramMesh.queueArray(arrayOf(x, y, left,  bottom,  0f, 0f, scale, rotation))
+  fun queueDraw(x: Float, y: Float, scale: Float = 1f, rotation: Float = 0f) {
+    shaderProgramMesh.queueArray(arrayOf(x, y, left, bottom, 0f, 0f, scale, rotation))
+    shaderProgramMesh.queueArray(arrayOf(x, y, left, top, 0f, 1f, scale, rotation))
+    shaderProgramMesh.queueArray(arrayOf(x, y, right, top, 1f, 1f, scale, rotation))
+    shaderProgramMesh.queueArray(arrayOf(x, y, right, top, 1f, 1f, scale, rotation))
+    shaderProgramMesh.queueArray(arrayOf(x, y, right, bottom, 1f, 0f, scale, rotation))
+    shaderProgramMesh.queueArray(arrayOf(x, y, left, bottom, 0f, 0f, scale, rotation))
 
-        if (shaderProgramMesh.remaining() < 36) {
-            render()
-        }
+    if (shaderProgramMesh.remaining() < 36) {
+      render()
     }
+  }
 
-    fun queueTileDraw(x: Float, y: Float, tcLeft: Float, tcTop: Float, tcRight: Float, tcBottom: Float, scale: Float = 1f, rotation: Float = 0f) {
-        shaderProgramMesh.queueArray(arrayOf(x, y, left,  bottom,  tcLeft,  tcBottom, scale, rotation))
-        shaderProgramMesh.queueArray(arrayOf(x, y, left,  top,     tcLeft,  tcTop,    scale, rotation))
-        shaderProgramMesh.queueArray(arrayOf(x, y, right, top,     tcRight, tcTop,    scale, rotation))
-        shaderProgramMesh.queueArray(arrayOf(x, y, right, top,     tcRight, tcTop,    scale, rotation))
-        shaderProgramMesh.queueArray(arrayOf(x, y, right, bottom,  tcRight, tcBottom, scale, rotation))
-        shaderProgramMesh.queueArray(arrayOf(x, y, left,  bottom,  tcLeft,  tcBottom, scale, rotation))
+  fun queueTileDraw(
+      x: Float,
+      y: Float,
+      tcLeft: Float,
+      tcTop: Float,
+      tcRight: Float,
+      tcBottom: Float,
+      scale: Float = 1f,
+      rotation: Float = 0f
+  ) {
+    shaderProgramMesh.queueArray(arrayOf(x, y, left, bottom, tcLeft, tcBottom, scale, rotation))
+    shaderProgramMesh.queueArray(arrayOf(x, y, left, top, tcLeft, tcTop, scale, rotation))
+    shaderProgramMesh.queueArray(arrayOf(x, y, right, top, tcRight, tcTop, scale, rotation))
+    shaderProgramMesh.queueArray(arrayOf(x, y, right, top, tcRight, tcTop, scale, rotation))
+    shaderProgramMesh.queueArray(arrayOf(x, y, right, bottom, tcRight, tcBottom, scale, rotation))
+    shaderProgramMesh.queueArray(arrayOf(x, y, left, bottom, tcLeft, tcBottom, scale, rotation))
 
-        if (shaderProgramMesh.remaining() < 36) {
-            render()
-        }
+    if (shaderProgramMesh.remaining() < 36) {
+      render()
     }
+  }
 
-    fun queueTileDraw(x: Float, y: Float, horCount: Int, verCount: Int, frame: Int, scale: Float = 1f, rotation: Float = 0f) {
-        val tcw = 1f / horCount
-        val tch = 1f / verCount
+  fun queueTileDraw(
+      x: Float,
+      y: Float,
+      horCount: Int,
+      verCount: Int,
+      frame: Int,
+      scale: Float = 1f,
+      rotation: Float = 0f
+  ) {
+    val tcw = 1f / horCount
+    val tch = 1f / verCount
 
-        val tcx = frame % horCount * tcw
-        val tcy = 1f - (frame / horCount * tch)
+    val tcx = frame % horCount * tcw
+    val tcy = 1f - (frame / horCount * tch)
 
-        val left = -(width / horCount) / 2f
-        val right = (width / horCount) / 2f
-        val bottom = -(height / verCount) / 2f
-        val top = (height / verCount) / 2f
+    val left = -(width / horCount) / 2f
+    val right = (width / horCount) / 2f
+    val bottom = -(height / verCount) / 2f
+    val top = (height / verCount) / 2f
 
-        shaderProgramMesh.queue( x, y, left,  bottom,  tcx,       tcy - tch, scale, rotation)
-        shaderProgramMesh.queue( x, y, left,  top,     tcx,       tcy,       scale, rotation)
-        shaderProgramMesh.queue( x, y, right, top,     tcx + tcw, tcy,       scale, rotation)
-        shaderProgramMesh.queue( x, y, right, top,     tcx + tcw, tcy,       scale, rotation)
-        shaderProgramMesh.queue( x, y, right, bottom,  tcx + tcw, tcy - tch, scale, rotation)
-        shaderProgramMesh.queue( x, y, left,  bottom,  tcx,       tcy - tch, scale, rotation)
+    shaderProgramMesh.queue(x, y, left, bottom, tcx, tcy - tch, scale, rotation)
+    shaderProgramMesh.queue(x, y, left, top, tcx, tcy, scale, rotation)
+    shaderProgramMesh.queue(x, y, right, top, tcx + tcw, tcy, scale, rotation)
+    shaderProgramMesh.queue(x, y, right, top, tcx + tcw, tcy, scale, rotation)
+    shaderProgramMesh.queue(x, y, right, bottom, tcx + tcw, tcy - tch, scale, rotation)
+    shaderProgramMesh.queue(x, y, left, bottom, tcx, tcy - tch, scale, rotation)
 
-        if (shaderProgramMesh.remaining() < 36) {
-            render()
-        }
+    if (shaderProgramMesh.remaining() < 36) {
+      render()
     }
+  }
 
-    fun render() {
-        Game.gl().activeTexture(WebGLRenderingContext.TEXTURE0)
-        Game.gl().bindTexture(WebGLRenderingContext.TEXTURE_2D, glTexture)
+  fun render() {
+    Game.gl().activeTexture(WebGLRenderingContext.TEXTURE0)
+    Game.gl().bindTexture(WebGLRenderingContext.TEXTURE_2D, glTexture)
 
-        shaderProgramMesh.render(TextureData(Game.view.vMatrix, glTexture))
-    }
+    shaderProgramMesh.render(TextureData(Game.view.vMatrix, glTexture))
+  }
 }
 
 /*
@@ -162,170 +179,220 @@ class Size(val w: Int, val h: Int)
 class Pivot(val x: Double, val y: Double)
 
 class SpriteSheetData(
-  val frame: Rect,
-  val rotated: Boolean,
-  val trimmed: Boolean,
-  val spriteSourceSize: Rect,
-  val sourceSize: Size,
-  val pivot: Pivot
-  )
+    val frame: Rect,
+    val rotated: Boolean,
+    val trimmed: Boolean,
+    val spriteSourceSize: Rect,
+    val sourceSize: Size,
+    val pivot: Pivot
+)
 
 class SpriteSheet(
-  val glTexture: WebGLTexture,
-  val shaderProgram: ShaderProgram<SpriteSheetData>,
-  val data: Map<String, SpriteSheetData>
+    val glTexture: WebGLTexture,
+    val shaderProgram: ShaderProgram<SpriteSheetData>,
+    val data: Map<String, SpriteSheetData>
 ) {
 
 }
 
 object Textures {
-    var textures = HashMap<String, Texture>()
-    var startedLoading = 0
-    var loaded = 0
-    val shaderProgram: ShaderProgram<TextureData>
+  var textures = HashMap<String, Texture>()
+  var startedLoading = 0
+  var loaded = 0
+  val shaderProgram: ShaderProgram<TextureData>
 
-    init {
-        val setter = { program: ShaderProgram<TextureData>, data: TextureData ->
-            program.setUniform1i("u_sampler", 0)
-            program.setUniformMatrix4fv("u_projectionView", Game.view.vMatrix.getFloat32Array())
-        }
-
-        val vainfo = arrayOf(
-          VertextAttributeInfo("a_position", 2),
-          VertextAttributeInfo("a_boundingBox", 2),
-          VertextAttributeInfo("a_texCoord", 2),
-          VertextAttributeInfo("a_scale", 1),
-          VertextAttributeInfo("a_rotation", 1)
-        )
-
-        shaderProgram = ShaderProgram(Game.gl(), WebGLRenderingContext.Companion.TRIANGLES, vertexShaderSource, fragmentShaderSource, vainfo, setter)
+  init {
+    val setter = { program: ShaderProgram<TextureData>, data: TextureData ->
+      program.setUniform1i("u_sampler", 0)
+      program.setUniformMatrix4fv("u_projectionView", Game.view.vMatrix.getFloat32Array())
     }
 
-    fun loadSpriteSheet(name: String) {
-        //val data = Request(name).json()
+    val vainfo = arrayOf(
+        VertextAttributeInfo("a_position", 2),
+        VertextAttributeInfo("a_boundingBox", 2),
+        VertextAttributeInfo("a_texCoord", 2),
+        VertextAttributeInfo("a_scale", 1),
+        VertextAttributeInfo("a_rotation", 1)
+    )
 
-        //println(data)
+    shaderProgram = ShaderProgram(
+        Game.gl(),
+        WebGLRenderingContext.Companion.TRIANGLES,
+        vertexShaderSource,
+        fragmentShaderSource,
+        vainfo,
+        setter
+    )
+  }
+
+  fun loadSpriteSheet(name: String) {
+    //val data = Request(name).json()
+
+    //println(data)
+  }
+
+  fun load(name: String, filename: String) {
+    val gl = Game.gl()
+
+    startedLoading++
+
+    val webGlTexture = gl.createTexture()
+    if (webGlTexture != null) {
+      val image = document.createElement("img") as HTMLImageElement
+      image.onload = {
+        textureLoaded(webGlTexture, image)
+        val texture = Texture(webGlTexture, shaderProgram, image.width, image.height)
+
+        textures.put(name, texture)
+
+        loaded++
+        //println("loaded texture $loaded/$startedLoading ${ready()}")
+      }
+      image.src = filename
+    } else {
+      throw IllegalStateException("Couldn't create webgl texture!")
+    }
+  }
+
+  fun create(name: String, image: HTMLImageElement) {
+    val gl = Game.gl()
+
+    startedLoading++
+
+    val webGlTexture = gl.createTexture()
+    if (webGlTexture != null) {
+      textureLoaded(webGlTexture, image)
+      val texture = Texture(webGlTexture, shaderProgram, image.width, image.height)
+
+      textures.put(name, texture)
+
+      loaded++
+    } else {
+      throw IllegalStateException("Couldn't create webgl texture!")
+    }
+  }
+
+
+  fun create(name: String, width: Int, height: Int, image: ArrayBufferView) {
+    val gl = Game.gl()
+
+    startedLoading++
+
+    val webGlTexture = gl.createTexture()
+    if (webGlTexture != null) {
+      textureLoaded(webGlTexture, width, height, image)
+      val texture = Texture(webGlTexture, shaderProgram, width, height)
+
+      textures.put(name, texture)
+
+      loaded++
+    } else {
+      throw IllegalStateException("Couldn't create webgl texture!")
+    }
+  }
+
+  fun load(mapTileSet: MapTileset) {
+
+  }
+
+  private fun textureLoaded(texture: WebGLTexture, image: HTMLImageElement) {
+    val gl = Game.gl()
+
+    gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture)
+    gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1) // second argument must be an int
+    gl.texImage2D(
+        WebGLRenderingContext.TEXTURE_2D,
+        0,
+        WebGLRenderingContext.RGBA,
+        WebGLRenderingContext.RGBA,
+        WebGLRenderingContext.UNSIGNED_BYTE,
+        image
+    )
+    setTextureParameters();
+    gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null)
+  }
+
+  private fun textureLoaded(texture: WebGLTexture, width: Int, height: Int, image: ArrayBufferView) {
+    val gl = Game.gl()
+
+    gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture)
+    gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1) // second argument must be an int
+    gl.texImage2D(
+        WebGLRenderingContext.TEXTURE_2D,
+        0,
+        WebGLRenderingContext.RGBA,
+        width,
+        height,
+        0,
+        WebGLRenderingContext.RGBA,
+        WebGLRenderingContext.UNSIGNED_BYTE,
+        image
+    )
+    setTextureParameters();
+    gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null)
+  }
+
+  private fun setTextureParameters() {
+    val gl = Game.gl()
+
+    if (Game.view.drawMode == DrawMode.NEAREST) {
+      gl.texParameteri(
+          WebGLRenderingContext.TEXTURE_2D,
+          WebGLRenderingContext.TEXTURE_MAG_FILTER,
+          WebGLRenderingContext.NEAREST
+      )
+      gl.texParameteri(
+          WebGLRenderingContext.TEXTURE_2D,
+          WebGLRenderingContext.TEXTURE_MIN_FILTER,
+          WebGLRenderingContext.NEAREST
+      )
+    } else {
+      gl.texParameteri(
+          WebGLRenderingContext.TEXTURE_2D,
+          WebGLRenderingContext.TEXTURE_MAG_FILTER,
+          WebGLRenderingContext.LINEAR
+      )
+      gl.texParameteri(
+          WebGLRenderingContext.TEXTURE_2D,
+          WebGLRenderingContext.TEXTURE_MIN_FILTER,
+          WebGLRenderingContext.LINEAR
+      )
+    }
+    gl.texParameteri(
+        WebGLRenderingContext.TEXTURE_2D,
+        WebGLRenderingContext.TEXTURE_WRAP_T,
+        WebGLRenderingContext.CLAMP_TO_EDGE
+    )
+    gl.texParameteri(
+        WebGLRenderingContext.TEXTURE_2D,
+        WebGLRenderingContext.TEXTURE_WRAP_S,
+        WebGLRenderingContext.CLAMP_TO_EDGE
+    )
+  }
+
+  fun ready() = loaded == startedLoading
+
+  fun has(name: String) = textures[name] != null
+  operator fun get(name: String) = textures[name] ?: throw IllegalArgumentException(
+      "Texture with name $name is not loaded!"
+  )
+
+  fun render() {
+    for ((key, value) in textures) {
+      value.render()
+    }
+  }
+
+  fun dispose() {
+    val gl = Game.gl()
+
+    for (texture in textures.values) {
+      gl.deleteTexture(texture.glTexture)
     }
 
-    fun load(name: String, filename: String) {
-        val gl = Game.gl()
-
-        startedLoading++
-
-        val webGlTexture = gl.createTexture()
-        if (webGlTexture != null) {
-            val image = document.createElement("img") as HTMLImageElement
-            image.onload = {
-                textureLoaded(webGlTexture, image)
-                val texture = Texture(webGlTexture, shaderProgram, image.width, image.height)
-
-                textures.put(name, texture)
-
-                loaded++
-                //println("loaded texture $loaded/$startedLoading ${ready()}")
-            }
-            image.src = filename
-        } else {
-            throw IllegalStateException("Couldn't create webgl texture!")
-        }
-    }
-
-    fun create(name: String, image: HTMLImageElement) {
-        val gl = Game.gl()
-
-        startedLoading++
-
-        val webGlTexture = gl.createTexture()
-        if (webGlTexture != null) {
-            textureLoaded(webGlTexture, image)
-            val texture = Texture(webGlTexture, shaderProgram, image.width, image.height)
-
-            textures.put(name, texture)
-
-            loaded++
-        } else {
-            throw IllegalStateException("Couldn't create webgl texture!")
-        }
-    }
-
-
-    fun create(name: String, width: Int, height: Int, image: ArrayBufferView) {
-        val gl = Game.gl()
-
-        startedLoading++
-
-        val webGlTexture = gl.createTexture()
-        if (webGlTexture != null) {
-            textureLoaded(webGlTexture, width, height, image)
-            val texture = Texture(webGlTexture, shaderProgram, width, height)
-
-            textures.put(name, texture)
-
-            loaded++
-        } else {
-            throw IllegalStateException("Couldn't create webgl texture!")
-        }
-    }
-
-    fun load(mapTileSet: MapTileset) {
-
-    }
-
-    private fun textureLoaded(texture: WebGLTexture, image: HTMLImageElement) {
-        val gl = Game.gl()
-
-        gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture)
-        gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1) // second argument must be an int
-        gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, image)
-        setTextureParameters();
-        gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null)
-    }
-
-    private fun textureLoaded(texture: WebGLTexture, width: Int, height: Int, image: ArrayBufferView) {
-        val gl = Game.gl()
-
-        gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture)
-        gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, 1) // second argument must be an int
-        gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, width, height, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, image)
-        setTextureParameters();
-        gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, null)
-    }
-
-    private fun setTextureParameters() {
-        val gl = Game.gl()
-
-        if (Game.view.drawMode == DrawMode.NEAREST) {
-            gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST)
-            gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST)
-        } else {
-            gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.LINEAR)
-            gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.LINEAR)
-        }
-        gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, WebGLRenderingContext.CLAMP_TO_EDGE)
-        gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, WebGLRenderingContext.CLAMP_TO_EDGE)
-    }
-
-    fun ready() = loaded == startedLoading
-
-    fun has(name: String) = textures[name] != null
-    operator fun get(name: String) = textures[name] ?: throw IllegalArgumentException("Texture with name $name is not loaded!")
-
-    fun render() {
-        for ((key, value) in textures) {
-            value.render()
-        }
-    }
-
-    fun dispose() {
-        val gl = Game.gl()
-
-        for (texture in textures.values) {
-            gl.deleteTexture(texture.glTexture)
-        }
-
-        startedLoading = 0
-        loaded = 0
-        textures.clear()
-    }
+    startedLoading = 0
+    loaded = 0
+    textures.clear()
+  }
 
 }

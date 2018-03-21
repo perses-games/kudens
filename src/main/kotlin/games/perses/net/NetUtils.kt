@@ -9,10 +9,10 @@ import org.w3c.xhr.XMLHttpRequest
  */
 
 fun getUrlAsString(url: String): String {
-    val req = XMLHttpRequest()
+  val req = XMLHttpRequest()
 
-    req.open("GET", url, false)
-    req.send(null)
+  req.open("GET", url, false)
+  req.send(null)
 
-    return req.responseText
+  return req.responseText
 }

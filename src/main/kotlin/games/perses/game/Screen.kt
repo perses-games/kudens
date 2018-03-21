@@ -8,31 +8,31 @@ import org.khronos.webgl.WebGLRenderingContext
 
 abstract class Screen {
 
-    open fun loadResources() {}
+  open fun loadResources() {}
 
-    @Deprecated(
+  @Deprecated(
       message = "replace with unloadResources",
       replaceWith = ReplaceWith("unloadResources()")
-    )
-    open fun closeResources() {
-        unloadResources()
-    }
+  )
+  open fun closeResources() {
+    unloadResources()
+  }
 
-    open fun unloadResources() {}
+  open fun unloadResources() {}
 
-    abstract fun update(time: Float, delta: Float)
+  abstract fun update(time: Float, delta: Float)
 
-    abstract fun render()
+  abstract fun render()
 
 }
 
-class DefaultScreen: Screen() {
-    override fun update(time: Float, delta: Float) {
-    }
+class DefaultScreen : Screen() {
+  override fun update(time: Float, delta: Float) {
+  }
 
-    override fun render() {
-        // show loading  message?
-        Game.gl().clearColor(1f, 1f, 0f, 1f)
-        Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
-    }
+  override fun render() {
+    // show loading  message?
+    Game.gl().clearColor(1f, 1f, 0f, 1f)
+    Game.gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
+  }
 }
