@@ -19,13 +19,11 @@ enum class DrawMode {
 }
 
 class HTMLElements {
-  var container: HTMLElement
+  var container: HTMLElement = document.createElement("div") as HTMLElement
   var webgl: WebGLRenderingContext
   var canvas2d: CanvasRenderingContext2D
 
   init {
-    container = document.createElement("div") as HTMLElement
-
     val webGlCanvas = document.createElement("canvas") as HTMLCanvasElement
     val canvas = document.createElement("canvas") as HTMLCanvasElement
 
@@ -112,8 +110,8 @@ object Game {
     val canvas = gl().canvas
 
     // Check if the canvas is not the same size.
-    val windowWidth = window.innerWidth.toInt()
-    val windowHeight = window.innerHeight.toInt()
+    val windowWidth = window.innerWidth
+    val windowHeight = window.innerHeight
 
     if (view.lastWindowWidth != windowWidth ||
         view.lastWindowHeight != windowHeight) {
@@ -138,8 +136,16 @@ object Game {
       borderLeft = (windowWidth - view.windowWidth) / 2
       borderTop = (windowHeight - view.windowHeight) / 2
 
-      canvas.setAttribute("style", "position: absolute; left: ${borderLeft}px; top: ${borderTop}px; z-index: 5; width: ${view.windowWidth}px; height: ${view.windowHeight}px;")
-      textCanvas.setAttribute("style", "position: absolute; left: ${borderLeft}px; top: ${borderTop}px; z-index: 10; width: ${view.windowWidth}px; height: ${view.windowHeight}px;")
+      canvas.setAttribute(
+          "style",
+          "position: absolute; left: ${borderLeft}px; top: ${borderTop}px; z-index: 5; " +
+              "width: ${view.windowWidth}px; height: ${view.windowHeight}px;"
+      )
+      textCanvas.setAttribute(
+          "style",
+          "position: absolute; left: ${borderLeft}px; top: ${borderTop}px; z-index: 10; " +
+              "width: ${view.windowWidth}px; height: ${view.windowHeight}px;"
+      )
     }
   }
 
@@ -179,7 +185,7 @@ object Game {
         resize()
 
         if (!pause) {
-          html.canvas2d.clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble());
+          html.canvas2d.clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble())
 
           if (clearScreenEveryFrame) {
             gl().clearColor(clearRed, clearGreen, clearBlue, clearAlpha)
@@ -187,7 +193,10 @@ object Game {
           }
 
           gl().enable(WebGLRenderingContext.BLEND)
-          gl().blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA) //ONE_MINUS_DST_ALPHA);
+          gl().blendFunc(
+              WebGLRenderingContext.SRC_ALPHA,
+              WebGLRenderingContext.ONE_MINUS_SRC_ALPHA
+          ) //ONE_MINUS_DST_ALPHA);
 
           val time = Date().getTime()
           currentDelta = ((time - currentTime) / 1000f).toFloat()

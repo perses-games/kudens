@@ -28,9 +28,7 @@ object Music {
   fun play(url: String, volume: Double = 0.75, looping: Boolean = false): HTMLAudioElement {
     val audio = document.createElement("audio") as HTMLAudioElement
 
-    audio.src = url
-    audio.volume = volume
-    audio.play()
+    audio.autoplay = true
 
     audio.onended = {
       if (looping) {
@@ -41,7 +39,13 @@ object Music {
         audio.parentNode?.removeChild(audio)
         playing.remove(audio)
       }
+
     }
+
+    audio.src = url
+    audio.volume = volume
+
+    document.body?.appendChild(audio)
 
     return audio
   }

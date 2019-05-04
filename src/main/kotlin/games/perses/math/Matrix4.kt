@@ -1,7 +1,10 @@
 package games.perses.math
 
 import org.khronos.webgl.Float32Array
-import kotlin.js.Math
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.tan
 
 /**
  * User: rnentjes
@@ -39,8 +42,8 @@ class Matrix4 {
   }
 
   fun setPerspectiveProjection(angle: Float, imageAspectRatio: Float, near: Float, far: Float) {
-    val r = (angle / 180f * Math.PI).toFloat()
-    val f = (1.0f / Math.tan((r / 2.0f).toDouble())).toFloat()
+    val r = (angle / 180f * PI).toFloat()
+    val f = (1.0f / tan((r / 2.0f).toDouble())).toFloat()
 
     matrix[0] = f / imageAspectRatio
     matrix[1] = 0.0f
@@ -165,28 +168,28 @@ class Matrix4 {
   }
 
   fun rotateX(angle: Float) {
-    rotateXMatrix[5] = Math.cos(angle.toDouble()).toFloat()
-    rotateXMatrix[6] = (-Math.sin(angle.toDouble())).toFloat()
-    rotateXMatrix[9] = Math.sin(angle.toDouble()).toFloat()
-    rotateXMatrix[10] = Math.cos(angle.toDouble()).toFloat()
+    rotateXMatrix[5] = cos(angle.toDouble()).toFloat()
+    rotateXMatrix[6] = (-sin(angle.toDouble())).toFloat()
+    rotateXMatrix[9] = sin(angle.toDouble()).toFloat()
+    rotateXMatrix[10] = cos(angle.toDouble()).toFloat()
 
     mul(rotateXMatrix)
   }
 
   fun rotateY(angle: Float) {
-    rotateYMatrix[0] = Math.cos(angle.toDouble()).toFloat()
-    rotateYMatrix[2] = Math.sin(angle.toDouble()).toFloat()
-    rotateYMatrix[8] = (-Math.sin(angle.toDouble())).toFloat()
-    rotateYMatrix[10] = Math.cos(angle.toDouble()).toFloat()
+    rotateYMatrix[0] = cos(angle.toDouble()).toFloat()
+    rotateYMatrix[2] = sin(angle.toDouble()).toFloat()
+    rotateYMatrix[8] = (-sin(angle.toDouble())).toFloat()
+    rotateYMatrix[10] = cos(angle.toDouble()).toFloat()
 
     mul(rotateYMatrix)
   }
 
   fun rotateZ(angle: Float) {
-    rotateZMatrix[0] = Math.cos(angle.toDouble()).toFloat()
-    rotateZMatrix[1] = Math.sin(angle.toDouble()).toFloat()
-    rotateZMatrix[4] = (-Math.sin(angle.toDouble())).toFloat()
-    rotateZMatrix[5] = Math.cos(angle.toDouble()).toFloat()
+    rotateZMatrix[0] = cos(angle.toDouble()).toFloat()
+    rotateZMatrix[1] = sin(angle.toDouble()).toFloat()
+    rotateZMatrix[4] = (-sin(angle.toDouble())).toFloat()
+    rotateZMatrix[5] = cos(angle.toDouble()).toFloat()
 
     mul(rotateZMatrix)
   }

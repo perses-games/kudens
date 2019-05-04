@@ -4,7 +4,7 @@ import games.perses.net.getUrlAsString
 import games.perses.texture.Texture
 import games.perses.texture.Textures
 import kotlin.browser.window
-import kotlin.js.Math
+import kotlin.math.max
 
 /**
  * Created by rnentjes on 22-7-16.
@@ -73,7 +73,10 @@ class TilesetIndex(
   }
 }
 
-class TiledMap(dir: String = "", url: String) {
+class TiledMap(
+    dir: String = "",
+    url: String
+) {
   val properties: Map<String, String> = HashMap()
   val data: MapData
   val tileset: Array<String>
@@ -96,7 +99,7 @@ class TiledMap(dir: String = "", url: String) {
       for (index in 0..tilesets.size - 1) {
         tileset[index] = tilesets[index].name
         Textures.load(tilesets[index].name, tileDir + tilesets[index].image)
-        maxGid = Math.max(maxGid, tilesets[index].firstgid + tilesets[index].tilecount)
+        maxGid = max(maxGid, tilesets[index].firstgid + tilesets[index].tilecount)
       }
 
       tiles = Array(maxGid, { TilesetIndex() })
@@ -119,8 +122,6 @@ class TiledMap(dir: String = "", url: String) {
       var tcBottom = 0f
 
       if (tilesets != null) {
-
-
         for (tileset in tilesets) {
           val tilesHor = tileset.imagewidth / tileset.tilewidth
           val tilesVer = tileset.imageheight / tileset.tileheight
@@ -160,11 +161,19 @@ class TiledMap(dir: String = "", url: String) {
     }
   }
 
-  fun drawTile(tile: Int, x: Float, y: Float) {
+  fun drawTile(
+      tile: Int,
+      x: Float,
+      y: Float
+  ) {
     tiles[tile].render(x, y)
   }
 
-  fun drawLayer(layerIndex: Int, xo: Float, yo: Float) {
+  fun drawLayer(
+      layerIndex: Int,
+      xo: Float,
+      yo: Float
+  ) {
     var x = 0f
     var y = 0f
     val layers = data.layers ?: throw IllegalArgumentException("MapData has no layers ($data)")
