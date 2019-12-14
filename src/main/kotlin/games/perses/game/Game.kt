@@ -185,9 +185,9 @@ object Game {
         resize()
 
         if (!pause) {
-          html.canvas2d.clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble())
-
           if (clearScreenEveryFrame) {
+            html.canvas2d.clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble())
+
             gl().clearColor(clearRed, clearGreen, clearBlue, clearAlpha)
             gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
           }
