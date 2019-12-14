@@ -25,9 +25,9 @@ object Texts {
     }
     yy = Game.view.height - yy
 
-    Game.html.canvas2d.fillStyle = fillStyle
-    Game.html.canvas2d.font = font
-    Game.html.canvas2d.fillText(message, x.toDouble(), yy.toDouble())
+    Game.htmlCanvas().fillStyle = fillStyle
+    Game.htmlCanvas().font = font
+    Game.htmlCanvas().fillText(message, x.toDouble(), yy.toDouble())
   }
 
   fun drawLeftTop(
