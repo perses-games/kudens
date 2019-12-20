@@ -105,6 +105,7 @@ object Game {
   }
 
   fun gl() = html.webgl
+  fun htmlCanvas() = html.canvas2d
 
   fun resize() {
     val canvas = gl().canvas
@@ -122,14 +123,14 @@ object Game {
 
       view.updateView()
 
-      val textCanvas = html.canvas2d.canvas
+      val htmlCanvas = htmlCanvas().canvas
 
       // Make the canvas the same size
       canvas.width = view.width.toInt()
       canvas.height = view.height.toInt()
 
-      textCanvas.width = view.width.toInt()
-      textCanvas.height = view.height.toInt()
+      htmlCanvas.width = view.width.toInt()
+      htmlCanvas.height = view.height.toInt()
 
       gl().viewport(0, 0, view.width.toInt(), view.height.toInt())
 
@@ -141,7 +142,7 @@ object Game {
           "position: absolute; left: ${borderLeft}px; top: ${borderTop}px; z-index: 5; " +
               "width: ${view.windowWidth}px; height: ${view.windowHeight}px;"
       )
-      textCanvas.setAttribute(
+      htmlCanvas.setAttribute(
           "style",
           "position: absolute; left: ${borderLeft}px; top: ${borderTop}px; z-index: 10; " +
               "width: ${view.windowWidth}px; height: ${view.windowHeight}px;"
@@ -185,9 +186,9 @@ object Game {
         resize()
 
         if (!pause) {
-          html.canvas2d.clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble())
-
           if (clearScreenEveryFrame) {
+            htmlCanvas().clearRect(0.0, 0.0, view.width.toDouble(), view.height.toDouble())
+
             gl().clearColor(clearRed, clearGreen, clearBlue, clearAlpha)
             gl().clear(WebGLRenderingContext.COLOR_BUFFER_BIT)
           }
