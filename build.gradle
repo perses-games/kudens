@@ -38,6 +38,7 @@ dependencies {
 
 compileKotlin2Js {
     kotlinOptions.metaInfo = true
+    kotlinOptions.moduleKind = 'umd'
 
     compileKotlin2Js.kotlinOptions.sourceMap = true
     compileKotlin2Js.kotlinOptions.outputFile = "${buildDir}/kotlinjs/kudens.js"
