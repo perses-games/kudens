@@ -1,5 +1,5 @@
 group 'perses.games'
-version '1.1.7'
+version '1.1.8-SNAPSHOT'
 
 apply plugin: 'kotlin2js'
 apply plugin: 'idea'
@@ -38,6 +38,7 @@ dependencies {
 
 compileKotlin2Js {
     kotlinOptions.metaInfo = true
+    kotlinOptions.moduleKind = 'umd'
 
     compileKotlin2Js.kotlinOptions.sourceMap = true
     compileKotlin2Js.kotlinOptions.outputFile = "${buildDir}/kotlinjs/kudens.js"
