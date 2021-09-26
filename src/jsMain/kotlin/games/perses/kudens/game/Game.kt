@@ -12,7 +12,6 @@ import kotlin.js.Date
 /**
  * Created by rnentjes on 19-4-16.
  */
-
 enum class DrawMode {
   LINEAR,
   NEAREST

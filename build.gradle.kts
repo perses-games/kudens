@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "games.perses"
-version = "1.2.1-SNAPSHOT"
+version = "1.2.1"
 
 repositories {
     mavenCentral()
@@ -50,43 +50,33 @@ kotlin {
         //val nativeTest by getting
     }
 
-    val publicationsFromMainHost =
-        listOf(js()).map { it.name } + "kotlinMultiplatform"
-    publishing {
-        repositories {
-            maven {
-                name = "releases"
-                // change to point to your repo, e.g. http://my.org/repo
-                url = uri("https://nexus.astraeus.nl/nexus/content/repositories/releases")
-                credentials {
-                    val nexusUsername: String by project
-                    val nexusPassword: String by project
-
-                    username = nexusUsername
-                    password = nexusPassword
-                }
-            }
-            maven {
-                name = "snapshots"
-                // change to point to your repo, e.g. http://my.org/repo
-                url = uri("https://nexus.astraeus.nl/nexus/content/repositories/snapshots")
-                credentials {
-                    val nexusUsername: String by project
-                    val nexusPassword: String by project
-
-                    username = nexusUsername
-                    password = nexusPassword
-                }
-            }
-        }
-/*        publications {
-            matching { it.name in publicationsFromMainHost }.all {
-                val targetPublication = this@all
-                tasks.withType<AbstractPublishToMaven>()
-                    .matching { it.publication == targetPublication }
-                    .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
-            }
-        }*/
-    }
 }
 
+publishing {
+    repositories {
+        maven {
+            name = "releases"
+            // change to point to your repo, e.g. http://my.org/repo
+            url = uri("https://nexus.astraeus.nl/nexus/content/repositories/releases")
+            credentials {
+                val nexusUsername: String by project
+                val nexusPassword: String by project
+
+                username = nexusUsername
+                password = nexusPassword
+            }
+        }
+        maven {
+            name = "snapshots"
+            // change to point to your repo, e.g. http://my.org/repo
+            url = uri("https://nexus.astraeus.nl/nexus/content/repositories/snapshots")
+            credentials {
+                val nexusUsername: String by project
+                val nexusPassword: String by project
+
+                username = nexusUsername
+                password = nexusPassword
+            }
+        }
+    }
+}
