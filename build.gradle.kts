@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "games.perses"
-version = "1.2.0-SNAPSHOT"
+version = "1.2.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -79,14 +79,14 @@ kotlin {
                 }
             }
         }
-        publications {
+/*        publications {
             matching { it.name in publicationsFromMainHost }.all {
                 val targetPublication = this@all
                 tasks.withType<AbstractPublishToMaven>()
                     .matching { it.publication == targetPublication }
                     .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
             }
-        }
+        }*/
     }
 }
 
